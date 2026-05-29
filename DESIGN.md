@@ -15,9 +15,10 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 2 builds on the ingestion layer with deterministic in-memory matching and
-exception classification over normalized records. It does not implement fuzzy
-matching, report generation, CLI file orchestration, or XLSX loading.
+Phase 3 builds on the ingestion and matching layers with deterministic local
+Markdown and CSV report generation. It keeps the workflow CSV-only and does not
+implement fuzzy matching, XLSX loading, Excel workbook output, databases, web
+APIs, or external services.
 
 ## Architecture Summary
 
@@ -40,12 +41,14 @@ part of the MVP.
 |   |-- cli.py
 |   |-- ingestion.py
 |   |-- matching.py
-|   `-- models.py
+|   |-- models.py
+|   `-- reporting.py
 |-- tests/
 |   |-- conftest.py
 |   |-- test_cli.py
 |   |-- test_ingestion.py
-|   `-- test_matching.py
+|   |-- test_matching.py
+|   `-- test_reporting.py
 |-- sample-data/
 |   |-- README.md
 |   |-- invalid-invoices.csv
@@ -65,18 +68,19 @@ part of the MVP.
 
 | Component | Responsibility | Status |
 |---|---|---|
-| CLI | Parse command-line options and orchestrate the workflow. | Help/version scaffolded |
+| CLI | Parse command-line options and orchestrate the CSV-to-report workflow. | CSV report command implemented |
 | Readers | Load invoice and payment files from CSV/XLSX. | CSV implemented; XLSX planned |
 | Schemas/models | Represent validated invoice and payment records. | Implemented for Phase 1 inputs |
 | Validators | Capture structured row-level validation errors. | Basic row validation implemented |
 | Normalizers | Normalize names, emails, and comparable fields. | Whitespace/currency implemented; email planned |
 | Matching engine | Match payments to invoices and classify exceptions. | Implemented for deterministic one-to-one Phase 2 rules |
-| Report writers | Write Excel and Markdown outputs. | Planned |
+| Report writers | Write local Markdown and CSV outputs from matching results. | Markdown/CSV implemented; Excel planned |
 
 ## Data Flow
 
-End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only and Phase
-2 covering step 5 for normalized in-memory records:
+End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only, Phase 2
+covering step 5 for normalized in-memory records, and Phase 3 covering Markdown
+and CSV outputs in step 6:
 
 1. User runs `reconcile` with invoice and payment file paths.
 2. Readers load CSV rows. XLSX loading is deferred.
@@ -84,7 +88,8 @@ End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only and Phase
 4. Normalizers trim whitespace, uppercase currencies, parse dates, and parse
    decimal amounts.
 5. Matching engine categorizes exact matches and deterministic exceptions.
-6. Report writers generate Excel and Markdown outputs in a later phase.
+6. Report writers generate deterministic Markdown and CSV files in a local
+   output directory.
 
 ## Phase 0 Decisions
 
@@ -99,11 +104,12 @@ End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only and Phase
 | ADR-007 | Use a pure in-memory Phase 2 matcher over validated records. | Keeps matching deterministic, testable, and separate from import validation. |
 | ADR-008 | Treat duplicate invoice or payment references as ambiguous. | Avoids guessing at many-to-one or many-to-many matches before business rules exist. |
 | ADR-009 | Prioritize currency mismatch before amount mismatch. | Prevents comparing amounts as equivalent when currencies differ. |
+| ADR-010 | Generate Markdown and CSV reports before Excel workbooks. | Provides useful local review artifacts without adding runtime dependencies in Phase 3. |
+| ADR-011 | Keep report content timestamp-free. | Preserves deterministic report snapshots and stable tests. |
 
 ## Known Limitations
 
-- CLI help and version output are the only implemented command-line behavior.
-- CSV ingestion is exposed through package functions, not a full CLI workflow.
+- CLI report orchestration supports CSV inputs only.
 - XLSX loading is not implemented yet.
 - Fuzzy matching is not implemented.
-- Excel and Markdown report generation are not implemented yet.
+- Excel workbook report generation is not implemented yet.

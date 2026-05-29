@@ -52,6 +52,16 @@ Phase 2 adds matching tests:
 - No mutation of input record collections.
 - Integration with Phase 1 normalized sample CSV records.
 
+Phase 3 adds reporting and CLI workflow tests:
+
+- Markdown report generation with summary and detail sections.
+- CSV summary and detail report generation.
+- Summary counts for every Phase 2 status.
+- Client-readable status labels for all major statuses.
+- Deterministic detail CSV status/reference ordering.
+- No mutation of input record collections while rendering/writing reports.
+- CLI smoke coverage for writing reports under a pytest `tmp_path`.
+
 ## Future Test Layers
 
 | Layer | Purpose | Planned Location |
@@ -75,6 +85,7 @@ When CLI behavior is present, also run:
 
 ```powershell
 uv run reconcile --help
+uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
 ```
 
 ## Acceptance for Future Phases
@@ -83,5 +94,5 @@ Future phases should add tests for:
 
 - Valid XLSX loading.
 - Mixed currency handling.
-- Report generation outputs.
-- CLI file-path orchestration when implemented.
+- Excel workbook report generation outputs.
+- CLI options for future XLSX and Excel workbook workflows.

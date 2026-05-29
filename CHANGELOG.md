@@ -6,6 +6,12 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 3 deterministic Markdown reconciliation report generation.
+- Phase 3 summary and detail CSV report generation for spreadsheet review.
+- `reconcile report` CLI command for loading CSV inputs, running deterministic
+  matching, and writing local report files.
+- Reporting test coverage for Markdown, CSV, summary counts, status labels,
+  deterministic ordering, input immutability, and CLI output path behavior.
 - Phase 2 deterministic matching engine for normalized invoice and payment
   records.
 - Matching result structures for exact matches, unmatched invoices, unmatched
@@ -30,6 +36,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, requirements, design, test strategy, and runbook now describe Phase 3
+  Markdown/CSV reporting and the local report CLI command.
 - README, requirements, design, test strategy, runbook, and security notes now
   describe Phase 2 matching scope.
 - README, requirements, design, test strategy, runbook, and sample-data notes now
@@ -49,7 +57,6 @@ All notable project changes are recorded here.
 
 ### Known Issues
 
-- XLSX loading, report generation, and full CLI file orchestration are not
-  implemented yet.
+- XLSX loading and Excel workbook report generation are not implemented yet.
 - Fuzzy matching and many-to-one payment allocation are intentionally not
   implemented.

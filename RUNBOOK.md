@@ -21,7 +21,7 @@ uv sync
 
 ## Validate
 
-Run the default Phase 2 quality gate:
+Run the default Phase 3 quality gate:
 
 ```powershell
 uv run pytest
@@ -33,19 +33,26 @@ Optional CLI smoke check:
 
 ```powershell
 uv run reconcile --help
+uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
 ```
 
 ## Current CLI Behavior
 
-The `reconcile` command exists, but Phase 2 still supports help and version
-output only. CSV ingestion and deterministic matching are implemented as package
-functionality and covered by tests. Do not expect invoice or payment CLI
-arguments to work until a later workflow phase.
+The `reconcile` command supports help, version output, and a local CSV report
+workflow. The report command loads invoice and payment CSV files, runs
+deterministic matching, and writes local Markdown and CSV reports.
 
 ```powershell
 uv run reconcile --help
 uv run reconcile --version
+uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
 ```
+
+The report command writes:
+
+- `reports/reconciliation-report.md`
+- `reports/reconciliation-summary.csv`
+- `reports/reconciliation-details.csv`
 
 ## Sample Data
 
@@ -56,8 +63,8 @@ Get-ChildItem -LiteralPath sample-data
 ```
 
 Phase 1 includes valid and invalid invoice/payment CSV samples. Phase 2 matching
-tests reuse the valid normalized CSV samples. XLSX sample inputs are deferred
-until XLSX support is implemented.
+tests and the Phase 3 report command reuse the valid normalized CSV samples.
+XLSX sample inputs are deferred until XLSX support is implemented.
 
 ## Data Handling
 
@@ -85,5 +92,6 @@ git diff -- .
 |---|---|---|
 | `uv` is not recognized | uv is not installed or not on PATH | Install uv and reopen PowerShell |
 | `reconcile` is not found | Environment is not synced | Run `uv sync` from the repository root |
+| `reconcile report` returns import errors | The input CSV has invalid rows | Fix the synthetic input or use the valid sample files |
 | Ruff format check fails | A Python file needs formatting | Run `uv run ruff format .`, then rerun gates |
 | Tests fail | Scaffold or environment issue | Stop, inspect the failure, update `STATE.md` |

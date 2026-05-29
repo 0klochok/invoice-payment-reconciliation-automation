@@ -30,7 +30,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | FR-005 | Capture invalid rows with row number, source, field, error code, and message. | P0 | Implemented in Phase 1 |
 | FR-006 | Match payments to invoices using deterministic local rules. | P0 | Implemented in Phase 2 |
 | FR-007 | Categorize reconciliation exceptions for review. | P0 | Implemented in Phase 2 |
-| FR-008 | Generate Excel and Markdown reconciliation reports. | P0 | Planned |
+| FR-008 | Generate Excel and Markdown reconciliation reports. | P0 | Markdown/CSV implemented in Phase 3; Excel planned |
 | FR-009 | Include realistic fake sample data for local demos. | P0 | CSV samples added in Phase 1 |
 
 ## Phase 0 Requirements
@@ -64,11 +64,21 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P2-005 | Classify duplicate invoice or payment references as ambiguous. | Duplicate references return `ambiguous_reference` with a client-readable reason. | Implemented |
 | P2-006 | Keep fuzzy matching, reports, XLSX, databases, web APIs, and external services out of scope. | No future-phase behavior is added. | Implemented |
 
+## Phase 3 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P3-001 | Generate a deterministic Markdown reconciliation report from Phase 2 results. | Report includes summary counts, matches, unmatched records, mismatches, and ambiguous references. | Implemented |
+| P3-002 | Generate deterministic CSV outputs for spreadsheet review. | Summary and detail CSV files include stable columns, client-readable status labels, and all Phase 2 status categories. | Implemented |
+| P3-003 | Add a simple local CLI report command for CSV inputs. | `reconcile report --invoices ... --payments ... --out-dir ...` writes local report files. | Implemented |
+| P3-004 | Preserve deterministic ordering and avoid mutating input records. | Tests cover stable CSV ordering and unchanged input record collections. | Implemented |
+| P3-005 | Keep XLSX, Excel workbook output, fuzzy matching, databases, web APIs, and external services out of scope. | No future-phase behavior is added. | Implemented |
+
 ## Out of Scope
 
 - Fuzzy matching and probabilistic matching.
 - XLSX file readers.
-- Excel or Markdown report generation.
+- Excel workbook report generation.
 - FastAPI or any web service.
 - Database or persistence layer.
 - GitHub Actions, deployment, or hosted automation.
@@ -86,6 +96,9 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | AC-006 | P1-003 | Valid payment CSV exists | `load_payment_csv` is called | Valid payment records and clean diagnostics are returned | Automated |
 | AC-007 | P1-004 | CSV rows contain missing or malformed values | Loaders are called | Deterministic validation diagnostics are returned | Automated |
 | AC-008 | P2-001 | Valid normalized invoices and payments exist | `match_invoices_to_payments` is called | Exact matching and exceptions are returned deterministically | Automated |
+| AC-009 | P3-001 | Phase 2 reconciliation results exist | Markdown reporting is called | Summary and detail sections are rendered deterministically | Automated |
+| AC-010 | P3-002 | Phase 2 reconciliation results exist | CSV reporting is called | Summary and detail CSV rows include all Phase 2 statuses in stable order | Automated |
+| AC-011 | P3-003 | Valid sample CSV inputs exist | `uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports` is run | Markdown and CSV report files are written locally | Smoke |
 
 ## Data Policy
 

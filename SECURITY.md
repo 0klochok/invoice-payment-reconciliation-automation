@@ -53,3 +53,10 @@ network calls are made by the application, and no real data is included.
 Phase 2 adds deterministic in-memory matching over normalized records only. It
 does not add external network calls, paid APIs, AI calls, report generation,
 file writes, databases, web services, or real client data.
+
+## Phase 3 Security Review
+
+Phase 3 adds local Markdown and CSV report file writes under a caller-provided
+output directory. Generated reports remain local demo artifacts and are ignored
+by Git under `reports/`; no external network calls, paid APIs, AI calls,
+databases, web services, or real client data are added.

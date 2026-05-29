@@ -20,11 +20,12 @@ invoice and payment files into deterministic reconciliation outputs.
 - Match payments to invoices using deterministic business rules.
 - Categorize exceptions such as missing payments, duplicate payments, and
   overpayments or underpayments.
-- Generate Excel and Markdown reconciliation reports for review.
+- Generate Markdown, CSV, and future Excel reconciliation reports for review.
 
 ## Current Status
 
-Phase 2 adds deterministic matching on top of the ingestion foundation:
+Phase 3 adds deterministic local reporting on top of the ingestion and matching
+foundation:
 
 - Immutable invoice, payment, money amount, and import diagnostic models.
 - Dependency-free CSV loading with Python's standard library `csv` module.
@@ -33,10 +34,14 @@ Phase 2 adds deterministic matching on top of the ingestion foundation:
 - Deterministic exact-reference payment-to-invoice matching.
 - Explicit exception classifications for unmatched records, amount mismatches,
   currency mismatches, and ambiguous duplicate references.
+- Markdown summary/detail report generation.
+- CSV summary and detail report generation for spreadsheet review.
+- CLI report command that loads CSV samples, runs matching, and writes local
+  reports to an output directory.
 - Synthetic CSV files under `sample-data/`.
 
-Report generation, CLI file orchestration, fuzzy matching, and XLSX loading are
-intentionally not implemented yet.
+Excel report writing, fuzzy matching, and XLSX loading are intentionally not
+implemented yet.
 
 ## Quickstart
 
@@ -48,11 +53,14 @@ uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 uv run reconcile --help
+uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
 ```
 
-The `reconcile` command currently exposes help and version output only. Phase 2
-CSV ingestion and matching are available as package functionality and covered by
-tests.
+The report command writes these local files:
+
+- `reports/reconciliation-report.md`
+- `reports/reconciliation-summary.csv`
+- `reports/reconciliation-details.csv`
 
 ## Sample Data
 
@@ -70,8 +78,8 @@ Synthetic CSV files are available for local demos and tests:
 | Phase 0 | Repository foundation, docs, project skeleton, quality tooling | Complete |
 | Phase 1 | Input schemas, sample data, CSV loading, normalization, validation | Complete |
 | Phase 2 | Matching engine and exception classification | Complete |
-| Phase 3 | Excel and Markdown report generation | Planned |
-| Phase 4 | CLI workflow polish and demo runbook | Planned |
+| Phase 3 | Markdown and CSV report generation with CLI orchestration | Complete |
+| Phase 4 | XLSX input and Excel workbook report support | Planned |
 
 ## Safety and Data Policy
 

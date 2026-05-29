@@ -1,0 +1,221 @@
+"""Deterministic payment-to-invoice matching for normalized records."""
+
+from __future__ import annotations
+
+from collections.abc import Iterable
+from dataclasses import dataclass, field
+from enum import StrEnum
+
+from .models import InvoiceRecord, PaymentRecord
+
+
+class MatchStatus(StrEnum):
+    """Client-readable reconciliation status values."""
+
+    MATCHED = "matched"
+    UNMATCHED_INVOICE = "unmatched_invoice"
+    UNMATCHED_PAYMENT = "unmatched_payment"
+    AMOUNT_MISMATCH = "amount_mismatch"
+    CURRENCY_MISMATCH = "currency_mismatch"
+    AMBIGUOUS_REFERENCE = "ambiguous_reference"
+
+
+class AmbiguousReferenceReason(StrEnum):
+    """Stable reasons for references that cannot be matched one-to-one."""
+
+    DUPLICATE_INVOICE_REFERENCE = "duplicate_invoice_reference"
+    DUPLICATE_PAYMENT_REFERENCE = "duplicate_payment_reference"
+    DUPLICATE_INVOICE_AND_PAYMENT_REFERENCE = "duplicate_invoice_and_payment_reference"
+
+
+@dataclass(frozen=True, slots=True)
+class MatchedPair:
+    """Invoice and payment records that satisfy all Phase 2 matching rules."""
+
+    reference: str
+    invoice: InvoiceRecord
+    payment: PaymentRecord
+    status: MatchStatus = field(default=MatchStatus.MATCHED, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class UnmatchedInvoice:
+    """Invoice record without a corresponding payment reference."""
+
+    reference: str
+    invoice: InvoiceRecord
+    status: MatchStatus = field(default=MatchStatus.UNMATCHED_INVOICE, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class UnmatchedPayment:
+    """Payment record without a corresponding invoice reference."""
+
+    reference: str
+    payment: PaymentRecord
+    status: MatchStatus = field(default=MatchStatus.UNMATCHED_PAYMENT, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class AmountMismatch:
+    """Invoice and payment share a reference and currency but not an amount."""
+
+    reference: str
+    invoice: InvoiceRecord
+    payment: PaymentRecord
+    status: MatchStatus = field(default=MatchStatus.AMOUNT_MISMATCH, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class CurrencyMismatch:
+    """Invoice and payment share a reference but not a currency."""
+
+    reference: str
+    invoice: InvoiceRecord
+    payment: PaymentRecord
+    status: MatchStatus = field(default=MatchStatus.CURRENCY_MISMATCH, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class AmbiguousReference:
+    """Duplicate invoice or payment references that need manual review."""
+
+    reference: str
+    invoices: tuple[InvoiceRecord, ...]
+    payments: tuple[PaymentRecord, ...]
+    reason: AmbiguousReferenceReason
+    status: MatchStatus = field(default=MatchStatus.AMBIGUOUS_REFERENCE, init=False)
+
+
+@dataclass(frozen=True, slots=True)
+class ReconciliationResult:
+    """Categorized deterministic matching output."""
+
+    matched_pairs: tuple[MatchedPair, ...]
+    unmatched_invoices: tuple[UnmatchedInvoice, ...]
+    unmatched_payments: tuple[UnmatchedPayment, ...]
+    amount_mismatches: tuple[AmountMismatch, ...]
+    currency_mismatches: tuple[CurrencyMismatch, ...]
+    ambiguous_references: tuple[AmbiguousReference, ...]
+
+
+def match_invoices_to_payments(
+    invoices: Iterable[InvoiceRecord],
+    payments: Iterable[PaymentRecord],
+) -> ReconciliationResult:
+    """Match normalized invoice and payment records using Phase 2 rules."""
+    invoice_groups = _group_invoices(invoices)
+    payment_groups = _group_payments(payments)
+
+    matched_pairs: list[MatchedPair] = []
+    unmatched_invoices: list[UnmatchedInvoice] = []
+    unmatched_payments: list[UnmatchedPayment] = []
+    amount_mismatches: list[AmountMismatch] = []
+    currency_mismatches: list[CurrencyMismatch] = []
+    ambiguous_references: list[AmbiguousReference] = []
+
+    for reference, grouped_invoices in invoice_groups.items():
+        grouped_payments = payment_groups.get(reference, ())
+
+        if len(grouped_invoices) > 1 or len(grouped_payments) > 1:
+            ambiguous_references.append(
+                AmbiguousReference(
+                    reference=reference,
+                    invoices=grouped_invoices,
+                    payments=grouped_payments,
+                    reason=_ambiguous_reason(grouped_invoices, grouped_payments),
+                )
+            )
+            continue
+
+        invoice = grouped_invoices[0]
+        if not grouped_payments:
+            unmatched_invoices.append(
+                UnmatchedInvoice(reference=reference, invoice=invoice)
+            )
+            continue
+
+        payment = grouped_payments[0]
+        if invoice.invoice_amount.currency != payment.payment_amount.currency:
+            currency_mismatches.append(
+                CurrencyMismatch(
+                    reference=reference,
+                    invoice=invoice,
+                    payment=payment,
+                )
+            )
+            continue
+
+        if invoice.invoice_amount.value != payment.payment_amount.value:
+            amount_mismatches.append(
+                AmountMismatch(
+                    reference=reference,
+                    invoice=invoice,
+                    payment=payment,
+                )
+            )
+            continue
+
+        matched_pairs.append(
+            MatchedPair(reference=reference, invoice=invoice, payment=payment)
+        )
+
+    for reference, grouped_payments in payment_groups.items():
+        if reference in invoice_groups:
+            continue
+
+        if len(grouped_payments) > 1:
+            ambiguous_references.append(
+                AmbiguousReference(
+                    reference=reference,
+                    invoices=(),
+                    payments=grouped_payments,
+                    reason=AmbiguousReferenceReason.DUPLICATE_PAYMENT_REFERENCE,
+                )
+            )
+            continue
+
+        unmatched_payments.append(
+            UnmatchedPayment(reference=reference, payment=grouped_payments[0])
+        )
+
+    return ReconciliationResult(
+        matched_pairs=tuple(matched_pairs),
+        unmatched_invoices=tuple(unmatched_invoices),
+        unmatched_payments=tuple(unmatched_payments),
+        amount_mismatches=tuple(amount_mismatches),
+        currency_mismatches=tuple(currency_mismatches),
+        ambiguous_references=tuple(ambiguous_references),
+    )
+
+
+def _group_invoices(
+    invoices: Iterable[InvoiceRecord],
+) -> dict[str, tuple[InvoiceRecord, ...]]:
+    grouped: dict[str, list[InvoiceRecord]] = {}
+    for invoice in invoices:
+        grouped.setdefault(invoice.invoice_id, []).append(invoice)
+    return {reference: tuple(records) for reference, records in grouped.items()}
+
+
+def _group_payments(
+    payments: Iterable[PaymentRecord],
+) -> dict[str, tuple[PaymentRecord, ...]]:
+    grouped: dict[str, list[PaymentRecord]] = {}
+    for payment in payments:
+        grouped.setdefault(payment.payment_reference, []).append(payment)
+    return {reference: tuple(records) for reference, records in grouped.items()}
+
+
+def _ambiguous_reason(
+    invoices: tuple[InvoiceRecord, ...],
+    payments: tuple[PaymentRecord, ...],
+) -> AmbiguousReferenceReason:
+    has_duplicate_invoices = len(invoices) > 1
+    has_duplicate_payments = len(payments) > 1
+
+    if has_duplicate_invoices and has_duplicate_payments:
+        return AmbiguousReferenceReason.DUPLICATE_INVOICE_AND_PAYMENT_REFERENCE
+    if has_duplicate_invoices:
+        return AmbiguousReferenceReason.DUPLICATE_INVOICE_REFERENCE
+    return AmbiguousReferenceReason.DUPLICATE_PAYMENT_REFERENCE

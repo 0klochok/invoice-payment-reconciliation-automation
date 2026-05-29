@@ -21,7 +21,7 @@ uv sync
 
 ## Validate
 
-Run the default Phase 1 quality gate:
+Run the default Phase 2 quality gate:
 
 ```powershell
 uv run pytest
@@ -37,10 +37,10 @@ uv run reconcile --help
 
 ## Current CLI Behavior
 
-The `reconcile` command exists, but Phase 1 still supports help and version
-output only. CSV ingestion is implemented as package functionality and covered
-by tests. Do not expect invoice or payment CLI arguments to work until a later
-workflow phase.
+The `reconcile` command exists, but Phase 2 still supports help and version
+output only. CSV ingestion and deterministic matching are implemented as package
+functionality and covered by tests. Do not expect invoice or payment CLI
+arguments to work until a later workflow phase.
 
 ```powershell
 uv run reconcile --help
@@ -55,8 +55,9 @@ Synthetic CSV files live in `sample-data/`:
 Get-ChildItem -LiteralPath sample-data
 ```
 
-Phase 1 includes valid and invalid invoice/payment CSV samples. XLSX sample
-inputs are deferred until XLSX support is implemented.
+Phase 1 includes valid and invalid invoice/payment CSV samples. Phase 2 matching
+tests reuse the valid normalized CSV samples. XLSX sample inputs are deferred
+until XLSX support is implemented.
 
 ## Data Handling
 

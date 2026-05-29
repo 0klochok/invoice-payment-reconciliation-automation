@@ -15,10 +15,9 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 1 establishes the first ingestion layer. It implements CSV loading,
-required-field validation, normalization, and structured import diagnostics. It
-does not implement matching, exception categorization, report generation, or
-XLSX loading.
+Phase 2 builds on the ingestion layer with deterministic in-memory matching and
+exception classification over normalized records. It does not implement fuzzy
+matching, report generation, CLI file orchestration, or XLSX loading.
 
 ## Architecture Summary
 
@@ -40,11 +39,13 @@ part of the MVP.
 |   |-- __init__.py
 |   |-- cli.py
 |   |-- ingestion.py
+|   |-- matching.py
 |   `-- models.py
 |-- tests/
 |   |-- conftest.py
 |   |-- test_cli.py
-|   `-- test_ingestion.py
+|   |-- test_ingestion.py
+|   `-- test_matching.py
 |-- sample-data/
 |   |-- README.md
 |   |-- invalid-invoices.csv
@@ -69,19 +70,20 @@ part of the MVP.
 | Schemas/models | Represent validated invoice and payment records. | Implemented for Phase 1 inputs |
 | Validators | Capture structured row-level validation errors. | Basic row validation implemented |
 | Normalizers | Normalize names, emails, and comparable fields. | Whitespace/currency implemented; email planned |
-| Matching engine | Match payments to invoices and classify exceptions. | Planned |
+| Matching engine | Match payments to invoices and classify exceptions. | Implemented for deterministic one-to-one Phase 2 rules |
 | Report writers | Write Excel and Markdown outputs. | Planned |
 
 ## Data Flow
 
-End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only:
+End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only and Phase
+2 covering step 5 for normalized in-memory records:
 
 1. User runs `reconcile` with invoice and payment file paths.
 2. Readers load CSV rows. XLSX loading is deferred.
 3. Validators convert valid rows to internal records and collect invalid rows.
 4. Normalizers trim whitespace, uppercase currencies, parse dates, and parse
    decimal amounts.
-5. Matching engine categorizes matches and exceptions in a later phase.
+5. Matching engine categorizes exact matches and deterministic exceptions.
 6. Report writers generate Excel and Markdown outputs in a later phase.
 
 ## Phase 0 Decisions
@@ -94,10 +96,14 @@ End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only:
 | ADR-004 | Keep generated reports ignored except `reports/.gitkeep`. | Prevents accidental report artifacts from entering Git. |
 | ADR-005 | Use Python standard library `csv` for Phase 1 CSV ingestion. | Keeps the ingestion foundation dependency-free and reviewable. |
 | ADR-006 | Use dataclasses, `Decimal`, and `date` for normalized input records. | Provides explicit typed records without adding runtime dependencies. |
+| ADR-007 | Use a pure in-memory Phase 2 matcher over validated records. | Keeps matching deterministic, testable, and separate from import validation. |
+| ADR-008 | Treat duplicate invoice or payment references as ambiguous. | Avoids guessing at many-to-one or many-to-many matches before business rules exist. |
+| ADR-009 | Prioritize currency mismatch before amount mismatch. | Prevents comparing amounts as equivalent when currencies differ. |
 
 ## Known Limitations
 
 - CLI help and version output are the only implemented command-line behavior.
 - CSV ingestion is exposed through package functions, not a full CLI workflow.
 - XLSX loading is not implemented yet.
-- No reconciliation matching or reporting behavior exists yet.
+- Fuzzy matching is not implemented.
+- Excel and Markdown report generation are not implemented yet.

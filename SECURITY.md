@@ -47,3 +47,9 @@ crashing the reconciliation run where practical.
 
 Phase 1 adds synthetic CSV sample data and local CSV ingestion only. No external
 network calls are made by the application, and no real data is included.
+
+## Phase 2 Security Review
+
+Phase 2 adds deterministic in-memory matching over normalized records only. It
+does not add external network calls, paid APIs, AI calls, report generation,
+file writes, databases, web services, or real client data.

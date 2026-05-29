@@ -37,8 +37,20 @@ Phase 1 adds ingestion tests:
 
 These tests prove the package is importable, the `reconcile` command parser can
 display help, and the CSV ingestion layer returns validated records plus stable
-diagnostics. They do not validate reconciliation behavior because that remains
-out of scope.
+diagnostics.
+
+Phase 2 adds matching tests:
+
+- Exact successful match.
+- Unmatched invoice.
+- Unmatched payment.
+- Amount mismatch.
+- Currency mismatch.
+- Duplicate payment reference.
+- Duplicate invoice reference.
+- Deterministic output ordering.
+- No mutation of input record collections.
+- Integration with Phase 1 normalized sample CSV records.
 
 ## Future Test Layers
 
@@ -71,5 +83,5 @@ Future phases should add tests for:
 
 - Valid XLSX loading.
 - Mixed currency handling.
-- Matching and exception categorization.
 - Report generation outputs.
+- CLI file-path orchestration when implemented.

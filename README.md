@@ -24,16 +24,19 @@ invoice and payment files into deterministic reconciliation outputs.
 
 ## Current Status
 
-Phase 1 adds the first real ingestion foundation:
+Phase 2 adds deterministic matching on top of the ingestion foundation:
 
 - Immutable invoice, payment, money amount, and import diagnostic models.
 - Dependency-free CSV loading with Python's standard library `csv` module.
 - Required-field validation, ISO date parsing, decimal amount parsing,
   whitespace trimming, and currency uppercasing.
+- Deterministic exact-reference payment-to-invoice matching.
+- Explicit exception classifications for unmatched records, amount mismatches,
+  currency mismatches, and ambiguous duplicate references.
 - Synthetic CSV files under `sample-data/`.
 
-Reconciliation matching, exception categorization, report generation, and XLSX
-loading are intentionally not implemented yet.
+Report generation, CLI file orchestration, fuzzy matching, and XLSX loading are
+intentionally not implemented yet.
 
 ## Quickstart
 
@@ -47,8 +50,9 @@ uv run ruff format --check .
 uv run reconcile --help
 ```
 
-The `reconcile` command currently exposes help and version output only. Phase 1
-CSV ingestion is available as package functionality and covered by tests.
+The `reconcile` command currently exposes help and version output only. Phase 2
+CSV ingestion and matching are available as package functionality and covered by
+tests.
 
 ## Sample Data
 
@@ -65,7 +69,7 @@ Synthetic CSV files are available for local demos and tests:
 |---|---|---|
 | Phase 0 | Repository foundation, docs, project skeleton, quality tooling | Complete |
 | Phase 1 | Input schemas, sample data, CSV loading, normalization, validation | Complete |
-| Phase 2 | Matching engine and exception classification | Planned |
+| Phase 2 | Matching engine and exception classification | Complete |
 | Phase 3 | Excel and Markdown report generation | Planned |
 | Phase 4 | CLI workflow polish and demo runbook | Planned |
 

@@ -28,8 +28,8 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | FR-003 | Validate required fields, dates, amounts, and currency consistency. | P0 | Basic row validation implemented in Phase 1 |
 | FR-004 | Normalize customer name and email fields deterministically. | P0 | Customer name whitespace implemented in Phase 1; email planned |
 | FR-005 | Capture invalid rows with row number, source, field, error code, and message. | P0 | Implemented in Phase 1 |
-| FR-006 | Match payments to invoices using deterministic local rules. | P0 | Planned |
-| FR-007 | Categorize reconciliation exceptions for review. | P0 | Planned |
+| FR-006 | Match payments to invoices using deterministic local rules. | P0 | Implemented in Phase 2 |
+| FR-007 | Categorize reconciliation exceptions for review. | P0 | Implemented in Phase 2 |
 | FR-008 | Generate Excel and Markdown reconciliation reports. | P0 | Planned |
 | FR-009 | Include realistic fake sample data for local demos. | P0 | CSV samples added in Phase 1 |
 
@@ -53,11 +53,21 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P1-005 | Normalize whitespace and currency values. | Tests cover trimmed fields and uppercased currency codes. | Implemented |
 | P1-006 | Keep matching and reports out of scope. | No matching engine or report writer is implemented. | Implemented |
 
+## Phase 2 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P2-001 | Match normalized invoice and payment records by exact reference. | Pure matcher accepts Phase 1 `InvoiceRecord` and `PaymentRecord` values. | Implemented |
+| P2-002 | Match only one invoice to one payment when reference, currency, and amount agree. | Successful matches return explicit `matched` status values. | Implemented |
+| P2-003 | Classify unmatched invoices and payments. | Result structures include stable `unmatched_invoice` and `unmatched_payment` outputs. | Implemented |
+| P2-004 | Classify amount and currency mismatches separately. | Result structures include stable `amount_mismatch` and `currency_mismatch` outputs. | Implemented |
+| P2-005 | Classify duplicate invoice or payment references as ambiguous. | Duplicate references return `ambiguous_reference` with a client-readable reason. | Implemented |
+| P2-006 | Keep fuzzy matching, reports, XLSX, databases, web APIs, and external services out of scope. | No future-phase behavior is added. | Implemented |
+
 ## Out of Scope
 
-- Reconciliation matching logic.
+- Fuzzy matching and probabilistic matching.
 - XLSX file readers.
-- Cross-file validation and currency consistency checks.
 - Excel or Markdown report generation.
 - FastAPI or any web service.
 - Database or persistence layer.
@@ -75,6 +85,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | AC-005 | P1-003 | Valid invoice CSV exists | `load_invoice_csv` is called | Valid invoice records and clean diagnostics are returned | Automated |
 | AC-006 | P1-003 | Valid payment CSV exists | `load_payment_csv` is called | Valid payment records and clean diagnostics are returned | Automated |
 | AC-007 | P1-004 | CSV rows contain missing or malformed values | Loaders are called | Deterministic validation diagnostics are returned | Automated |
+| AC-008 | P2-001 | Valid normalized invoices and payments exist | `match_invoices_to_payments` is called | Exact matching and exceptions are returned deterministically | Automated |
 
 ## Data Policy
 

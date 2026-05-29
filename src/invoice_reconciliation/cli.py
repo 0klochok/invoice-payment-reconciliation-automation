@@ -13,8 +13,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="reconcile",
         description=(
             "Invoice and payment reconciliation automation. "
-            "Phase 1 adds local CSV ingestion APIs; matching and reports are "
-            "not implemented yet."
+            "Phase 2 adds local CSV ingestion and deterministic matching APIs; "
+            "reports and CLI file orchestration are not implemented yet."
         ),
     )
     parser.add_argument(

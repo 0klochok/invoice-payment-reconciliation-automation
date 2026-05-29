@@ -6,6 +6,13 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 2 deterministic matching engine for normalized invoice and payment
+  records.
+- Matching result structures for exact matches, unmatched invoices, unmatched
+  payments, amount mismatches, currency mismatches, and ambiguous references.
+- Explicit matching status values and duplicate-reference ambiguity reasons.
+- Phase 2 matching test coverage for successful matches, exceptions,
+  deterministic ordering, input immutability, and Phase 1 CSV integration.
 - Phase 1 invoice/payment domain models and import diagnostics.
 - Dependency-free CSV ingestion for invoices and payments.
 - Required-field, ISO date, decimal amount, whitespace, and currency
@@ -23,6 +30,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, requirements, design, test strategy, runbook, and security notes now
+  describe Phase 2 matching scope.
 - README, requirements, design, test strategy, runbook, and sample-data notes now
   describe Phase 1 CSV ingestion scope.
 
@@ -40,5 +49,7 @@ All notable project changes are recorded here.
 
 ### Known Issues
 
-- Reconciliation logic, matching, XLSX loading, and report generation are not
+- XLSX loading, report generation, and full CLI file orchestration are not
   implemented yet.
+- Fuzzy matching and many-to-one payment allocation are intentionally not
+  implemented.

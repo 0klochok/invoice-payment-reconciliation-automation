@@ -6,6 +6,13 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 1 invoice/payment domain models and import diagnostics.
+- Dependency-free CSV ingestion for invoices and payments.
+- Required-field, ISO date, decimal amount, whitespace, and currency
+  normalization validation.
+- Synthetic valid and invalid invoice/payment CSV sample files.
+- Phase 1 ingestion test coverage for valid rows, invalid rows, normalization,
+  and deterministic validation errors.
 - Phase 0 repository foundation.
 - uv-managed Python project configuration.
 - Minimal `invoice_reconciliation` package and `reconcile` CLI entry point.
@@ -16,11 +23,13 @@ All notable project changes are recorded here.
 
 ### Changed
 
-- None.
+- README, requirements, design, test strategy, runbook, and sample-data notes now
+  describe Phase 1 CSV ingestion scope.
 
 ### Fixed
 
-- None.
+- Added a visible `sample-data/` placeholder note clarifying that Phase 0 does
+  not include CSV or XLSX sample files.
 
 ### Security
 
@@ -31,6 +40,5 @@ All notable project changes are recorded here.
 
 ### Known Issues
 
-- Reconciliation logic, sample data, validation, matching, and report generation
-  are not implemented yet.
-
+- Reconciliation logic, matching, XLSX loading, and report generation are not
+  implemented yet.

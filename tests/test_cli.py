@@ -13,5 +13,7 @@ def test_cli_help_smoke(capsys) -> None:
         assert exc.code == 0
 
     captured = capsys.readouterr()
+    normalized_output = " ".join(captured.out.split())
     assert "Invoice and payment reconciliation automation" in captured.out
+    assert "Phase 1 adds local CSV ingestion APIs" in normalized_output
     assert "--version" in captured.out

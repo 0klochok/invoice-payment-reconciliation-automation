@@ -15,8 +15,9 @@
 - No secrets, credentials, tokens, private keys, cookies, or production exports.
 - No paid APIs.
 - No AI calls unless explicitly approved.
-- No deployment or external automation in Phase 0.
-- No database, FastAPI service, or GitHub Actions in Phase 0.
+- No deployment or external automation in the current local-demo scope.
+- No database, FastAPI service, or GitHub Actions in the current local-demo
+  scope.
 - No adult, casino/gambling, crypto-token, shady scraping, spam, bypass, or
   grey/black-hat functionality.
 
@@ -42,8 +43,7 @@ Future phases will validate user-provided file paths and imported row data.
 Invalid rows should be captured as structured validation errors instead of
 crashing the reconciliation run where practical.
 
-## Phase 0 Security Review
+## Phase 1 Security Review
 
-Phase 0 adds project scaffolding only. No external network calls are made by the
-application, and no real data is included.
-
+Phase 1 adds synthetic CSV sample data and local CSV ingestion only. No external
+network calls are made by the application, and no real data is included.

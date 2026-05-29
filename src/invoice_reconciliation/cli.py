@@ -8,12 +8,13 @@ from invoice_reconciliation import __version__
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build the Phase 0 CLI parser."""
+    """Build the CLI parser."""
     parser = argparse.ArgumentParser(
         prog="reconcile",
         description=(
             "Invoice and payment reconciliation automation. "
-            "Phase 0 exposes help and version output only."
+            "Phase 1 adds local CSV ingestion APIs; matching and reports are "
+            "not implemented yet."
         ),
     )
     parser.add_argument(

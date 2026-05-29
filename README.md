@@ -24,9 +24,16 @@ invoice and payment files into deterministic reconciliation outputs.
 
 ## Current Status
 
-Phase 0 is a foundation-only scaffold. Reconciliation logic, file loading,
-validation, matching, and report generation are intentionally not implemented
-yet.
+Phase 1 adds the first real ingestion foundation:
+
+- Immutable invoice, payment, money amount, and import diagnostic models.
+- Dependency-free CSV loading with Python's standard library `csv` module.
+- Required-field validation, ISO date parsing, decimal amount parsing,
+  whitespace trimming, and currency uppercasing.
+- Synthetic CSV files under `sample-data/`.
+
+Reconciliation matching, exception categorization, report generation, and XLSX
+loading are intentionally not implemented yet.
 
 ## Quickstart
 
@@ -40,14 +47,24 @@ uv run ruff format --check .
 uv run reconcile --help
 ```
 
-The `reconcile` command currently exposes help and version output only.
+The `reconcile` command currently exposes help and version output only. Phase 1
+CSV ingestion is available as package functionality and covered by tests.
+
+## Sample Data
+
+Synthetic CSV files are available for local demos and tests:
+
+- `sample-data/valid-invoices.csv`
+- `sample-data/valid-payments.csv`
+- `sample-data/invalid-invoices.csv`
+- `sample-data/invalid-payments.csv`
 
 ## Roadmap
 
 | Phase | Objective | Status |
 |---|---|---|
 | Phase 0 | Repository foundation, docs, project skeleton, quality tooling | Complete |
-| Phase 1 | Input schemas, sample data, file loading, normalization, validation | Planned |
+| Phase 1 | Input schemas, sample data, CSV loading, normalization, validation | Complete |
 | Phase 2 | Matching engine and exception classification | Planned |
 | Phase 3 | Excel and Markdown report generation | Planned |
 | Phase 4 | CLI workflow polish and demo runbook | Planned |
@@ -58,5 +75,4 @@ The `reconcile` command currently exposes help and version output only.
 - Do not use real client data.
 - Do not commit secrets or local credentials.
 - No paid APIs, AI calls, deployment, database, FastAPI, or GitHub Actions are
-  included in Phase 0.
-
+  included in the current local-demo scope.

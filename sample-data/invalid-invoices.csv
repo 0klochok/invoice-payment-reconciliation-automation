@@ -1,0 +1,5 @@
+invoice_id,customer_name,invoice_date,due_date,invoice_amount,currency
+,Missing Id Co,2026-01-05,2026-02-05,300.00,USD
+INV-BAD-DATE,Bad Date LLC,01/15/2026,2026-02-14,450.00,USD
+INV-BAD-AMOUNT,Bad Amount LLC,2026-01-20,2026-02-20,twelve,USD
+INV-MISSING-CURRENCY,Currency Gap LLC,2026-01-22,2026-02-22,100.00,

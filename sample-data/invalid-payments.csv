@@ -1,0 +1,5 @@
+payment_id,customer_name,payment_date,payment_amount,currency,payment_reference
+,Missing Payment Id Co,2026-01-15,120.00,USD,INV-1001
+PAY-BAD-DATE,Date Problem LLC,2026/01/17,875.50,EUR,INV-1002
+PAY-BAD-AMOUNT,Amount Problem LLC,2026-01-18,ABC,USD,INV-1003
+PAY-NO-REF,Reference Missing LLC,2026-01-19,210.00,USD,

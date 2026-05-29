@@ -21,7 +21,7 @@ uv sync
 
 ## Validate
 
-Run the default Phase 0 quality gate:
+Run the default Phase 1 quality gate:
 
 ```powershell
 uv run pytest
@@ -37,13 +37,26 @@ uv run reconcile --help
 
 ## Current CLI Behavior
 
-The `reconcile` command exists, but Phase 0 only supports help and version
-output. Do not expect invoice or payment arguments to work until later phases.
+The `reconcile` command exists, but Phase 1 still supports help and version
+output only. CSV ingestion is implemented as package functionality and covered
+by tests. Do not expect invoice or payment CLI arguments to work until a later
+workflow phase.
 
 ```powershell
 uv run reconcile --help
 uv run reconcile --version
 ```
+
+## Sample Data
+
+Synthetic CSV files live in `sample-data/`:
+
+```powershell
+Get-ChildItem -LiteralPath sample-data
+```
+
+Phase 1 includes valid and invalid invoice/payment CSV samples. XLSX sample
+inputs are deferred until XLSX support is implemented.
 
 ## Data Handling
 
@@ -73,4 +86,3 @@ git diff -- .
 | `reconcile` is not found | Environment is not synced | Run `uv sync` from the repository root |
 | Ruff format check fails | A Python file needs formatting | Run `uv run ruff format .`, then rerun gates |
 | Tests fail | Scaffold or environment issue | Stop, inspect the failure, update `STATE.md` |
-

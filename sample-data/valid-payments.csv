@@ -1,0 +1,4 @@
+payment_id,customer_name,payment_date,payment_amount,currency,payment_reference
+PAY-5001,Acme Supplies,2026-01-20,1200.00,USD,INV-1001
+PAY-5002,Northwind Services,2026-01-24,875.50, eur ,INV-1002
+PAY-5003,Blue Harbor Studio,2026-01-28,430.25,USD,INV-1003

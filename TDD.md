@@ -18,16 +18,27 @@
 - Do not use real client data, paid APIs, AI calls, or live external services in
   tests.
 
-## Phase 0 Coverage
+## Current Coverage
 
-Phase 0 includes only scaffold tests:
+Phase 0 includes scaffold tests:
 
 - Package import smoke test.
 - CLI help smoke test.
 
-These tests prove the package is importable and the `reconcile` command parser
-can display help. They do not validate reconciliation behavior because that is
-out of scope for Phase 0.
+Phase 1 adds ingestion tests:
+
+- Valid invoice CSV loading.
+- Valid payment CSV loading.
+- Missing required fields.
+- Bad date format.
+- Bad amount format.
+- Whitespace and currency normalization.
+- Deterministic validation error output.
+
+These tests prove the package is importable, the `reconcile` command parser can
+display help, and the CSV ingestion layer returns validated records plus stable
+diagnostics. They do not validate reconciliation behavior because that remains
+out of scope.
 
 ## Future Test Layers
 
@@ -58,14 +69,7 @@ uv run reconcile --help
 
 Future phases should add tests for:
 
-- Valid invoice CSV loading.
-- Valid payment CSV loading.
 - Valid XLSX loading.
-- Missing required fields.
-- Bad amounts.
-- Bad dates.
 - Mixed currency handling.
-- Deterministic normalization.
 - Matching and exception categorization.
 - Report generation outputs.
-

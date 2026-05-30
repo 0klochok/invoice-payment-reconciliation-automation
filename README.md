@@ -158,6 +158,7 @@ No XLSX report output or large binary report artifact is included.
 | Phase 9 | Minimal GitHub Actions CI quality gate | Complete |
 | Phase 10 | Final portfolio polish and release-readiness review | Complete |
 | Phase 11 | Final portfolio release hardening and evaluator walkthrough | Complete |
+| Phase 12 | Final release-readiness audit and documented-command cleanup | Complete |
 
 ## Safety And Data Policy
 

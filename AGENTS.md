@@ -47,19 +47,20 @@ Every phase must update:
 Required default commands:
 
 ```powershell
+uv sync --locked --dev
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 ```
 
-When applicable, also run:
+When CLI behavior or release readiness is in scope, also run:
 
 ```powershell
-uv run pytest --cov=invoice_reconciliation
 uv run reconcile --help
-uv run reconcile --invoices sample-data/invoices.xlsx --payments sample-data/payments.xlsx --out reports/reconciliation.xlsx --summary reports/reconciliation-summary.md
+uv run reconcile report --help
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx
 ```
 
 If a validation command fails, stop, record the failure in `STATE.md`, and report
 the failure clearly.
-

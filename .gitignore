@@ -31,3 +31,6 @@ Thumbs.db
 # Generated local reports
 reports/*
 !reports/.gitkeep
+
+# Local manual validation scratch output
+.manual-validation/

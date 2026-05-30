@@ -6,6 +6,7 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 12 final release-readiness audit record.
 - Phase 11 final portfolio release hardening and evaluator walkthrough record.
 - README evaluator walkthrough and concise business automation value summary for
   portfolio reviewers.
@@ -61,6 +62,10 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- Removed redundant tracked `.manual-validation` report snapshots; the committed
+  `docs/demo-output/mixed-demo/` snapshot remains the canonical reviewer sample.
+- AGENTS quality-gate commands now match the current locked setup step,
+  `reconcile report` CLI shape, and mixed CSV/XLSX demo sample paths.
 - README, runbook, and test strategy now document
   `uv sync --locked --dev` as the local release-readiness sync step.
 - Phase 8 records the final local release-readiness review, including clean demo

@@ -1,7 +1,0 @@
-status,status_label,count
-matched,Matched invoice and payment,2
-unmatched_invoice,Invoice missing payment,1
-unmatched_payment,Payment missing invoice,1
-amount_mismatch,Payment amount differs,1
-currency_mismatch,Payment currency differs,1
-ambiguous_reference,Duplicate reference needs review,2

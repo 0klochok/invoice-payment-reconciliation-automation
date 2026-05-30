@@ -6,6 +6,7 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Final public-repository readiness audit record.
 - Public-repo presentation polish pass for README, RUNBOOK, STATE, sample-data,
   and demo-output review.
 - Phase 12 final release-readiness audit record.
@@ -64,6 +65,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README now presents a concise implementation status section instead of a long
+  internal phase roadmap.
 - README now includes a dedicated supported inputs/outputs section and states
   that GitHub Actions is CI-only, with no deployment, artifacts, or secrets.
 - RUNBOOK now includes fresh-clone prerequisites and uses the locked sync command

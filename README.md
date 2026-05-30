@@ -162,23 +162,20 @@ No XLSX report output or large binary report artifact is included.
 - Current normalization covers whitespace and currency casing; email
   normalization is not part of the current sample schema.
 
-## Roadmap
+## Implementation Status
 
-| Phase | Objective | Status |
-|---|---|---|
-| Phase 0 | Repository foundation, docs, project skeleton, quality tooling | Complete |
-| Phase 1 | Input schemas, sample data, CSV loading, normalization, validation | Complete |
-| Phase 2 | Matching engine and exception classification | Complete |
-| Phase 3 | Markdown and CSV report generation with CLI orchestration | Complete |
-| Phase 4 | Demo sample coverage and client-demo readiness | Complete |
-| Phase 5 | XLSX invoice/payment input support | Complete |
-| Phase 6 | Client-presentable exception reporting and CLI demo polish | Complete |
-| Phase 7 | Final portfolio/demo readiness documentation pass | Complete |
-| Phase 8 | Final local release-readiness review | Complete |
-| Phase 9 | Minimal GitHub Actions CI quality gate | Complete |
-| Phase 10 | Final portfolio polish and release-readiness review | Complete |
-| Phase 11 | Final portfolio release hardening and evaluator walkthrough | Complete |
-| Phase 12 | Final release-readiness audit and documented-command cleanup | Complete |
+The portfolio version is complete for the local CLI demo scope:
+
+- Local CSV/XLSX invoice and payment imports.
+- Deterministic validation, normalization, matching, and exception
+  classification.
+- Markdown and CSV reconciliation reports.
+- Synthetic sample data and committed Markdown/CSV demo-output snapshot.
+- Local quality gate and minimal GitHub Actions CI smoke coverage.
+
+Future enhancements such as fuzzy matching, partial-payment allocation, Excel
+workbook report output, web APIs, databases, deployment, paid APIs, and AI calls
+are intentionally outside the current portfolio scope.
 
 ## Safety And Data Policy
 

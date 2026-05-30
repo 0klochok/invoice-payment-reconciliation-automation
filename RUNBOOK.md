@@ -14,7 +14,7 @@
 - Windows PowerShell.
 - `uv` installed and available on `PATH`.
 - Python 3.12 or newer available locally, or installable by `uv`.
-- No secrets, service accounts, paid APIs, AI keys, or external services are
+- No secrets, service accounts, paid API keys, or external services are
   required for the demo.
 
 ## Setup

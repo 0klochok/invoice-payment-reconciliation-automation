@@ -158,7 +158,7 @@ No XLSX report output or large binary report artifact is included.
   automation.
 - GitHub Actions is CI-only; it does not deploy, upload artifacts, or use
   secrets.
-- No paid APIs, AI calls, runtime external services, or real client data.
+- No paid APIs, runtime external services, or real client data.
 - Current normalization covers whitespace and currency casing; email
   normalization is not part of the current sample schema.
 
@@ -174,8 +174,8 @@ The portfolio version is complete for the local CLI demo scope:
 - Local quality gate and minimal GitHub Actions CI smoke coverage.
 
 Future enhancements such as fuzzy matching, partial-payment allocation, Excel
-workbook report output, web APIs, databases, deployment, paid APIs, and AI calls
-are intentionally outside the current portfolio scope.
+workbook report output, web APIs, databases, deployment, paid APIs, and runtime
+external services are intentionally outside the current portfolio scope.
 
 ## Safety And Data Policy
 

@@ -15,7 +15,7 @@
 - Prefer test-first development for future behavior-heavy phases.
 - Keep tests deterministic and local.
 - Use synthetic fixtures only.
-- Do not use real client data, paid APIs, AI calls, or live external services in
+- Do not use real client data, paid APIs, or live external services in
   tests.
 
 ## Current Coverage

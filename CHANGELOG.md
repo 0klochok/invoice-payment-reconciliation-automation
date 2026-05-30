@@ -70,6 +70,8 @@ All notable project changes are recorded here.
 
 - RUNBOOK manual commit policy now uses tool-neutral public wording while
   preserving the manual Git workflow.
+- Public-facing project docs now use service-neutral wording for unapproved
+  external integrations.
 - README now uses portfolio/demo wording in the public project description.
 - Mixed demo sample inputs now live under `sample-data/mixed-demo/` with concise
   `invoices` and `payments` filenames for the public evaluator walkthrough.
@@ -123,7 +125,7 @@ All notable project changes are recorded here.
 ### Security
 
 - Added repository security policy for synthetic data, no secrets, no paid APIs,
-  no AI calls, and no deployment in Phase 0.
+  and no deployment in Phase 0.
 - Added `.gitignore` coverage for local secrets, caches, virtual environments,
   and generated reports.
 

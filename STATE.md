@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-31 00:30 +03:00 |
+| Last updated | 2026-05-31 01:23 +03:00 |
 | Repository root | `.` |
 | Current branch | `main` |
 | Current phase | Final public portfolio presentation-readiness pass |
@@ -22,14 +22,14 @@ required local quality gate without changing reconciliation behavior.
 
 ## Confirmed Scope
 
-- In scope: `README.md`, `RUNBOOK.md`, `CHANGELOG.md`, `STATE.md`,
-  `.gitignore`, `sample-data/README.md`, `docs/demo-output/mixed-demo/`,
-  documented CSV/XLSX demo commands, public-facing wording, ignored generated
-  reports, and repository hygiene.
+- In scope: `README.md`, `RUNBOOK.md`, `CHANGELOG.md`, `STATE.md`, relevant
+  source-of-truth docs, `.gitignore`, `sample-data/README.md`,
+  `docs/demo-output/mixed-demo/`, documented CSV/XLSX demo commands,
+  public-facing wording, ignored generated reports, and repository hygiene.
 - Out of scope: reconciliation logic changes, ingestion behavior changes,
   report-generation behavior changes, dependency changes, test changes without
-  behavior changes, file moves, deployment, paid APIs, AI calls, real client
-  data, staging, commits, pushes, resets, branch deletion, and history rewrites.
+  behavior changes, file moves, deployment, paid APIs, real client data,
+  staging, commits, pushes, resets, branch deletion, and history rewrites.
 
 ## Completed In This Pass
 
@@ -52,10 +52,11 @@ required local quality gate without changing reconciliation behavior.
 - Scanned reviewed public docs for unsupported implementation claims,
   exaggerated deployment or production claims, paid API assumptions,
   real-client-data claims, secrets, placeholders, and machine-specific paths.
-- Found one RUNBOOK public-presentation wording issue: the manual commit policy
-  used tool-specific wording. Reworded it generically without changing policy.
-- Found no README, demo-output, or `.gitignore` clarity issue requiring a
-  tracked presentation change.
+- Found one public-facing wording issue: project docs used prohibited
+  implementation-service terminology. Reworded the docs with service-neutral
+  language without changing policy or behavior.
+- Found no README command, RUNBOOK command, demo-output, or `.gitignore`
+  clarity issue requiring any behavior or artifact change.
 - Regenerated CSV and XLSX mixed-demo outputs into ignored local reports
   folders.
 - Verified regenerated CSV and XLSX demo outputs match the committed
@@ -67,16 +68,21 @@ required local quality gate without changing reconciliation behavior.
 
 | Path | Purpose | Status |
 |---|---|---|
-| `RUNBOOK.md` | Reworded manual commit policy with tool-neutral public wording. | Updated |
-| `CHANGELOG.md` | Recorded the final presentation-readiness verification. | Updated |
+| `README.md` | Removed prohibited public-facing service wording from limitations and future-scope text. | Updated |
+| `RUNBOOK.md` | Removed prohibited public-facing service wording from prerequisites. | Updated |
+| `CHANGELOG.md` | Recorded the public-facing wording cleanup and removed prohibited service wording from prior notes. | Updated |
 | `STATE.md` | Recorded this audit, validation results, and remaining risks. | Updated |
+| `REQ.md` | Aligned requirements wording with service-neutral public documentation. | Updated |
+| `DESIGN.md` | Aligned design wording with service-neutral public documentation. | Updated |
+| `TDD.md` | Aligned test strategy wording with service-neutral public documentation. | Updated |
+| `SECURITY.md` | Aligned security wording with service-neutral public documentation. | Updated |
 
 ## Validation And Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | `39 passed in 0.57s` on win32 with Python 3.14.4. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.61s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
 | `uv run reconcile --help` | Pass | Printed top-level usage for `reconcile [-h] [--version] {report} ...`. |
@@ -112,9 +118,11 @@ required local quality gate without changing reconciliation behavior.
   client claim was found in reviewed public docs.
 - No stale placeholder filler or machine-specific absolute local path was found
   in reviewed public docs.
-- References to deployment, production exports, real client data, paid APIs, AI
-  calls, databases, FastAPI, and secrets remain policy statements or explicit
+- References to deployment, production exports, real client data, paid APIs,
+  databases, FastAPI, and secrets remain policy statements or explicit
   non-goals.
+- Reviewed public/source docs use service-neutral wording for unapproved
+  external integrations.
 - Generated local report artifacts under `reports/` are ignored by Git.
 - The committed `docs/demo-output/mixed-demo/` snapshot remains the intentional
   Markdown/CSV example snapshot.

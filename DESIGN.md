@@ -21,8 +21,8 @@ portfolio version. Phase 9 adds a minimal GitHub Actions CI quality gate for the
 stable local checks. The workflow remains CLI-first and local-demo-first: CSV
 and XLSX inputs are parsed locally, deterministic matching is unchanged, and
 report outputs remain Markdown and CSV. It does not implement Excel workbook
-report output, fuzzy matching, databases, web APIs, deployment, AI features, or
-runtime external services.
+report output, fuzzy matching, databases, web APIs, deployment, or runtime
+external services.
 
 ## Architecture Summary
 
@@ -33,8 +33,8 @@ independently.
 
 The runtime model is local batch execution: the user runs one CLI command with
 invoice and payment input files and receives generated report files. No web
-server, database, background job, hosted deployment, paid API, or AI provider is
-part of the MVP.
+server, database, background job, hosted deployment, paid API provider, or
+runtime external service is part of the MVP.
 
 ## Current Repository Shape
 
@@ -136,7 +136,7 @@ report presentation in step 6:
 - Partial-payment allocation and many-to-one matching are not implemented.
 - Excel workbook report output is not implemented.
 - Email normalization is not part of the current sample schema.
-- No web app, FastAPI service, database, deployment, AI feature, paid API, or
-  real client data is part of the current design.
+- No web app, FastAPI service, database, deployment, paid API, runtime external
+  service, or real client data is part of the current design.
 - GitHub Actions is limited to the minimal CI quality gate; it is not a
   deployment or hosted runtime path.

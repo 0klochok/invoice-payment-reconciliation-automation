@@ -14,7 +14,6 @@
 - No real client data.
 - No secrets, credentials, tokens, private keys, cookies, or production exports.
 - No paid APIs.
-- No AI calls unless explicitly approved.
 - No deployment or external runtime automation in the current local-demo scope.
 - GitHub Actions is allowed only for the minimal CI quality gate and must not
   use secrets, upload artifacts, or deploy.
@@ -52,19 +51,19 @@ network calls are made by the application, and no real data is included.
 ## Phase 2 Security Review
 
 Phase 2 adds deterministic in-memory matching over normalized records only. It
-does not add external network calls, paid APIs, AI calls, report generation,
-file writes, databases, web services, or real client data.
+does not add external network calls, paid APIs, report generation, file writes,
+databases, web services, or real client data.
 
 ## Phase 3 Security Review
 
 Phase 3 adds local Markdown and CSV report file writes under a caller-provided
 output directory. Generated reports remain local demo artifacts and are ignored
-by Git under `reports/`; no external network calls, paid APIs, AI calls,
-databases, web services, or real client data are added.
+by Git under `reports/`; no external network calls, paid APIs, databases, web
+services, or real client data are added.
 
 ## Phase 8 Release Readiness Security Review
 
-Phase 8 reviewed the portfolio repository for accidental secrets, paid API or AI
+Phase 8 reviewed the portfolio repository for accidental secrets, paid-service
 assumptions, large tracked binaries, generated cache files, unrelated artifacts,
 and unintended demo-output contents. No runtime security behavior changed.
 

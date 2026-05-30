@@ -17,7 +17,8 @@ and normalizes the data, matches payments to invoices, detects exceptions, and
 generates review-ready reconciliation reports.
 
 The project is a portfolio/demo project. It must use synthetic data only and must
-not require deployment, paid services, AI calls, databases, or real client data.
+not require deployment, paid services, runtime external services, databases, or
+real client data.
 
 ## MVP Requirements
 
@@ -100,7 +101,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P6-002 | Improve exception detail readability for unmatched, underpaid/overpaid, currency conflict, and duplicate-reference cases. | Markdown and details CSV include client-readable review notes while preserving stable status values. | Implemented |
 | P6-003 | Preserve Markdown, summary CSV, and details CSV as the only report outputs. | CLI writes only `reconciliation-report.md`, `reconciliation-summary.csv`, and `reconciliation-details.csv`. | Implemented |
 | P6-004 | Keep CSV and XLSX input behavior unchanged. | Existing CSV/XLSX ingestion and equivalence tests continue to pass. | Implemented |
-| P6-005 | Keep Excel workbook output, web apps, databases, deployment, AI features, and matching changes out of scope. | No future-phase components or dependencies are added. | Implemented |
+| P6-005 | Keep Excel workbook output, web apps, databases, deployment, runtime external services, and matching changes out of scope. | No future-phase components or dependencies are added. | Implemented |
 
 ## Phase 7 Requirements
 
@@ -109,7 +110,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P7-001 | Make source-of-truth docs portfolio-ready for the current implemented CLI behavior. | README, runbook, sample-data notes, requirements, design, test strategy, changelog, and state describe current behavior consistently. | Implemented |
 | P7-002 | Document exact local demo commands and expected output files. | Docs show CSV and XLSX-input commands and list the three generated Markdown/CSV files. | Implemented |
 | P7-003 | Include a small generated demo-output snapshot only if it helps reviewer clarity. | `docs/demo-output/mixed-demo/` contains only Markdown/CSV report examples generated from existing sample data. | Implemented |
-| P7-004 | Preserve current reconciliation, ingestion, and report-generation behavior. | No core logic changes, new dependencies, web app, database, deployment, AI feature, or XLSX report output are added. | Implemented |
+| P7-004 | Preserve current reconciliation, ingestion, and report-generation behavior. | No core logic changes, new dependencies, web app, database, deployment, runtime external service, or XLSX report output are added. | Implemented |
 
 ## Phase 8 Requirements
 
@@ -118,7 +119,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P8-001 | Complete a final local release-readiness review for the portfolio version. | Source-of-truth docs, setup steps, demo commands, generated outputs, limitations, sample-data notes, and quality-gate instructions are reviewed against current behavior. | Implemented |
 | P8-002 | Verify documented CSV and XLSX demo commands from clean local output directories. | `reports\demo-csv` and `reports\demo-xlsx` are regenerated with exactly the expected Markdown and CSV outputs. | Implemented |
 | P8-003 | Verify repository hygiene for a public portfolio demo. | Ignored report artifacts remain ignored, `docs/demo-output/` contains only intentional Markdown/CSV examples, and no accidental secrets, paid API assumptions, large binaries, generated cache files, or unrelated tracked artifacts are found. | Implemented |
-| P8-004 | Preserve current runtime behavior. | No reconciliation, ingestion, report-generation, dependency, deployment, web, database, AI, paid API, secret, commit, push, staging, or history changes are made. | Implemented |
+| P8-004 | Preserve current runtime behavior. | No reconciliation, ingestion, report-generation, dependency, deployment, web, database, runtime external service, paid API, secret, commit, push, staging, or history changes are made. | Implemented |
 
 ## Phase 9 Requirements
 
@@ -135,7 +136,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 - FastAPI or any web service.
 - Database or persistence layer.
 - Deployment or hosted runtime automation beyond minimal CI.
-- Paid APIs, AI calls, or real client data.
+- Paid APIs, runtime external services, or real client data.
 
 ## Acceptance Criteria
 

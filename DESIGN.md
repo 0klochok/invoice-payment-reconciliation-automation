@@ -15,9 +15,10 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 7 is a final portfolio/demo readiness pass over the current local CLI
-behavior. The workflow remains CLI-first and local-demo-first: CSV and XLSX
-inputs are parsed locally, deterministic matching is unchanged, and report
+Phase 7 was a final portfolio/demo documentation readiness pass over the current
+local CLI behavior. Phase 8 is a final local release-readiness review of that
+portfolio version. The workflow remains CLI-first and local-demo-first: CSV and
+XLSX inputs are parsed locally, deterministic matching is unchanged, and report
 outputs remain Markdown and CSV. It does not implement Excel workbook report
 output, fuzzy matching, databases, web APIs, deployment, AI features, or external
 services.

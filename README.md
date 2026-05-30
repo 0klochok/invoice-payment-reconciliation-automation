@@ -125,6 +125,7 @@ No XLSX report output or large binary report artifact is included.
 | Phase 5 | XLSX invoice/payment input support | Complete |
 | Phase 6 | Client-presentable exception reporting and CLI demo polish | Complete |
 | Phase 7 | Final portfolio/demo readiness documentation pass | Complete |
+| Phase 8 | Final local release-readiness review | Complete |
 
 ## Safety And Data Policy
 

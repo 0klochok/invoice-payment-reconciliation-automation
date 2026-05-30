@@ -53,6 +53,9 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- Phase 8 records the final local release-readiness review, including clean demo
+  output regeneration, ignored-artifact verification, repository hygiene review,
+  and current quality-gate results.
 - README, runbook, sample-data notes, requirements, design, and test strategy now
   present the current local CLI demo behavior with exact demo commands, expected
   output files, limitations, and non-goals.

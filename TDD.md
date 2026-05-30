@@ -93,6 +93,15 @@ Phase 7 adds a documentation and demo-readiness validation pass:
 - Manual equivalence check for generated CSV-input and XLSX-input report files.
 - No tests were added because Phase 7 does not change runtime behavior.
 
+Phase 8 adds a final local release-readiness validation pass:
+
+- Source-of-truth docs reviewed as portfolio-facing project documentation.
+- Documented CSV and XLSX demo commands rerun from clean local output
+  directories.
+- Ignored local report artifacts, committed demo-output examples, repository
+  hygiene, and no-secrets/no-paid-API assumptions manually reviewed.
+- No tests were added because Phase 8 does not change runtime behavior.
+
 ## Future Test Layers
 
 | Layer | Purpose | Planned Location |
@@ -107,6 +116,7 @@ Phase 7 adds a documentation and demo-readiness validation pass:
 Run from the repository root:
 
 ```powershell
+uv sync
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .

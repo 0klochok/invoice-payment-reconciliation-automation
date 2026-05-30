@@ -23,6 +23,7 @@ uv sync
 Run the default validation commands:
 
 ```powershell
+uv sync
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .

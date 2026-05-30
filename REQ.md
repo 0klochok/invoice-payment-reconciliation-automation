@@ -111,6 +111,15 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P7-003 | Include a small generated demo-output snapshot only if it helps reviewer clarity. | `docs/demo-output/mixed-demo/` contains only Markdown/CSV report examples generated from existing sample data. | Implemented |
 | P7-004 | Preserve current reconciliation, ingestion, and report-generation behavior. | No core logic changes, new dependencies, web app, database, deployment, AI feature, or XLSX report output are added. | Implemented |
 
+## Phase 8 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P8-001 | Complete a final local release-readiness review for the portfolio version. | Source-of-truth docs, setup steps, demo commands, generated outputs, limitations, sample-data notes, and quality-gate instructions are reviewed against current behavior. | Implemented |
+| P8-002 | Verify documented CSV and XLSX demo commands from clean local output directories. | `reports\demo-csv` and `reports\demo-xlsx` are regenerated with exactly the expected Markdown and CSV outputs. | Implemented |
+| P8-003 | Verify repository hygiene for a public portfolio demo. | Ignored report artifacts remain ignored, `docs/demo-output/` contains only intentional Markdown/CSV examples, and no accidental secrets, paid API assumptions, large binaries, generated cache files, or unrelated tracked artifacts are found. | Implemented |
+| P8-004 | Preserve current runtime behavior. | No reconciliation, ingestion, report-generation, dependency, deployment, web, database, AI, paid API, secret, commit, push, staging, or history changes are made. | Implemented |
+
 ## Out of Scope
 
 - Fuzzy matching and probabilistic matching.
@@ -138,6 +147,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | AC-012 | P5-004 | Mixed sample CSV and XLSX inputs exist | Reconciliation is run for both formats | Status counts and Markdown/CSV report outputs are equivalent, and report files stay under the requested output directory | Automated/smoke |
 | AC-013 | P6-001 | Mixed sample inputs exist | Reconciliation report generation is run | Markdown and CSV outputs use clear labels, review notes, and deterministic status/reference ordering without XLSX report output | Automated/smoke |
 | AC-014 | P7-002 | Source-of-truth docs and mixed sample inputs exist | Required validation and demo commands are run | Docs match current behavior, demo directories contain only the three expected report files, and CSV/XLSX-input outputs are equivalent | Manual/smoke |
+| AC-015 | P8-001 | Portfolio-ready docs and mixed sample inputs exist | Full release-readiness validation is run locally | Quality gates pass, documented demo outputs regenerate cleanly, ignored artifacts stay ignored, and no repository hygiene issues are found | Manual/smoke |
 
 ## Data Policy
 

@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 |
+| Last updated | 2026-05-30 |
 | Status | Active draft |
 | Repository visibility | Public portfolio/demo by default |
 | Risk level | Low while using synthetic local data only |
@@ -60,3 +60,9 @@ Phase 3 adds local Markdown and CSV report file writes under a caller-provided
 output directory. Generated reports remain local demo artifacts and are ignored
 by Git under `reports/`; no external network calls, paid APIs, AI calls,
 databases, web services, or real client data are added.
+
+## Phase 8 Release Readiness Security Review
+
+Phase 8 reviewed the portfolio repository for accidental secrets, paid API or AI
+assumptions, large tracked binaries, generated cache files, unrelated artifacts,
+and unintended demo-output contents. No runtime security behavior changed.

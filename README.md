@@ -9,8 +9,8 @@ exceptions, and writes review-ready Markdown and CSV reports.
 
 Small finance and operations teams often reconcile invoices and payments in
 spreadsheets by hand. That workflow is slow, inconsistent, and hard to review.
-This project demonstrates a local automation that turns fake invoice and payment
-exports into deterministic reconciliation outputs suitable for a portfolio or
+This project demonstrates a local automation that turns synthetic invoice and
+payment exports into deterministic exception reports suitable for a portfolio or
 client demo.
 
 ## What This Demonstrates
@@ -50,10 +50,28 @@ client demo.
 - `reconcile report` CLI command for the full local demo workflow.
 - Synthetic sample data only.
 
+## Supported Inputs And Outputs
+
+The CLI accepts invoice and payment files in these formats:
+
+- CSV files with the sample invoice/payment columns.
+- XLSX workbooks with equivalent single-sheet invoice/payment data.
+
+The report workflow writes three local review artifacts to the requested output
+directory:
+
+- `reconciliation-report.md` for a human-readable summary and exception review.
+- `reconciliation-summary.csv` for status counts by reconciliation category.
+- `reconciliation-details.csv` for row-level matched and exception details.
+
+Generated report artifacts belong under ignored `reports/` paths during local
+demos. The committed `docs/demo-output/mixed-demo/` snapshot is the only
+intentional generated report example.
+
 ## Quickstart
 
 Use PowerShell from the repository root. Install dependencies from the lockfile
-and run the local release-readiness gate:
+and run the local quality gate:
 
 ```powershell
 uv sync --locked --dev
@@ -138,6 +156,8 @@ No XLSX report output or large binary report artifact is included.
 - No Excel workbook report output.
 - No web app, FastAPI service, database, deployment, or hosted runtime
   automation.
+- GitHub Actions is CI-only; it does not deploy, upload artifacts, or use
+  secrets.
 - No paid APIs, AI calls, runtime external services, or real client data.
 - Current normalization covers whitespace and currency casing; email
   normalization is not part of the current sample schema.

@@ -9,10 +9,19 @@
 | Project | invoice-payment-reconciliation-automation-new |
 | Environment | Windows 11, PowerShell, uv, Python 3.12+ |
 
+## Prerequisites
+
+- Windows PowerShell.
+- `uv` installed and available on `PATH`.
+- Python 3.12 or newer available locally, or installable by `uv`.
+- No secrets, service accounts, paid APIs, AI keys, or external services are
+  required for the demo.
+
 ## Setup
 
-Open PowerShell in the repository root, the directory that contains
-`pyproject.toml`, and sync the locked development environment:
+After cloning the repository, open PowerShell in the repository root, the
+directory that contains `pyproject.toml`, and sync the locked development
+environment:
 
 ```powershell
 uv sync --locked --dev
@@ -174,7 +183,7 @@ git diff -- .
 | Symptom | Likely Cause | Action |
 |---|---|---|
 | `uv` is not recognized | uv is not installed or not on PATH | Install uv and reopen PowerShell |
-| `reconcile` is not found | Environment is not synced | Run `uv sync` from the repository root |
+| `reconcile` is not found | Environment is not synced | Run `uv sync --locked --dev` from the repository root |
 | `reconcile report` returns import errors | Input rows are invalid | Use the synthetic samples or fix the demo input |
 | Ruff format check fails | A Python file needs formatting | Run `uv run ruff format .`, then rerun gates |
 | Tests fail | Behavior or environment issue | Stop, inspect the failure, update `STATE.md` |

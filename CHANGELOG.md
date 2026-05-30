@@ -6,6 +6,8 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Public-repo presentation polish pass for README, RUNBOOK, STATE, sample-data,
+  and demo-output review.
 - Phase 12 final release-readiness audit record.
 - Phase 11 final portfolio release hardening and evaluator walkthrough record.
 - README evaluator walkthrough and concise business automation value summary for
@@ -58,10 +60,15 @@ All notable project changes are recorded here.
 - Baseline pytest and Ruff configuration.
 - Package import and CLI help smoke tests.
 - Source-of-truth project docs.
-- Placeholder directories for sample data, reports, and screenshots.
+- Initial directories for sample data, reports, and screenshots.
 
 ### Changed
 
+- README now includes a dedicated supported inputs/outputs section and states
+  that GitHub Actions is CI-only, with no deployment, artifacts, or secrets.
+- RUNBOOK now includes fresh-clone prerequisites and uses the locked sync command
+  in troubleshooting.
+- STATE now avoids recording a machine-specific absolute clone path.
 - RUNBOOK setup instructions now describe entering the repository root without a
   machine-specific absolute clone path.
 - Removed redundant tracked `.manual-validation` report snapshots; the committed
@@ -99,8 +106,8 @@ All notable project changes are recorded here.
 
 ### Fixed
 
-- Added a visible `sample-data/` placeholder note clarifying that Phase 0 does
-  not include CSV or XLSX sample files.
+- Added the initial `sample-data/` note clarifying that sample files were not
+  part of the Phase 0 scaffold.
 
 ### Security
 

@@ -65,6 +65,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- Mixed demo sample inputs now live under `sample-data/mixed-demo/` with concise
+  `invoices` and `payments` filenames for the public evaluator walkthrough.
 - README now presents a concise implementation status section instead of a long
   internal phase roadmap.
 - README now includes a dedicated supported inputs/outputs section and states

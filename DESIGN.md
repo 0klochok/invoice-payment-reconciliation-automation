@@ -60,10 +60,11 @@ part of the MVP.
 |   |-- README.md
 |   |-- invalid-invoices.csv
 |   |-- invalid-payments.csv
-|   |-- demo-mixed-invoices.csv
-|   |-- demo-mixed-invoices.xlsx
-|   |-- demo-mixed-payments.csv
-|   |-- demo-mixed-payments.xlsx
+|   |-- mixed-demo/
+|   |   |-- invoices.csv
+|   |   |-- invoices.xlsx
+|   |   |-- payments.csv
+|   |   `-- payments.xlsx
 |   |-- valid-invoices.csv
 |   `-- valid-payments.csv
 |-- reports/

@@ -93,13 +93,13 @@ requests and pushes to `main`.
 Run the mixed CSV demo:
 
 ```powershell
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports\demo-csv
 ```
 
 Run the equivalent XLSX-input demo:
 
 ```powershell
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
 Both commands write exactly these report files inside the selected output
@@ -123,9 +123,9 @@ Synthetic inputs live under `sample-data/`.
   matched scenario.
 - `invalid-invoices.csv` and `invalid-payments.csv` demonstrate validation
   failures.
-- `demo-mixed-invoices.csv` and `demo-mixed-payments.csv` demonstrate the main
+- `mixed-demo/invoices.csv` and `mixed-demo/payments.csv` demonstrate the main
   portfolio scenario.
-- `demo-mixed-invoices.xlsx` and `demo-mixed-payments.xlsx` contain equivalent
+- `mixed-demo/invoices.xlsx` and `mixed-demo/payments.xlsx` contain equivalent
   XLSX inputs for the same mixed scenario.
 
 The mixed demo reviews 8 invoice rows and 8 payment rows. It produces 2 matched

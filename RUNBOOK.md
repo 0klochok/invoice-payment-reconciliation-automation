@@ -54,13 +54,13 @@ CI writes demo outputs only inside the runner under `reports/ci-csv` and
 Run the CSV-input portfolio demo:
 
 ```powershell
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports\demo-csv
 ```
 
 Run the XLSX-input portfolio demo:
 
 ```powershell
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
 Each command prints a `Report files written:` message and writes exactly three
@@ -152,10 +152,11 @@ Synthetic CSV and XLSX files live in `sample-data/`:
 Get-ChildItem -LiteralPath sample-data
 ```
 
-The clean `valid-*` files produce only matched records. The `demo-mixed-*`
-files produce the main portfolio scenario with matched records, unmatched
-records, amount variance, currency conflict, and duplicate-reference exceptions.
-The mixed CSV and XLSX inputs are intentionally equivalent.
+The clean `valid-*` files produce only matched records. The files under
+`sample-data/mixed-demo/` produce the main portfolio scenario with matched
+records, unmatched records, amount variance, currency conflict, and
+duplicate-reference exceptions. The mixed CSV and XLSX inputs are intentionally
+equivalent.
 
 ## Data Handling
 

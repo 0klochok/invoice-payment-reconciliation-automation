@@ -12,10 +12,11 @@ from invoice_reconciliation.matching import MatchStatus, match_invoices_to_payme
 from invoice_reconciliation.reporting import build_summary_counts
 
 SAMPLE_DATA = Path(__file__).resolve().parents[1] / "sample-data"
-MIXED_INVOICES = SAMPLE_DATA / "demo-mixed-invoices.csv"
-MIXED_PAYMENTS = SAMPLE_DATA / "demo-mixed-payments.csv"
-MIXED_INVOICES_XLSX = SAMPLE_DATA / "demo-mixed-invoices.xlsx"
-MIXED_PAYMENTS_XLSX = SAMPLE_DATA / "demo-mixed-payments.xlsx"
+MIXED_DEMO = SAMPLE_DATA / "mixed-demo"
+MIXED_INVOICES = MIXED_DEMO / "invoices.csv"
+MIXED_PAYMENTS = MIXED_DEMO / "payments.csv"
+MIXED_INVOICES_XLSX = MIXED_DEMO / "invoices.xlsx"
+MIXED_PAYMENTS_XLSX = MIXED_DEMO / "payments.xlsx"
 EXPECTED_MIXED_COUNTS = {
     MatchStatus.MATCHED: 2,
     MatchStatus.UNMATCHED_INVOICE: 1,

@@ -10,10 +10,10 @@ exports.
 |---|---|
 | `valid-invoices.csv` | Clean invoice rows for a fully matched smoke scenario. |
 | `valid-payments.csv` | Clean payment rows for a fully matched smoke scenario. |
-| `demo-mixed-invoices.csv` | Fake invoice rows for the mixed portfolio demo. |
-| `demo-mixed-payments.csv` | Fake payment rows for the mixed portfolio demo. |
-| `demo-mixed-invoices.xlsx` | XLSX equivalent of the mixed invoice demo rows. |
-| `demo-mixed-payments.xlsx` | XLSX equivalent of the mixed payment demo rows. |
+| `mixed-demo/invoices.csv` | Fake invoice rows for the mixed portfolio demo. |
+| `mixed-demo/payments.csv` | Fake payment rows for the mixed portfolio demo. |
+| `mixed-demo/invoices.xlsx` | XLSX equivalent of the mixed invoice demo rows. |
+| `mixed-demo/payments.xlsx` | XLSX equivalent of the mixed payment demo rows. |
 | `invalid-invoices.csv` | Invalid invoice rows for validation checks. |
 | `invalid-payments.csv` | Invalid payment rows for validation checks. |
 
@@ -21,7 +21,7 @@ exports.
 
 The clean `valid-*` files demonstrate a fully matched reconciliation.
 
-The `demo-mixed-*` files demonstrate the main portfolio scenario:
+The files under `mixed-demo/` demonstrate the main portfolio scenario:
 
 - 8 invoice rows reviewed.
 - 8 payment rows reviewed.
@@ -41,8 +41,8 @@ and details CSV report content.
 Local demo reports should be written under ignored `reports/` paths:
 
 ```powershell
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports\demo-csv
+uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
 Each output directory should contain only:

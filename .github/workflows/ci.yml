@@ -42,7 +42,7 @@ jobs:
         run: uv run reconcile report --help
 
       - name: Run CSV demo
-        run: uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports/ci-csv
+        run: uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports/ci-csv
 
       - name: Run XLSX demo
-        run: uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports/ci-xlsx
+        run: uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports/ci-xlsx

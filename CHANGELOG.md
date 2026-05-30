@@ -6,6 +6,9 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Final public portfolio presentation-readiness verification for README,
+  RUNBOOK, committed demo-output snapshots, ignored local reports, and quality
+  gates.
 - Final public-repository readiness audit record.
 - Public-repo presentation polish pass for README, RUNBOOK, STATE, sample-data,
   and demo-output review.
@@ -65,6 +68,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- RUNBOOK manual commit policy now uses tool-neutral public wording while
+  preserving the manual Git workflow.
 - README now uses portfolio/demo wording in the public project description.
 - Mixed demo sample inputs now live under `sample-data/mixed-demo/` with concise
   `invoices` and `payments` filenames for the public evaluator walkthrough.

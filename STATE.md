@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 23:34 +03:00 |
+| Last updated | 2026-05-31 00:30 +03:00 |
 | Repository root | `.` |
 | Current branch | `main` |
-| Current phase | Final public-readiness audit |
+| Current phase | Final public portfolio presentation-readiness pass |
 | Overall status | Complete |
 | Quality gate status | Green |
 | Completion | 100% |
@@ -15,64 +15,68 @@
 
 ## Current Objective
 
-Perform a final public-readiness audit for the portfolio repository. Review
-public docs, sample data, tests, committed demo-output examples, ignored local
-report paths, CI smoke commands, and the required local quality gate without
-changing runtime behavior.
+Perform a final public portfolio readiness pass focused on presentation quality.
+Review README and RUNBOOK clarity, Windows PowerShell copy-paste reliability,
+committed mixed-demo output snapshots, ignored local report behavior, and the
+required local quality gate without changing reconciliation behavior.
 
 ## Confirmed Scope
 
 - In scope: `README.md`, `RUNBOOK.md`, `CHANGELOG.md`, `STATE.md`,
-  `AGENTS.md`, `pyproject.toml`, `.gitignore`, `sample-data/`, `tests/`,
-  `docs/demo-output/`, `.github/workflows/ci.yml`, documented CSV/XLSX demo
-  commands, public-facing wording, ignored generated reports, and repository
-  hygiene.
+  `.gitignore`, `sample-data/README.md`, `docs/demo-output/mixed-demo/`,
+  documented CSV/XLSX demo commands, public-facing wording, ignored generated
+  reports, and repository hygiene.
 - Out of scope: reconciliation logic changes, ingestion behavior changes,
-  report-generation behavior changes, dependency changes, tests or CI changes
-  without a concrete broken reference, file moves, deployment, paid APIs, AI
-  calls, real client data, staging, commits, pushes, resets, branch deletion,
-  and history rewrites.
+  report-generation behavior changes, dependency changes, test changes without
+  behavior changes, file moves, deployment, paid APIs, AI calls, real client
+  data, staging, commits, pushes, resets, branch deletion, and history rewrites.
 
 ## Completed In This Pass
 
 - Read `AGENTS.md` and `STATE.md` before editing.
-- Reviewed `README.md`, `RUNBOOK.md`, `CHANGELOG.md`, `REQ.md`, `DESIGN.md`,
-  `TDD.md`, `SECURITY.md`, `sample-data/README.md`, `.gitignore`,
-  `pyproject.toml`, `.github/workflows/ci.yml`, selected tests, sample-data
-  paths, and committed demo-output files.
-- Confirmed the current requested phase is a final public-readiness audit.
-- Verified the documented CSV and XLSX demo commands reference existing
-  `sample-data/mixed-demo/` input files.
-- Verified generated reports are written under ignored local `reports/` paths.
-- Verified `docs/demo-output/mixed-demo/` contains only the committed Markdown
-  and CSV example snapshot.
+- Reviewed `README.md` as the public GitHub portfolio landing page.
+- Reviewed `RUNBOOK.md` for Windows PowerShell copy-paste reliability.
+- Reviewed `CHANGELOG.md`, `REQ.md`, `DESIGN.md`, `TDD.md`, `SECURITY.md`,
+  `sample-data/README.md`, `.gitignore`, and the committed demo-output files
+  relevant to this presentation-only phase.
+- Confirmed the current requested phase is a presentation-only final public
+  portfolio readiness pass.
+- Confirmed README and RUNBOOK point to existing `sample-data/mixed-demo/`
+  inputs and `docs/demo-output/mixed-demo/` snapshots accurately.
+- Confirmed `docs/demo-output/mixed-demo/` contains only
+  `reconciliation-report.md`, `reconciliation-summary.csv`, and
+  `reconciliation-details.csv`.
+- Confirmed `.gitignore` ignores generated `reports/*` outputs while preserving
+  tracked `reports/.gitkeep`; committed `docs/demo-output/` snapshots are not
+  ignored.
+- Scanned reviewed public docs for unsupported implementation claims,
+  exaggerated deployment or production claims, paid API assumptions,
+  real-client-data claims, secrets, placeholders, and machine-specific paths.
+- Found one RUNBOOK public-presentation wording issue: the manual commit policy
+  used tool-specific wording. Reworded it generically without changing policy.
+- Found no README, demo-output, or `.gitignore` clarity issue requiring a
+  tracked presentation change.
+- Regenerated CSV and XLSX mixed-demo outputs into ignored local reports
+  folders.
 - Verified regenerated CSV and XLSX demo outputs match the committed
   `docs/demo-output/mixed-demo/` snapshot by SHA-256 hash.
-- Scanned public docs for absolute local paths; none were found.
-- Scanned public docs for placeholder filler and secret-like text. Matches were
-  policy statements or report-placeholder non-goals, not stale filler or
-  secrets.
-- Scanned public docs for deployment, paid API, AI, real-client-data, and
-  production-claim wording. Matches were non-goals or policy statements.
-- Found one public-readiness wording issue in `README.md`: a feature-quality
-  description used wording that could be read as a live-use claim. Reworded it
-  to portfolio/demo language without changing behavior.
-- Did not change tests, CI, sample data, demo-output files, or runtime code.
+- Did not change tests, runtime code, sample data, demo-output snapshots, or
+  reconciliation behavior.
 
 ## Changed In This Pass
 
 | Path | Purpose | Status |
 |---|---|---|
-| `README.md` | Replaced live-use wording with portfolio/demo wording. | Updated |
-| `CHANGELOG.md` | Recorded the README public wording cleanup. | Updated |
-| `STATE.md` | Records this audit, validation results, and known remaining issues. | Updated |
+| `RUNBOOK.md` | Reworded manual commit policy with tool-neutral public wording. | Updated |
+| `CHANGELOG.md` | Recorded the final presentation-readiness verification. | Updated |
+| `STATE.md` | Recorded this audit, validation results, and remaining risks. | Updated |
 
 ## Validation And Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | `39 passed in 0.58s` on win32 with Python 3.14.4. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 1ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.57s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
 | `uv run reconcile --help` | Pass | Printed top-level usage for `reconcile [-h] [--version] {report} ...`. |
@@ -82,8 +86,15 @@ changing runtime behavior.
 | `Get-ChildItem -Name -LiteralPath reports\demo-csv` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | SHA-256 comparison of `docs/demo-output/mixed-demo/` against regenerated CSV/XLSX reports | Pass | All three snapshot files matched the generated CSV and XLSX report outputs. |
-| `git diff --check` | Pass | No whitespace errors found; Git reported expected Windows LF/CRLF working-copy warnings for edited Markdown files. |
-| `git status --short --ignored` | Pass | Shows edited docs plus ignored local caches/generated report artifacts. |
+| `git diff --check` | Pass | No whitespace errors found. |
+
+## Hash Comparison Results
+
+| File | SHA-256 | Result |
+|---|---|---|
+| `reconciliation-report.md` | `48E1110204ACD65E03980BB80C9922321D623A3BCF5821CDF0497B7B1609B72B` | Committed snapshot, CSV output, and XLSX output match. |
+| `reconciliation-summary.csv` | `0CB876B88BB932ED1D63D2F97FB8E81E0FDB4C3D48CD0DF04D8D9C5909AE9F88` | Committed snapshot, CSV output, and XLSX output match. |
+| `reconciliation-details.csv` | `F597EFAC2BDBC9EFF1C27060D793227D743C38036D7034285BDE10DA0297D14C` | Committed snapshot, CSV output, and XLSX output match. |
 
 ## Output File Checks
 
@@ -95,22 +106,24 @@ changing runtime behavior.
 
 ## Repository Hygiene Findings
 
-- No absolute local paths were found in reviewed public docs.
-- No secrets, credentials, tokens, paid API keys, or private data were found.
-- No stale placeholder filler was found.
-- No deployment, paid API, AI feature, real-client-data, or unsupported live-use
-  claim remains in public-facing project wording.
+- No README or RUNBOOK command mismatch was found.
+- No unsupported implementation claim was found in reviewed public docs.
+- No exaggerated production, deployment, paid API, real-client-data, or live
+  client claim was found in reviewed public docs.
+- No stale placeholder filler or machine-specific absolute local path was found
+  in reviewed public docs.
 - References to deployment, production exports, real client data, paid APIs, AI
-  calls, databases, and FastAPI are policy statements or explicit non-goals.
+  calls, databases, FastAPI, and secrets remain policy statements or explicit
+  non-goals.
 - Generated local report artifacts under `reports/` are ignored by Git.
 - The committed `docs/demo-output/mixed-demo/` snapshot remains the intentional
   Markdown/CSV example snapshot.
-- No XLSX report output, deployment, secrets usage, artifact upload, or runtime
-  external service was added.
+- No XLSX report output, deployment, secrets usage, artifact upload, runtime
+  external service, or production data path was added.
 
 ## Known Issues And Deferred Work
 
-- No public-readiness blockers remain.
+- No public portfolio presentation-readiness blockers remain.
 - Running the documented demo commands regenerated ignored local report
   artifacts under `reports\demo-csv` and `reports\demo-xlsx`.
 - Pre-existing ignored local artifacts remain visible in `git status --ignored`,

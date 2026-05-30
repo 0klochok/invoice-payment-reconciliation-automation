@@ -169,8 +169,9 @@ equivalent.
 
 ## Manual Commit Policy
 
-Codex must not stage, unstage, commit, push, reset, or rewrite Git history. After
-manual review, the user may run Git commands to stage, commit, and push.
+Keep Git changes manual for this portfolio project. Do not stage, unstage,
+commit, push, reset, or rewrite Git history through automation. After manual
+review, the repository owner may run Git commands to stage, commit, and push.
 
 Before committing manually, review:
 

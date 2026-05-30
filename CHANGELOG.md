@@ -65,6 +65,7 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README now uses portfolio/demo wording in the public project description.
 - Mixed demo sample inputs now live under `sample-data/mixed-demo/` with concise
   `invoices` and `payments` filenames for the public evaluator walkthrough.
 - README now presents a concise implementation status section instead of a long

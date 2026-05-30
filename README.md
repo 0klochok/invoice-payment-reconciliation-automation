@@ -20,8 +20,8 @@ client demo.
 - Deterministic matching with explicit exception categories for human review.
 - Review-ready Markdown and CSV outputs that are easy to inspect or share.
 - Reproducible local demos using fake CSV/XLSX data and locked dependencies.
-- Test coverage and quality gates suitable for a small production-style Python
-  CLI project.
+- Test coverage and quality gates suitable for a portfolio-ready Python CLI
+  demo project.
 
 ## Evaluator Walkthrough
 

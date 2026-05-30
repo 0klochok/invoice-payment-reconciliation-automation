@@ -6,6 +6,7 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 10 final portfolio polish and release-readiness review record.
 - Phase 9 minimal GitHub Actions CI workflow for pull requests and pushes to
   `main`, using `uv sync --locked --dev` and the documented local quality gate.
 - Phase 7 generated Markdown/CSV demo-output snapshot under
@@ -55,6 +56,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, runbook, and test strategy now document
+  `uv sync --locked --dev` as the local release-readiness sync step.
 - Phase 8 records the final local release-readiness review, including clean demo
   output regeneration, ignored-artifact verification, repository hygiene review,
   and current quality-gate results.

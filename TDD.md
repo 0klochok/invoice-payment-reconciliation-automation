@@ -124,7 +124,7 @@ Phase 9 adds minimal GitHub Actions CI coverage:
 Run from the repository root:
 
 ```powershell
-uv sync
+uv sync --locked --dev
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .

@@ -31,10 +31,11 @@ client demo.
 
 ## Quickstart
 
-Use PowerShell from the repository root.
+Use PowerShell from the repository root. Install dependencies from the lockfile
+and run the local release-readiness gate:
 
 ```powershell
-uv sync
+uv sync --locked --dev
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
@@ -44,8 +45,9 @@ uv run reconcile report --help
 
 ## CI Quality Gate
 
-GitHub Actions runs the locked `uv` sync, pytest, Ruff checks, CLI help smoke
-checks, and CSV/XLSX demo commands on pull requests and pushes to `main`.
+GitHub Actions runs the same locked `uv` sync (`uv sync --locked --dev`),
+pytest, Ruff checks, CLI help smoke checks, and CSV/XLSX demo commands on pull
+requests and pushes to `main`.
 
 ## Demo Commands
 
@@ -133,6 +135,7 @@ No XLSX report output or large binary report artifact is included.
 | Phase 7 | Final portfolio/demo readiness documentation pass | Complete |
 | Phase 8 | Final local release-readiness review | Complete |
 | Phase 9 | Minimal GitHub Actions CI quality gate | Complete |
+| Phase 10 | Final portfolio polish and release-readiness review | Complete |
 
 ## Safety And Data Policy
 

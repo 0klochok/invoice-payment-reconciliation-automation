@@ -15,7 +15,7 @@ Open PowerShell and enter the repository root:
 
 ```powershell
 Set-Location -LiteralPath "C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new"
-uv sync
+uv sync --locked --dev
 ```
 
 ## Quality Gate
@@ -23,7 +23,7 @@ uv sync
 Run the default validation commands:
 
 ```powershell
-uv sync
+uv sync --locked --dev
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .

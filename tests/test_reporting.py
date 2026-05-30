@@ -30,21 +30,57 @@ def test_summary_counts_include_all_phase_2_statuses() -> None:
 
 def test_markdown_report_contains_sections_and_client_readable_labels() -> None:
     markdown = render_markdown_report(_mixed_reconciliation_result())
+    headings = [line for line in markdown.splitlines() if line.startswith("## ")]
 
-    assert "# Reconciliation Report" in markdown
-    assert "| Matched | 1 |" in markdown
-    assert "| Unmatched invoice | 1 |" in markdown
-    assert "| Unmatched payment | 1 |" in markdown
-    assert "| Amount mismatch | 1 |" in markdown
-    assert "| Currency mismatch | 1 |" in markdown
-    assert "| Ambiguous duplicate reference | 1 |" in markdown
-    assert "## Matched Invoice/Payment Pairs" in markdown
-    assert "## Unmatched Invoices" in markdown
-    assert "## Unmatched Payments" in markdown
-    assert "## Amount Mismatches" in markdown
-    assert "## Currency Mismatches" in markdown
-    assert "## Ambiguous Duplicate References" in markdown
-    assert "Duplicate payment reference" in markdown
+    assert "# Invoice Payment Reconciliation Report" in markdown
+    assert headings == [
+        "## Reconciliation Totals",
+        "## Status Summary",
+        "## Matched Records",
+        "## Invoices Missing Payments",
+        "## Payments Missing Invoices",
+        "## Amount Variances (Underpaid/Overpaid)",
+        "## Currency Conflicts",
+        "## Duplicate References Needing Review",
+    ]
+    assert "| Invoice records reviewed | 5 |" in markdown
+    assert "| Payment records reviewed | 6 |" in markdown
+    assert "| Matched invoice/payment pairs | 1 |" in markdown
+    assert "| Exception groups needing review | 5 |" in markdown
+    assert "| Matched invoice and payment | 1 |" in markdown
+    assert "| Invoice missing payment | 1 |" in markdown
+    assert "| Payment missing invoice | 1 |" in markdown
+    assert "| Payment amount differs | 1 |" in markdown
+    assert "| Payment currency differs | 1 |" in markdown
+    assert "| Duplicate reference needs review | 1 |" in markdown
+    assert "No payment found for invoice reference" in markdown
+    assert "No invoice found for payment reference" in markdown
+    assert "Underpaid by 0.01 EUR; possible partial payment" in markdown
+    assert "Invoice currency USD; payment currency EUR" in markdown
+    assert "Duplicate payment reference; review payment export duplicates" in markdown
+    assert "No records." not in markdown
+
+
+def test_markdown_report_omits_empty_exception_sections() -> None:
+    result = match_invoices_to_payments(
+        [_invoice(invoice_id="INV-ONLY-MATCH", amount="50.00", currency="USD", row=2)],
+        [
+            _payment(
+                payment_id="PAY-ONLY-MATCH",
+                payment_reference="INV-ONLY-MATCH",
+                amount="50.00",
+                currency="USD",
+                row=2,
+            )
+        ],
+    )
+
+    markdown = render_markdown_report(result)
+
+    assert "## Matched Records" in markdown
+    assert "## Invoices Missing Payments" not in markdown
+    assert "## Payments Missing Invoices" not in markdown
+    assert "No records." not in markdown
 
 
 def test_csv_reports_include_summary_and_detail_rows() -> None:
@@ -70,12 +106,19 @@ def test_csv_reports_include_summary_and_detail_rows() -> None:
     ]
     assert len(detail_rows) == 6
     assert detail_rows[0]["status"] == "matched"
-    assert detail_rows[0]["status_label"] == "Matched"
+    assert detail_rows[0]["status_label"] == "Matched invoice and payment"
     assert detail_rows[0]["reference"] == "INV-MATCH"
     assert detail_rows[0]["invoice_id"] == "INV-MATCH"
     assert detail_rows[0]["payment_id"] == "PAY-MATCH"
+    assert detail_rows[1]["reason"] == "No payment found for invoice reference"
+    assert detail_rows[2]["reason"] == "No invoice found for payment reference"
+    assert detail_rows[3]["reason"] == "Underpaid by 0.01 EUR; possible partial payment"
+    assert detail_rows[4]["reason"] == "Invoice currency USD; payment currency EUR"
     assert detail_rows[-1]["status"] == "ambiguous_reference"
-    assert detail_rows[-1]["reason"] == "Duplicate payment reference"
+    assert (
+        detail_rows[-1]["reason"]
+        == "Duplicate payment reference; review payment export duplicates"
+    )
 
 
 def test_detail_csv_ordering_is_deterministic() -> None:
@@ -105,6 +148,85 @@ def test_detail_csv_ordering_is_deterministic() -> None:
     ]
 
 
+def test_detail_csv_orders_rows_by_status_then_reference() -> None:
+    invoices = [
+        _invoice(invoice_id="INV-Z", amount="10.00", currency="USD", row=2),
+        _invoice(invoice_id="INV-A", amount="10.00", currency="USD", row=3),
+        _invoice(invoice_id="INV-ONLY-Z", amount="10.00", currency="USD", row=4),
+        _invoice(invoice_id="INV-ONLY-A", amount="10.00", currency="USD", row=5),
+    ]
+    payments = [
+        _payment(
+            payment_id="PAY-Z",
+            payment_reference="INV-Z",
+            amount="10.00",
+            currency="USD",
+            row=2,
+        ),
+        _payment(
+            payment_id="PAY-A",
+            payment_reference="INV-A",
+            amount="10.00",
+            currency="USD",
+            row=3,
+        ),
+    ]
+    rows = list(
+        csv.DictReader(
+            render_details_csv(
+                match_invoices_to_payments(invoices, payments)
+            ).splitlines()
+        )
+    )
+
+    assert [(row["status"], row["reference"]) for row in rows] == [
+        ("matched", "INV-A"),
+        ("matched", "INV-Z"),
+        ("unmatched_invoice", "INV-ONLY-A"),
+        ("unmatched_invoice", "INV-ONLY-Z"),
+    ]
+
+
+def test_amount_mismatch_reasons_identify_underpaid_and_overpaid() -> None:
+    underpaid_result = match_invoices_to_payments(
+        [_invoice(invoice_id="INV-UNDER", amount="100.00", currency="USD", row=2)],
+        [
+            _payment(
+                payment_id="PAY-UNDER",
+                payment_reference="INV-UNDER",
+                amount="75.00",
+                currency="USD",
+                row=2,
+            )
+        ],
+    )
+    overpaid_result = match_invoices_to_payments(
+        [_invoice(invoice_id="INV-OVER", amount="100.00", currency="USD", row=2)],
+        [
+            _payment(
+                payment_id="PAY-OVER",
+                payment_reference="INV-OVER",
+                amount="125.00",
+                currency="USD",
+                row=2,
+            )
+        ],
+    )
+
+    underpaid_rows = list(
+        csv.DictReader(render_details_csv(underpaid_result).splitlines())
+    )
+    overpaid_rows = list(
+        csv.DictReader(render_details_csv(overpaid_result).splitlines())
+    )
+
+    assert (
+        underpaid_rows[0]["reason"]
+        == "Underpaid by 25.00 USD; possible partial payment"
+    )
+    assert overpaid_rows[0]["reason"] == "Overpaid by 25.00 USD"
+
+
 def test_write_reports_uses_output_directory_and_does_not_mutate_inputs(
     tmp_path: Path,
 ) -> None:
@@ -123,7 +245,7 @@ def test_write_reports_uses_output_directory_and_does_not_mutate_inputs(
         tmp_path / "report-output" / "reconciliation-details.csv"
     )
     assert paths.markdown.read_text(encoding="utf-8").startswith(
-        "# Reconciliation Report"
+        "# Invoice Payment Reconciliation Report"
     )
     assert paths.summary_csv.read_text(encoding="utf-8").startswith(
         "status,status_label,count\n"

@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 |
+| Last updated | 2026-05-30 |
 | Status | Active draft |
 | Applies to | invoice-payment-reconciliation-automation-new |
 
@@ -62,6 +62,27 @@ Phase 3 adds reporting and CLI workflow tests:
 - No mutation of input record collections while rendering/writing reports.
 - CLI smoke coverage for writing reports under a pytest `tmp_path`.
 
+Phase 5 adds XLSX input and spreadsheet-demo tests:
+
+- Mixed XLSX invoice sample parseability.
+- Mixed XLSX payment sample parseability.
+- Mixed XLSX demo reconciliation status counts.
+- CSV and XLSX mixed-demo status count equivalence.
+- CLI smoke coverage for XLSX inputs under a pytest `tmp_path`.
+- Output containment coverage for XLSX-generated reports.
+
+Phase 6 adds client-presentable reporting and CLI polish tests:
+
+- Markdown report structure with reconciliation totals, status summary, sorted
+  sections, and no placeholder empty sections.
+- CSV summary and details labels for client-readable exception categories.
+- Details CSV review notes for invoices missing payments, payments missing
+  invoices, underpaid/overpaid amount variances, currency conflicts, and
+  duplicate references.
+- Deterministic report-layer ordering by status category and reference.
+- CLI success output wording for the generated Markdown, summary CSV, and
+  details CSV files.
+
 ## Future Test Layers
 
 | Layer | Purpose | Planned Location |
@@ -86,13 +107,12 @@ When CLI behavior is present, also run:
 ```powershell
 uv run reconcile --help
 uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\xlsx-demo
 ```
 
 ## Acceptance for Future Phases
 
 Future phases should add tests for:
 
-- Valid XLSX loading.
 - Mixed currency handling.
-- Excel workbook report generation outputs.
-- CLI options for future XLSX and Excel workbook workflows.
+- Excel workbook report workflows if a later phase explicitly approves them.

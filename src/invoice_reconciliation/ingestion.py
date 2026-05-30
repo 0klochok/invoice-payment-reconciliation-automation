@@ -1,13 +1,15 @@
-"""CSV ingestion, normalization, and validation for Phase 1 inputs."""
+"""Input ingestion, normalization, and validation for invoice/payment files."""
 
 from __future__ import annotations
 
 import csv
 import re
 from collections.abc import Iterator
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+
+from openpyxl import load_workbook
 
 from .models import (
     ImportDiagnostics,
@@ -42,17 +44,59 @@ INVALID_AMOUNT = "invalid_amount"
 MISSING_REQUIRED_MESSAGE = "Missing required value."
 INVALID_DATE_MESSAGE = "Expected ISO date in YYYY-MM-DD format."
 INVALID_AMOUNT_MESSAGE = "Expected decimal money amount."
+UNSUPPORTED_INPUT_MESSAGE = "Expected a .csv or .xlsx input file."
 
 _ISO_DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 
 
+def load_invoice_file(path: str | Path) -> ImportResult[InvoiceRecord]:
+    """Load, normalize, and validate invoice records from CSV or XLSX input."""
+    file_path = Path(path)
+    if file_path.suffix.lower() == ".csv":
+        return load_invoice_csv(file_path)
+    if file_path.suffix.lower() == ".xlsx":
+        return load_invoice_xlsx(file_path)
+    raise ValueError(UNSUPPORTED_INPUT_MESSAGE)
+
+
+def load_payment_file(path: str | Path) -> ImportResult[PaymentRecord]:
+    """Load, normalize, and validate payment records from CSV or XLSX input."""
+    file_path = Path(path)
+    if file_path.suffix.lower() == ".csv":
+        return load_payment_csv(file_path)
+    if file_path.suffix.lower() == ".xlsx":
+        return load_payment_xlsx(file_path)
+    raise ValueError(UNSUPPORTED_INPUT_MESSAGE)
+
+
 def load_invoice_csv(path: str | Path) -> ImportResult[InvoiceRecord]:
     """Load, normalize, and validate invoice records from a CSV file."""
+    return _load_invoices(_read_csv(path))
+
+
+def load_payment_csv(path: str | Path) -> ImportResult[PaymentRecord]:
+    """Load, normalize, and validate payment records from a CSV file."""
+    return _load_payments(_read_csv(path))
+
+
+def load_invoice_xlsx(path: str | Path) -> ImportResult[InvoiceRecord]:
+    """Load, normalize, and validate invoice records from an XLSX file."""
+    return _load_invoices(_read_xlsx(path))
+
+
+def load_payment_xlsx(path: str | Path) -> ImportResult[PaymentRecord]:
+    """Load, normalize, and validate payment records from an XLSX file."""
+    return _load_payments(_read_xlsx(path))
+
+
+def _load_invoices(
+    rows: Iterator[tuple[int, dict[str, str | None]]],
+) -> ImportResult[InvoiceRecord]:
     records: list[InvoiceRecord] = []
     errors: list[ValidationError] = []
     rows_seen = 0
 
-    for row_number, row in _read_csv(path):
+    for row_number, row in rows:
         rows_seen += 1
         record, row_errors = _parse_invoice_row(row, row_number)
         errors.extend(row_errors)
@@ -65,13 +109,14 @@ def load_invoice_csv(path: str | Path) -> ImportResult[InvoiceRecord]:
     )
 
 
-def load_payment_csv(path: str | Path) -> ImportResult[PaymentRecord]:
-    """Load, normalize, and validate payment records from a CSV file."""
+def _load_payments(
+    rows: Iterator[tuple[int, dict[str, str | None]]],
+) -> ImportResult[PaymentRecord]:
     records: list[PaymentRecord] = []
     errors: list[ValidationError] = []
     rows_seen = 0
 
-    for row_number, row in _read_csv(path):
+    for row_number, row in rows:
         rows_seen += 1
         record, row_errors = _parse_payment_row(row, row_number)
         errors.extend(row_errors)
@@ -88,6 +133,39 @@ def _read_csv(path: str | Path) -> Iterator[tuple[int, dict[str, str | None]]]:
     with Path(path).open("r", encoding="utf-8-sig", newline="") as csv_file:
         reader = csv.DictReader(csv_file)
         yield from enumerate(reader, start=2)
+
+
+def _read_xlsx(path: str | Path) -> Iterator[tuple[int, dict[str, str | None]]]:
+    workbook = load_workbook(Path(path), read_only=True, data_only=True)
+    try:
+        worksheet = workbook.active
+        rows = worksheet.iter_rows(values_only=True)
+        try:
+            headers = tuple(_cell_to_text(value) or "" for value in next(rows))
+        except StopIteration:
+            return
+
+        for row_number, values in enumerate(rows, start=2):
+            yield (
+                row_number,
+                {
+                    header: _cell_to_text(value)
+                    for header, value in zip(headers, values, strict=False)
+                    if header
+                },
+            )
+    finally:
+        workbook.close()
+
+
+def _cell_to_text(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date().isoformat()
+    if isinstance(value, date):
+        return value.isoformat()
+    return str(value)
 
 
 def _parse_invoice_row(

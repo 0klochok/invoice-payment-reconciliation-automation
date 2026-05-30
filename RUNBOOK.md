@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 |
+| Last updated | 2026-05-30 |
 | Status | Active draft |
 | Project | invoice-payment-reconciliation-automation-new |
 | Environment | Windows 11, PowerShell, uv, Python 3.12+ |
@@ -21,7 +21,7 @@ uv sync
 
 ## Validate
 
-Run the default Phase 4 quality gate:
+Run the default quality gate:
 
 ```powershell
 uv sync
@@ -36,26 +36,36 @@ CLI smoke checks:
 uv run reconcile --help
 uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports\clean
 uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\xlsx-demo
 ```
 
 Temporary-output smoke check:
 
 ```powershell
-$DemoOut = Join-Path $env:TEMP "invoice-reconciliation-phase4-demo"
+$DemoOut = Join-Path $env:TEMP "invoice-reconciliation-phase5-csv-demo"
 uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir $DemoOut
 Get-ChildItem -LiteralPath $DemoOut
 ```
 
+XLSX temporary-output smoke check:
+
+```powershell
+$XlsxDemoOut = Join-Path $env:TEMP "invoice-reconciliation-phase5-xlsx-demo"
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir $XlsxDemoOut
+Get-ChildItem -LiteralPath $XlsxDemoOut
+```
+
 ## Current CLI Behavior
 
-The `reconcile` command supports help, version output, and a local CSV report
-workflow. The report command loads invoice and payment CSV files, runs
+The `reconcile` command supports help, version output, and a local report
+workflow. The report command loads invoice and payment CSV or XLSX files, runs
 deterministic matching, and writes local Markdown and CSV reports.
 
 ```powershell
 uv run reconcile --help
 uv run reconcile --version
 uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\xlsx-demo
 ```
 
 The report command writes:
@@ -64,9 +74,16 @@ The report command writes:
 - `reports\demo\reconciliation-summary.csv`
 - `reports\demo\reconciliation-details.csv`
 
+The Markdown report includes reconciliation totals, a status summary, sorted
+matched records, and sorted exception sections. Exception rows use
+client-readable categories such as invoice missing payment, payment missing
+invoice, amount variance, currency conflict, and duplicate reference needing
+review. The details CSV uses the same status labels and includes a `reason`
+column with review notes such as underpaid/overpaid amount variance details.
+
 ## Sample Data
 
-Synthetic CSV files live in `sample-data/`:
+Synthetic CSV and XLSX files live in `sample-data/`:
 
 ```powershell
 Get-ChildItem -LiteralPath sample-data
@@ -74,10 +91,10 @@ Get-ChildItem -LiteralPath sample-data
 
 Phase 1 includes valid and invalid invoice/payment CSV samples. Phase 2 matching
 tests and the Phase 3 report command reuse the valid normalized CSV samples.
-Phase 4 adds mixed demo samples that produce matched records, unmatched
+Phase 4 adds mixed CSV demo samples that produce matched records, unmatched
 invoices, unmatched payments, amount mismatches, currency mismatches, and
-ambiguous duplicate references. XLSX sample inputs are deferred until XLSX
-support is implemented.
+ambiguous duplicate references. Phase 5 adds XLSX equivalents for the mixed demo
+inputs.
 
 ## Data Handling
 

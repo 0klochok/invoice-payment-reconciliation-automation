@@ -32,23 +32,23 @@ STATUS_ORDER = (
 )
 
 STATUS_LABELS = {
-    MatchStatus.MATCHED: "Matched",
-    MatchStatus.UNMATCHED_INVOICE: "Unmatched invoice",
-    MatchStatus.UNMATCHED_PAYMENT: "Unmatched payment",
-    MatchStatus.AMOUNT_MISMATCH: "Amount mismatch",
-    MatchStatus.CURRENCY_MISMATCH: "Currency mismatch",
-    MatchStatus.AMBIGUOUS_REFERENCE: "Ambiguous duplicate reference",
+    MatchStatus.MATCHED: "Matched invoice and payment",
+    MatchStatus.UNMATCHED_INVOICE: "Invoice missing payment",
+    MatchStatus.UNMATCHED_PAYMENT: "Payment missing invoice",
+    MatchStatus.AMOUNT_MISMATCH: "Payment amount differs",
+    MatchStatus.CURRENCY_MISMATCH: "Payment currency differs",
+    MatchStatus.AMBIGUOUS_REFERENCE: "Duplicate reference needs review",
 }
 
 AMBIGUOUS_REASON_LABELS = {
     AmbiguousReferenceReason.DUPLICATE_INVOICE_REFERENCE: (
-        "Duplicate invoice reference"
+        "Duplicate invoice reference; review invoice export duplicates"
     ),
     AmbiguousReferenceReason.DUPLICATE_PAYMENT_REFERENCE: (
-        "Duplicate payment reference"
+        "Duplicate payment reference; review payment export duplicates"
     ),
     AmbiguousReferenceReason.DUPLICATE_INVOICE_AND_PAYMENT_REFERENCE: (
-        "Duplicate invoice and payment reference"
+        "Duplicate invoice and payment reference; review both exports"
     ),
 }
 
@@ -93,14 +93,24 @@ def build_summary_counts(result: ReconciliationResult) -> dict[MatchStatus, int]
 def render_markdown_report(result: ReconciliationResult) -> str:
     """Render a deterministic client-readable Markdown report."""
     lines = [
-        "# Reconciliation Report",
+        "# Invoice Payment Reconciliation Report",
         "",
-        "## Summary",
+        "## Reconciliation Totals",
         "",
     ]
     lines.extend(
         _markdown_table(
-            ("Status", "Count"),
+            ("Metric", "Value"),
+            (
+                (label, str(value))
+                for label, value in _build_report_totals(result).items()
+            ),
+        )
+    )
+    lines.extend(["", "## Status Summary", ""])
+    lines.extend(
+        _markdown_table(
+            ("Category", "Count"),
             [
                 (STATUS_LABELS[status], str(count))
                 for status, count in build_summary_counts(result).items()
@@ -110,8 +120,8 @@ def render_markdown_report(result: ReconciliationResult) -> str:
 
     lines.extend(
         _markdown_section(
-            "Matched Invoice/Payment Pairs",
-            ("Reference", "Invoice ID", "Payment ID", "Customer", "Amount"),
+            "Matched Records",
+            ("Reference", "Invoice ID", "Payment ID", "Customer", "Matched Amount"),
             (
                 (
                     pair.reference,
@@ -120,101 +130,167 @@ def render_markdown_report(result: ReconciliationResult) -> str:
                     pair.invoice.customer_name,
                     _format_money(pair.invoice.invoice_amount),
                 )
-                for pair in result.matched_pairs
+                for pair in _sorted_matched_pairs(result.matched_pairs)
             ),
         )
     )
     lines.extend(
         _markdown_section(
-            "Unmatched Invoices",
-            ("Reference", "Invoice ID", "Customer", "Invoice Amount"),
+            "Invoices Missing Payments",
+            (
+                "Reference",
+                "Invoice ID",
+                "Customer",
+                "Invoice Amount",
+                "Review Note",
+            ),
             (
                 (
                     item.reference,
                     item.invoice.invoice_id,
                     item.invoice.customer_name,
                     _format_money(item.invoice.invoice_amount),
+                    _unmatched_invoice_note(),
                 )
-                for item in result.unmatched_invoices
+                for item in _sorted_unmatched_invoices(result.unmatched_invoices)
             ),
         )
     )
     lines.extend(
         _markdown_section(
-            "Unmatched Payments",
-            ("Reference", "Payment ID", "Customer", "Payment Amount"),
+            "Payments Missing Invoices",
+            (
+                "Reference",
+                "Payment ID",
+                "Customer",
+                "Payment Amount",
+                "Review Note",
+            ),
             (
                 (
                     item.reference,
                     item.payment.payment_id,
                     item.payment.customer_name,
                     _format_money(item.payment.payment_amount),
+                    _unmatched_payment_note(),
                 )
-                for item in result.unmatched_payments
+                for item in _sorted_unmatched_payments(result.unmatched_payments)
             ),
         )
     )
     lines.extend(
         _markdown_section(
-            "Amount Mismatches",
+            "Amount Variances (Underpaid/Overpaid)",
             (
                 "Reference",
                 "Invoice ID",
                 "Payment ID",
+                "Customer",
                 "Invoice Amount",
                 "Payment Amount",
+                "Variance",
             ),
             (
                 (
                     item.reference,
                     item.invoice.invoice_id,
                     item.payment.payment_id,
+                    item.invoice.customer_name,
                     _format_money(item.invoice.invoice_amount),
                     _format_money(item.payment.payment_amount),
+                    _amount_variance_note(item),
                 )
-                for item in result.amount_mismatches
+                for item in _sorted_amount_mismatches(result.amount_mismatches)
             ),
         )
     )
     lines.extend(
         _markdown_section(
-            "Currency Mismatches",
+            "Currency Conflicts",
             (
                 "Reference",
                 "Invoice ID",
                 "Payment ID",
+                "Customer",
                 "Invoice Amount",
                 "Payment Amount",
+                "Review Note",
             ),
             (
                 (
                     item.reference,
                     item.invoice.invoice_id,
                     item.payment.payment_id,
+                    item.invoice.customer_name,
                     _format_money(item.invoice.invoice_amount),
                     _format_money(item.payment.payment_amount),
+                    _currency_mismatch_note(item),
                 )
-                for item in result.currency_mismatches
+                for item in _sorted_currency_mismatches(result.currency_mismatches)
             ),
         )
     )
     lines.extend(
         _markdown_section(
-            "Ambiguous Duplicate References",
-            ("Reference", "Invoice IDs", "Payment IDs", "Reason"),
+            "Duplicate References Needing Review",
+            (
+                "Reference",
+                "Invoice IDs",
+                "Payment IDs",
+                "Invoice Rows",
+                "Payment Rows",
+                "Review Note",
+            ),
             (
                 (
                     item.reference,
                     _join_values(invoice.invoice_id for invoice in item.invoices),
                     _join_values(payment.payment_id for payment in item.payments),
+                    _join_values(str(invoice.source_row) for invoice in item.invoices),
+                    _join_values(str(payment.source_row) for payment in item.payments),
                     AMBIGUOUS_REASON_LABELS[item.reason],
                 )
-                for item in result.ambiguous_references
+                for item in _sorted_ambiguous_references(result.ambiguous_references)
             ),
         )
     )
 
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _build_report_totals(result: ReconciliationResult) -> dict[str, int]:
+    status_counts = build_summary_counts(result)
+    exception_groups = sum(
+        count
+        for status, count in status_counts.items()
+        if status != MatchStatus.MATCHED
+    )
+    return {
+        "Invoice records reviewed": _invoice_record_count(result),
+        "Payment records reviewed": _payment_record_count(result),
+        "Matched invoice/payment pairs": status_counts[MatchStatus.MATCHED],
+        "Exception groups needing review": exception_groups,
+    }
+
+
+def _invoice_record_count(result: ReconciliationResult) -> int:
+    return (
+        len(result.matched_pairs)
+        + len(result.unmatched_invoices)
+        + len(result.amount_mismatches)
+        + len(result.currency_mismatches)
+        + sum(len(item.invoices) for item in result.ambiguous_references)
+    )
+
+
+def _payment_record_count(result: ReconciliationResult) -> int:
+    return (
+        len(result.matched_pairs)
+        + len(result.unmatched_payments)
+        + len(result.amount_mismatches)
+        + len(result.currency_mismatches)
+        + sum(len(item.payments) for item in result.ambiguous_references)
+    )
 
 
 def render_summary_csv(result: ReconciliationResult) -> str:
@@ -256,12 +332,29 @@ def write_reconciliation_reports(
 
 def _detail_rows(result: ReconciliationResult) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    rows.extend(_matched_row(pair) for pair in result.matched_pairs)
-    rows.extend(_unmatched_invoice_row(item) for item in result.unmatched_invoices)
-    rows.extend(_unmatched_payment_row(item) for item in result.unmatched_payments)
-    rows.extend(_amount_mismatch_row(item) for item in result.amount_mismatches)
-    rows.extend(_currency_mismatch_row(item) for item in result.currency_mismatches)
-    rows.extend(_ambiguous_reference_row(item) for item in result.ambiguous_references)
+    rows.extend(
+        _matched_row(pair) for pair in _sorted_matched_pairs(result.matched_pairs)
+    )
+    rows.extend(
+        _unmatched_invoice_row(item)
+        for item in _sorted_unmatched_invoices(result.unmatched_invoices)
+    )
+    rows.extend(
+        _unmatched_payment_row(item)
+        for item in _sorted_unmatched_payments(result.unmatched_payments)
+    )
+    rows.extend(
+        _amount_mismatch_row(item)
+        for item in _sorted_amount_mismatches(result.amount_mismatches)
+    )
+    rows.extend(
+        _currency_mismatch_row(item)
+        for item in _sorted_currency_mismatches(result.currency_mismatches)
+    )
+    rows.extend(
+        _ambiguous_reference_row(item)
+        for item in _sorted_ambiguous_references(result.ambiguous_references)
+    )
     return rows
 
 
@@ -275,12 +368,14 @@ def _matched_row(item: MatchedPair) -> dict[str, str]:
 def _unmatched_invoice_row(item: UnmatchedInvoice) -> dict[str, str]:
     row = _base_detail_row(item.status, item.reference)
     _add_invoice(row, item.invoice)
+    row["reason"] = _unmatched_invoice_note()
     return row
 
 
 def _unmatched_payment_row(item: UnmatchedPayment) -> dict[str, str]:
     row = _base_detail_row(item.status, item.reference)
     _add_payment(row, item.payment)
+    row["reason"] = _unmatched_payment_note()
     return row
 
 
@@ -288,7 +383,7 @@ def _amount_mismatch_row(item: AmountMismatch) -> dict[str, str]:
     row = _base_detail_row(item.status, item.reference)
     _add_invoice(row, item.invoice)
     _add_payment(row, item.payment)
-    row["reason"] = "Invoice and payment amounts differ"
+    row["reason"] = _amount_variance_note(item)
     return row
 
 
@@ -296,7 +391,7 @@ def _currency_mismatch_row(item: CurrencyMismatch) -> dict[str, str]:
     row = _base_detail_row(item.status, item.reference)
     _add_invoice(row, item.invoice)
     _add_payment(row, item.payment)
-    row["reason"] = "Invoice and payment currencies differ"
+    row["reason"] = _currency_mismatch_note(item)
     return row
 
 
@@ -353,16 +448,133 @@ def _add_payment(row: dict[str, str], payment: PaymentRecord) -> None:
     row["payment_source_row"] = str(payment.source_row)
 
 
+def _unmatched_invoice_note() -> str:
+    return "No payment found for invoice reference"
+
+
+def _unmatched_payment_note() -> str:
+    return "No invoice found for payment reference"
+
+
+def _amount_variance_note(item: AmountMismatch) -> str:
+    invoice_amount = item.invoice.invoice_amount
+    payment_amount = item.payment.payment_amount
+    variance = payment_amount.value - invoice_amount.value
+    formatted_variance = _format_money(
+        MoneyAmount(value=abs(variance), currency=invoice_amount.currency)
+    )
+    if variance < 0:
+        return f"Underpaid by {formatted_variance}; possible partial payment"
+    return f"Overpaid by {formatted_variance}"
+
+
+def _currency_mismatch_note(item: CurrencyMismatch) -> str:
+    invoice_currency = item.invoice.invoice_amount.currency
+    payment_currency = item.payment.payment_amount.currency
+    return f"Invoice currency {invoice_currency}; payment currency {payment_currency}"
+
+
+def _sorted_matched_pairs(items: Iterable[MatchedPair]) -> list[MatchedPair]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            _text_key(item.invoice.invoice_id),
+            _text_key(item.payment.payment_id),
+            item.invoice.source_row,
+            item.payment.source_row,
+        ),
+    )
+
+
+def _sorted_unmatched_invoices(
+    items: Iterable[UnmatchedInvoice],
+) -> list[UnmatchedInvoice]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            _text_key(item.invoice.invoice_id),
+            item.invoice.source_row,
+        ),
+    )
+
+
+def _sorted_unmatched_payments(
+    items: Iterable[UnmatchedPayment],
+) -> list[UnmatchedPayment]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            _text_key(item.payment.payment_id),
+            item.payment.source_row,
+        ),
+    )
+
+
+def _sorted_amount_mismatches(
+    items: Iterable[AmountMismatch],
+) -> list[AmountMismatch]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            _text_key(item.invoice.invoice_id),
+            _text_key(item.payment.payment_id),
+            item.invoice.source_row,
+            item.payment.source_row,
+        ),
+    )
+
+
+def _sorted_currency_mismatches(
+    items: Iterable[CurrencyMismatch],
+) -> list[CurrencyMismatch]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            _text_key(item.invoice.invoice_id),
+            _text_key(item.payment.payment_id),
+            item.invoice.source_row,
+            item.payment.source_row,
+        ),
+    )
+
+
+def _sorted_ambiguous_references(
+    items: Iterable[AmbiguousReference],
+) -> list[AmbiguousReference]:
+    return sorted(
+        items,
+        key=lambda item: (
+            _text_key(item.reference),
+            tuple(
+                (_text_key(invoice.invoice_id), invoice.source_row)
+                for invoice in item.invoices
+            ),
+            tuple(
+                (_text_key(payment.payment_id), payment.source_row)
+                for payment in item.payments
+            ),
+        ),
+    )
+
+
+def _text_key(value: str) -> tuple[str, str]:
+    return (value.casefold(), value)
+
+
 def _markdown_section(
     title: str,
     headers: tuple[str, ...],
     rows: Iterable[tuple[str, ...]],
 ) -> list[str]:
-    section = ["", f"## {title}", ""]
     row_list = list(rows)
     if not row_list:
-        section.append("No records.")
-        return section
+        return []
+    section = ["", f"## {title}", ""]
     section.extend(_markdown_table(headers, row_list))
     return section
 

@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "CLI-first invoice and payment reconciliation automation demo."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "openpyxl>=3.1.5",
+]
 
 [project.scripts]
 reconcile = "invoice_reconciliation.cli:main"

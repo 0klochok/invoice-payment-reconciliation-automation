@@ -44,10 +44,11 @@ def test_cli_report_smoke_writes_reports(tmp_path: Path, capsys) -> None:
     captured = capsys.readouterr()
     assert exit_code == 0
     assert captured.err == ""
-    assert "Markdown report:" in captured.out
+    assert "Report files written:" in captured.out
+    assert "- Markdown:" in captured.out
     assert (out_dir / "reconciliation-report.md").exists()
     assert (out_dir / "reconciliation-summary.csv").exists()
     assert (out_dir / "reconciliation-details.csv").exists()
-    assert "| Matched | 3 |" in (out_dir / "reconciliation-report.md").read_text(
-        encoding="utf-8"
-    )
+    markdown = (out_dir / "reconciliation-report.md").read_text(encoding="utf-8")
+    assert "| Matched invoice/payment pairs | 3 |" in markdown
+    assert "| Matched invoice and payment | 3 |" in markdown

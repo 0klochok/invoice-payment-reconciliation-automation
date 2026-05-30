@@ -6,6 +6,15 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 6 report polish tests for Markdown structure, omitted empty sections,
+  deterministic status/reference ordering, underpaid/overpaid amount variance
+  notes, and CLI success output.
+- Phase 5 XLSX input support for invoice and payment files using `openpyxl`.
+- Phase 5 mixed synthetic XLSX demo files equivalent to the deterministic mixed
+  CSV demo scenario.
+- Phase 5 XLSX sample-data and CLI smoke tests for parseability, expected
+  mixed-demo status counts, CSV/XLSX record and count equivalence, and output
+  containment.
 - Phase 4 mixed synthetic demo CSV files covering matched records, unmatched
   invoices, unmatched payments, amount mismatches, currency mismatches, and
   ambiguous duplicate references.
@@ -41,6 +50,17 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- Markdown reports now include reconciliation totals, clearer status labels,
+  sorted detail sections, and exception review notes.
+- Summary and details CSV reports now use clearer exception labels and detail
+  reasons for unmatched, amount variance, currency conflict, and duplicate
+  reference rows.
+- `reconcile report` success output now groups the generated Markdown and CSV
+  file paths under a concise `Report files written:` heading.
+- CLI report input help now accepts CSV or XLSX invoice and payment files while
+  preserving Markdown/CSV report output behavior.
+- README, runbook, and sample-data notes now include concise Phase 5 XLSX demo
+  commands.
 - README, runbook, and sample-data notes now include a concise Phase 4 mixed
   demo walkthrough.
 - CLI help text no longer names a completed phase in the top-level description.
@@ -65,6 +85,5 @@ All notable project changes are recorded here.
 
 ### Known Issues
 
-- XLSX loading and Excel workbook report generation are not implemented yet.
 - Fuzzy matching and many-to-one payment allocation are intentionally not
   implemented.

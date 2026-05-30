@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 |
+| Last updated | 2026-05-30 |
 | Status | Active draft |
 | Scope | CLI-first local invoice and payment reconciliation automation |
 
@@ -15,10 +15,12 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 3 builds on the ingestion and matching layers with deterministic local
-Markdown and CSV report generation. It keeps the workflow CSV-only and does not
-implement fuzzy matching, XLSX loading, Excel workbook output, databases, web
-APIs, or external services.
+Phase 6 builds on the ingestion, matching, and reporting layers with
+client-presentable report polish. The workflow remains CLI-first and
+local-demo-first: CSV and XLSX inputs are parsed locally, deterministic matching
+is unchanged, and report outputs remain Markdown and CSV. It does not implement
+Excel workbook report output, fuzzy matching, databases, web APIs, or external
+services.
 
 ## Architecture Summary
 
@@ -53,6 +55,10 @@ part of the MVP.
 |   |-- README.md
 |   |-- invalid-invoices.csv
 |   |-- invalid-payments.csv
+|   |-- demo-mixed-invoices.csv
+|   |-- demo-mixed-invoices.xlsx
+|   |-- demo-mixed-payments.csv
+|   |-- demo-mixed-payments.xlsx
 |   |-- valid-invoices.csv
 |   `-- valid-payments.csv
 |-- reports/
@@ -68,28 +74,30 @@ part of the MVP.
 
 | Component | Responsibility | Status |
 |---|---|---|
-| CLI | Parse command-line options and orchestrate the CSV-to-report workflow. | CSV report command implemented |
-| Readers | Load invoice and payment files from CSV/XLSX. | CSV implemented; XLSX planned |
+| CLI | Parse command-line options and orchestrate the local input-to-report workflow. | CSV/XLSX input report command implemented |
+| Readers | Load invoice and payment files from CSV/XLSX. | CSV and XLSX implemented |
 | Schemas/models | Represent validated invoice and payment records. | Implemented for Phase 1 inputs |
 | Validators | Capture structured row-level validation errors. | Basic row validation implemented |
 | Normalizers | Normalize names, emails, and comparable fields. | Whitespace/currency implemented; email planned |
 | Matching engine | Match payments to invoices and classify exceptions. | Implemented for deterministic one-to-one Phase 2 rules |
-| Report writers | Write local Markdown and CSV outputs from matching results. | Markdown/CSV implemented; Excel planned |
+| Report writers | Write local Markdown and CSV outputs from matching results. | Markdown/CSV implemented with polished exception labels and sorted detail rows |
 
 ## Data Flow
 
-End-to-end planned flow, with Phase 1 covering steps 2-4 for CSV only, Phase 2
-covering step 5 for normalized in-memory records, and Phase 3 covering Markdown
-and CSV outputs in step 6:
+End-to-end flow, with Phase 1 covering steps 2-4 for CSV, Phase 2 covering step
+5 for normalized in-memory records, Phase 3 covering Markdown and CSV outputs in
+step 6, Phase 5 extending step 2 to XLSX inputs, and Phase 6 polishing the
+report presentation in step 6:
 
 1. User runs `reconcile` with invoice and payment file paths.
-2. Readers load CSV rows. XLSX loading is deferred.
+2. Readers load CSV or XLSX rows.
 3. Validators convert valid rows to internal records and collect invalid rows.
 4. Normalizers trim whitespace, uppercase currencies, parse dates, and parse
    decimal amounts.
 5. Matching engine categorizes exact matches and deterministic exceptions.
 6. Report writers generate deterministic Markdown and CSV files in a local
-   output directory.
+   output directory with concise totals, status summaries, sorted detail rows,
+   and review notes for exception categories.
 
 ## Phase 0 Decisions
 
@@ -106,10 +114,10 @@ and CSV outputs in step 6:
 | ADR-009 | Prioritize currency mismatch before amount mismatch. | Prevents comparing amounts as equivalent when currencies differ. |
 | ADR-010 | Generate Markdown and CSV reports before Excel workbooks. | Provides useful local review artifacts without adding runtime dependencies in Phase 3. |
 | ADR-011 | Keep report content timestamp-free. | Preserves deterministic report snapshots and stable tests. |
+| ADR-012 | Use `openpyxl` for XLSX input parsing. | XLSX files are zipped XML workbooks; `openpyxl` is a minimal standard Python dependency for local spreadsheet reading and avoids fragile custom parsing. |
+| ADR-013 | Sort report detail rows by status category and reference in the reporting layer. | Improves client-demo readability without changing matching semantics or input parsing behavior. |
+| ADR-014 | Omit empty Markdown detail sections. | Keeps clean and mixed demo reports concise without placeholder filler. |
 
 ## Known Limitations
 
-- CLI report orchestration supports CSV inputs only.
-- XLSX loading is not implemented yet.
 - Fuzzy matching is not implemented.
-- Excel workbook report generation is not implemented yet.

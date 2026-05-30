@@ -1,0 +1,9 @@
+status,status_label,reference,invoice_id,payment_id,customer_name,invoice_amount,payment_amount,invoice_source_row,payment_source_row,reason
+matched,Matched invoice and payment,INV-2001,INV-2001,PAY-7001,Apex Office Supplies,100.00 USD,100.00 USD,2,2,
+matched,Matched invoice and payment,INV-2002,INV-2002,PAY-7002,Beacon Field Services,250.00 EUR,250.00 EUR,3,3,
+unmatched_invoice,Invoice missing payment,INV-2003,INV-2003,,Cascade Design Co,325.50 USD,,4,,No payment found for invoice reference
+unmatched_payment,Payment missing invoice,INV-2999,,PAY-ONLY,Lumen Event Rentals,,90.00 USD,,9,No invoice found for payment reference
+amount_mismatch,Payment amount differs,INV-2004,INV-2004,PAY-7004,Delta Logistics,480.00 USD,475.00 USD,5,4,Underpaid by 5.00 USD; possible partial payment
+currency_mismatch,Payment currency differs,INV-2005,INV-2005,PAY-7005,Evergreen Consulting,600.00 USD,600.00 EUR,6,5,Invoice currency USD; payment currency EUR
+ambiguous_reference,Duplicate reference needs review,INV-DUP-INV,INV-DUP-INV,PAY-DUP-INV,Juniper Analytics,200.00 USD,200.00 USD,8; 9,8,Duplicate invoice reference; review invoice export duplicates
+ambiguous_reference,Duplicate reference needs review,INV-DUP-PAY,INV-DUP-PAY,PAY-DUP-PAY-1; PAY-DUP-PAY-2,Harbor Print Shop,150.00 USD,150.00 USD,7,6; 7,Duplicate payment reference; review payment export duplicates

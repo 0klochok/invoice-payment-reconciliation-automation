@@ -4,87 +4,102 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 18:34 +03:00 |
+| Last updated | 2026-05-30 17:57 +03:00 |
 | Repository path | `C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new` |
 | Current branch | `main` |
-| Current phase | Phase 4 - Sample data coverage and client-demo readiness |
+| Current phase | Phase 6 - Client-presentable exception reporting and CLI demo polish |
 | Overall status | On track |
-| Quality gate status | Green |
+| Quality gate status | Green after fixing interim test and format issues |
 | Completion | 100% |
 | Main blocker | None |
 
 ## Current Objective
 
-Improve fake sample data coverage and client-demo readiness while preserving the
-existing local CSV ingestion, deterministic matching, and Markdown/CSV reporting
-behavior. Keep the project CLI-first, local-demo-first, deterministic, and free
-of external services, paid APIs, AI/ML, web APIs, databases, deployment, and real
-client data.
+Improve Markdown, summary CSV, details CSV, and CLI demo output so the local
+portfolio demo is clearer for reviewers and clients, without changing core
+reconciliation semantics, ingestion behavior, dependencies, or report file
+types.
 
-## Confirmed Phase 4 Scope
+## Confirmed Phase 6 Scope
 
-- Mixed fake CSV samples under `sample-data/` are in scope.
-- Tests for sample parseability, expected demo status counts, CLI smoke behavior,
-  and output containment are in scope.
-- README, runbook, sample-data notes, changelog, and state updates are in scope.
-- A separate `reconcile demo` command is not necessary because
-  `reconcile report` already supports the deterministic local demo workflow.
-- XLSX loading, Excel workbook output, fuzzy matching, partial allocation,
-  databases, web APIs, deployment, AI calls, paid APIs, and real client data are
-  out of scope.
+- Markdown, summary CSV, and details CSV report presentation is in scope.
+- CLI success output wording for the local report command is in scope.
+- Tests that lock report structure, exception labels, review notes, and
+  deterministic ordering are in scope.
+- README, RUNBOOK, sample-data notes, requirements, design, test strategy,
+  changelog, and this state file may be updated to reflect current behavior.
+- Existing CSV and XLSX input behavior must remain intact.
+- Markdown, summary CSV, and details CSV must remain the only report outputs.
+- XLSX workbook report output, web apps, FastAPI, databases, deployment, AI
+  features, paid APIs, new dependencies, and matching behavior changes are out
+  of scope.
 
-## Completed in Phase 4
+## Completed in This Phase
 
-- Added mixed synthetic invoice and payment CSV samples for portfolio demos.
-- Covered these reconciliation outcomes in one deterministic local scenario:
-  - 2 matched invoice/payment pairs
-  - 1 unmatched invoice
-  - 1 unmatched payment
-  - 1 amount mismatch
-  - 1 currency mismatch
-  - 2 ambiguous duplicate references
-- Added parseability and expected-count tests for the mixed sample files.
-- Added a CLI smoke test that writes mixed-demo reports under a pytest
-  `tmp_path`.
-- Added a containment test proving generated report files stay under the
-  requested output directory.
-- Updated CLI help text so the top-level description no longer references a
-  completed phase number.
-- Updated README, RUNBOOK, sample-data notes, and CHANGELOG for the Phase 4 demo
-  workflow.
-- Preserved Phase 1 normalization, Phase 2 matching, and Phase 3 reporting
-  behavior.
+- Updated Markdown report title, totals, status summary, and section titles for
+  clearer client-demo presentation.
+- Added concise reconciliation totals for invoice records reviewed, payment
+  records reviewed, matched pairs, and exception groups needing review.
+- Replaced generic exception labels with clearer categories:
+  invoice missing payment, payment missing invoice, payment amount differs,
+  payment currency differs, and duplicate reference needs review.
+- Added review notes for unmatched invoices, unmatched payments, amount
+  variances, currency conflicts, and duplicate references.
+- Rendered underpaid and overpaid amount variance notes without changing the
+  underlying `amount_mismatch` status.
+- Sorted report detail rows by status category and reference in the reporting
+  layer.
+- Omitted empty Markdown detail sections instead of writing placeholder rows.
+- Updated `reconcile report` success output to group generated file paths under
+  `Report files written:`.
+- Preserved CSV/XLSX input behavior, matching semantics, and Markdown/CSV-only
+  report output.
 
-## Changed Files
+## Changed in This Phase
 
 | Path | Purpose | Status |
 |---|---|---|
-| `sample-data/demo-mixed-invoices.csv` | Fake invoice rows for mixed portfolio demo coverage. | Created |
-| `sample-data/demo-mixed-payments.csv` | Fake payment rows for mixed portfolio demo coverage. | Created |
-| `tests/test_sample_data.py` | Added Phase 4 parseability, expected counts, CLI smoke, and output-containment tests. | Created |
-| `src/invoice_reconciliation/cli.py` | Removed stale phase-specific wording from top-level CLI help. | Updated |
-| `tests/test_cli.py` | Updated CLI help assertion for the revised description. | Updated |
-| `README.md` | Added Phase 4 status, mixed-demo walkthrough, sample list, and roadmap update. | Updated |
-| `RUNBOOK.md` | Added Phase 4 validation and exact mixed-demo smoke commands. | Updated |
-| `sample-data/README.md` | Documented clean and mixed synthetic sample scenarios. | Updated |
-| `CHANGELOG.md` | Recorded Phase 4 demo sample and test additions. | Updated |
-| `STATE.md` | Recorded Phase 4 status and validation results. | Updated |
+| `src/invoice_reconciliation/reporting.py` | Adds report totals, clearer labels, exception review notes, status/reference sorting, underpaid/overpaid notes, and omitted empty sections. | Updated |
+| `src/invoice_reconciliation/cli.py` | Polishes report command success output. | Updated |
+| `tests/test_reporting.py` | Locks Markdown structure, omitted empty sections, details CSV ordering, and exception review notes. | Updated |
+| `tests/test_cli.py` | Updates CLI smoke expectations for polished success output and report labels. | Updated |
+| `tests/test_sample_data.py` | Updates sample CLI smoke expectations for polished success output. | Updated |
+| `README.md` | Describes current CSV/XLSX input support and polished Markdown/CSV report outputs. | Updated |
+| `RUNBOOK.md` | Documents current report output structure and demo interpretation. | Updated |
+| `sample-data/README.md` | Describes the mixed demo scenario with polished exception categories. | Updated |
+| `REQ.md` | Adds Phase 6 requirements and acceptance criteria. | Updated |
+| `DESIGN.md` | Records Phase 6 report presentation decisions. | Updated |
+| `TDD.md` | Records Phase 6 test coverage. | Updated |
+| `CHANGELOG.md` | Records Phase 6 added tests and changed reporting/CLI behavior. | Updated |
+| `STATE.md` | Records this phase scope, validation, and known issues. | Updated |
 
 ## Validation and Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync` | Pass | `Resolved 8 packages in 3ms`; `Checked 8 packages in 0.95ms` |
-| `uv run ruff format .` | Pass | `2 files reformatted, 10 files left unchanged` |
-| `uv run pytest` | Pass | `29 passed in 0.19s` |
-| `uv run ruff check .` | Pass | `All checks passed!` |
-| `uv run ruff format --check .` | Pass | `12 files already formatted` |
-| `uv run reconcile --help` | Pass | Printed usage for `reconcile [-h] [--version] {report} ...` with local Markdown/CSV report help text |
-| `uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir C:\Users\Санька\AppData\Local\Temp\invoice-reconciliation-phase4-smoke` | Pass | Wrote Markdown, summary CSV, and details CSV under the requested temp directory |
+| `uv run pytest tests\test_reporting.py tests\test_cli.py tests\test_sample_data.py` | Failed, then passed | Initial run failed on one stale `Matched` label assertion; after updating the assertion, rerun passed with `22 passed in 0.50s`. |
+| `uv sync` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
+| `uv run pytest` | Pass | Final run passed with `39 passed in 0.52s`. |
+| `uv run ruff check .` | Failed, then passed | Initial run failed on one long line in `tests\test_reporting.py`; after fixing and formatting, rerun passed with `All checks passed!`. |
+| `uv run ruff format --check .` | Failed, then passed | Initial run reported `tests\test_reporting.py` would be reformatted; after `uv run ruff format tests\test_reporting.py`, rerun passed with `12 files already formatted`. |
+| `uv run reconcile --help` | Pass | Printed usage for `reconcile [-h] [--version] {report} ...` with Markdown/CSV report wording and CSV/XLSX input wording. |
+| `uv run reconcile report --invoices sample-data\demo-mixed-invoices.csv --payments sample-data\demo-mixed-payments.csv --out-dir reports\codex-phase6-csv-demo` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
+| `uv run reconcile report --invoices sample-data\demo-mixed-invoices.xlsx --payments sample-data\demo-mixed-payments.xlsx --out-dir reports\codex-phase6-xlsx-demo` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
+| `Get-ChildItem -Name -LiteralPath reports\codex-phase6-csv-demo` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
+| `Get-ChildItem -Name -LiteralPath reports\codex-phase6-xlsx-demo` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
+| `Get-FileHash -Algorithm SHA256 -LiteralPath ...` | Pass | CSV and XLSX mixed demo outputs had matching hashes for Markdown, summary CSV, and details CSV. |
 
-## Smoke Output Summary
+## Smoke Output Equivalence
 
-The temporary Phase 4 smoke summary produced:
+The CSV and XLSX mixed demo commands produced identical report content:
+
+| Output | SHA-256 |
+|---|---|
+| `reconciliation-report.md` | `48E1110204ACD65E03980BB80C9922321D623A3BCF5821CDF0497B7B1609B72B` |
+| `reconciliation-summary.csv` | `0CB876B88BB932ED1D63D2F97FB8E81E0FDB4C3D48CD0DF04D8D9C5909AE9F88` |
+| `reconciliation-details.csv` | `F597EFAC2BDBC9EFF1C27060D793227D743C38036D7034285BDE10DA0297D14C` |
+
+The mixed demo status counts remain unchanged:
 
 | Status | Count |
 |---|---:|
@@ -97,20 +112,23 @@ The temporary Phase 4 smoke summary produced:
 
 ## Known Issues and Deferred Work
 
-- XLSX loading is intentionally not implemented in Phase 4.
-- Excel workbook report generation is intentionally not implemented in Phase 4.
-- A separate `reconcile demo` command was not added because the existing
-  `reconcile report` workflow is sufficient for local demos.
+- No known Phase 6 issues remain.
+- Generated smoke-test files were written under
+  `reports\codex-report-polish-current`, `reports\codex-report-polish-updated`,
+  `reports\codex-phase6-csv-demo`, and `reports\codex-phase6-xlsx-demo`;
+  generated reports are local artifacts and ignored by Git.
+- The repository had pre-existing staged Phase 5 changes before this phase
+  started; Codex did not stage, unstage, commit, push, reset, or rewrite Git
+  history.
+- Excel workbook report output remains deferred until a later phase explicitly
+  approves it.
 - Fuzzy matching, partial payment allocation, overpayment/underpayment policy
-  beyond one-to-one mismatch classification, and many-to-one matching remain
-  deferred.
-- Generated smoke-test files were written to
-  `C:\Users\Санька\AppData\Local\Temp\invoice-reconciliation-phase4-smoke`, not
-  staged or committed.
-- No database, web API, deployment, paid API, AI call, external service, real
-  client data, commit, push, or Git staging was added.
+  beyond report notes for one-to-one amount mismatches, and many-to-one matching
+  remain deferred.
+- No FastAPI, database, web UI, AI/ML, paid API, external service, deployment,
+  real client data, commit, push, or Git staging was added.
 
-## Next Recommended Phase
+## Next Step
 
-Phase 5: add XLSX input support and Excel workbook report output while keeping
-the CLI local, deterministic, and synthetic-data-only.
+Manual validation of the Phase 6 report polish. No commit or push has been
+performed.

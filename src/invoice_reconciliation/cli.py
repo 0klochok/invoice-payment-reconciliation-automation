@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from invoice_reconciliation import __version__
-from invoice_reconciliation.ingestion import load_invoice_csv, load_payment_csv
+from invoice_reconciliation.ingestion import load_invoice_file, load_payment_file
 from invoice_reconciliation.matching import match_invoices_to_payments
 from invoice_reconciliation.models import ImportDiagnostics
 from invoice_reconciliation.reporting import write_reconciliation_reports
@@ -20,7 +20,7 @@ def build_parser() -> argparse.ArgumentParser:
         description=(
             "Invoice and payment reconciliation automation. "
             "Generates local Markdown and CSV reconciliation reports from "
-            "validated CSV inputs."
+            "validated CSV or XLSX inputs."
         ),
     )
     parser.add_argument(
@@ -34,21 +34,21 @@ def build_parser() -> argparse.ArgumentParser:
         "report",
         help="generate local Markdown and CSV reconciliation reports",
         description=(
-            "Load invoice and payment CSV files, run deterministic matching, "
-            "and write local Markdown and CSV reports."
+            "Load invoice and payment CSV or XLSX files, run deterministic "
+            "matching, and write local Markdown and CSV reports."
         ),
     )
     report_parser.add_argument(
         "--invoices",
         required=True,
         type=Path,
-        help="path to the invoice CSV input",
+        help="path to the invoice CSV or XLSX input",
     )
     report_parser.add_argument(
         "--payments",
         required=True,
         type=Path,
-        help="path to the payment CSV input",
+        help="path to the payment CSV or XLSX input",
     )
     report_parser.add_argument(
         "--out-dir",
@@ -69,8 +69,12 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _run_report_command(invoices_path: Path, payments_path: Path, out_dir: Path) -> int:
-    invoice_import = load_invoice_csv(invoices_path)
-    payment_import = load_payment_csv(payments_path)
+    try:
+        invoice_import = load_invoice_file(invoices_path)
+        payment_import = load_payment_file(payments_path)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
     if invoice_import.diagnostics.errors or payment_import.diagnostics.errors:
         _print_import_errors(invoice_import.diagnostics)
@@ -79,9 +83,10 @@ def _run_report_command(invoices_path: Path, payments_path: Path, out_dir: Path)
 
     result = match_invoices_to_payments(invoice_import.records, payment_import.records)
     paths = write_reconciliation_reports(result, out_dir)
-    print(f"Markdown report: {paths.markdown}")
-    print(f"Summary CSV: {paths.summary_csv}")
-    print(f"Details CSV: {paths.details_csv}")
+    print("Report files written:")
+    print(f"- Markdown: {paths.markdown}")
+    print(f"- Summary CSV: {paths.summary_csv}")
+    print(f"- Details CSV: {paths.details_csv}")
     return 0
 
 

@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-29 |
+| Last updated | 2026-05-30 |
 | Status | Active draft |
 | Project | invoice-payment-reconciliation-automation-new |
 | Project type | Portfolio/demo automation |
@@ -24,13 +24,13 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | ID | Requirement | Priority | Status |
 |---|---|---|---|
 | FR-001 | Provide a CLI entry point named `reconcile`. | P0 | Phase 0 scaffolded |
-| FR-002 | Load invoice and payment inputs from CSV and XLSX files. | P0 | CSV implemented in Phase 1; XLSX planned |
+| FR-002 | Load invoice and payment inputs from CSV and XLSX files. | P0 | Implemented |
 | FR-003 | Validate required fields, dates, amounts, and currency consistency. | P0 | Basic row validation implemented in Phase 1 |
 | FR-004 | Normalize customer name and email fields deterministically. | P0 | Customer name whitespace implemented in Phase 1; email planned |
 | FR-005 | Capture invalid rows with row number, source, field, error code, and message. | P0 | Implemented in Phase 1 |
 | FR-006 | Match payments to invoices using deterministic local rules. | P0 | Implemented in Phase 2 |
-| FR-007 | Categorize reconciliation exceptions for review. | P0 | Implemented in Phase 2 |
-| FR-008 | Generate Excel and Markdown reconciliation reports. | P0 | Markdown/CSV implemented in Phase 3; Excel planned |
+| FR-007 | Categorize reconciliation exceptions for review. | P0 | Implemented in Phase 2; labels polished in Phase 6 |
+| FR-008 | Generate Markdown and CSV reconciliation reports. | P0 | Implemented in Phase 3; presentation polished in Phase 6 |
 | FR-009 | Include realistic fake sample data for local demos. | P0 | CSV samples added in Phase 1 |
 
 ## Phase 0 Requirements
@@ -74,11 +74,30 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P3-004 | Preserve deterministic ordering and avoid mutating input records. | Tests cover stable CSV ordering and unchanged input record collections. | Implemented |
 | P3-005 | Keep XLSX, Excel workbook output, fuzzy matching, databases, web APIs, and external services out of scope. | No future-phase behavior is added. | Implemented |
 
+## Phase 5 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P5-001 | Load invoice XLSX files through the same normalization and validation rules as CSV files. | `load_invoice_xlsx` returns validated records and structured diagnostics. | Implemented |
+| P5-002 | Load payment XLSX files through the same normalization and validation rules as CSV files. | `load_payment_xlsx` returns validated records and structured diagnostics. | Implemented |
+| P5-003 | Preserve existing CSV input behavior and report outputs. | Existing CSV tests and CSV CLI smoke commands continue to pass. | Implemented |
+| P5-004 | Add mixed synthetic XLSX sample files equivalent to the deterministic mixed CSV demo. | Mixed CSV and XLSX sample inputs produce equivalent status counts. | Implemented |
+| P5-005 | Keep Excel workbook report output, fuzzy matching, databases, web APIs, and external services out of scope. | CLI stays deterministic and local-demo-first with Markdown/CSV report outputs. | Implemented |
+
+## Phase 6 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P6-001 | Improve Markdown report clarity for portfolio/client demos without changing matching semantics. | Markdown includes concise totals, clearer status summary labels, sorted detail sections, and no empty placeholder sections. | Implemented |
+| P6-002 | Improve exception detail readability for unmatched, underpaid/overpaid, currency conflict, and duplicate-reference cases. | Markdown and details CSV include client-readable review notes while preserving stable status values. | Implemented |
+| P6-003 | Preserve Markdown, summary CSV, and details CSV as the only report outputs. | CLI writes only `reconciliation-report.md`, `reconciliation-summary.csv`, and `reconciliation-details.csv`. | Implemented |
+| P6-004 | Keep CSV and XLSX input behavior unchanged. | Existing CSV/XLSX ingestion and equivalence tests continue to pass. | Implemented |
+| P6-005 | Keep Excel workbook output, web apps, databases, deployment, AI features, and matching changes out of scope. | No future-phase components or dependencies are added. | Implemented |
+
 ## Out of Scope
 
 - Fuzzy matching and probabilistic matching.
-- XLSX file readers.
-- Excel workbook report generation.
+- Excel workbook report generation unless a later phase explicitly approves it.
 - FastAPI or any web service.
 - Database or persistence layer.
 - GitHub Actions, deployment, or hosted automation.
@@ -99,10 +118,12 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | AC-009 | P3-001 | Phase 2 reconciliation results exist | Markdown reporting is called | Summary and detail sections are rendered deterministically | Automated |
 | AC-010 | P3-002 | Phase 2 reconciliation results exist | CSV reporting is called | Summary and detail CSV rows include all Phase 2 statuses in stable order | Automated |
 | AC-011 | P3-003 | Valid sample CSV inputs exist | `uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports` is run | Markdown and CSV report files are written locally | Smoke |
+| AC-012 | P5-004 | Mixed sample CSV and XLSX inputs exist | Reconciliation is run for both formats | Status counts and Markdown/CSV report outputs are equivalent, and report files stay under the requested output directory | Automated/smoke |
+| AC-013 | P6-001 | Mixed sample inputs exist | Reconciliation report generation is run | Markdown and CSV outputs use clear labels, review notes, and deterministic status/reference ordering without XLSX report output | Automated/smoke |
 
 ## Data Policy
 
 - Only synthetic demo data may be committed.
 - Real client files, production exports, secrets, credentials, and private data
   are forbidden.
-- Sample files will be added in a later phase.
+- Sample files must remain synthetic and demo-only.

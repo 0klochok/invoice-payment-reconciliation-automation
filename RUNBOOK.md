@@ -84,6 +84,17 @@ Get-FileHash -Algorithm SHA256 -LiteralPath reports\demo-csv\reconciliation-deta
 
 The matching hashes should be identical for each corresponding file.
 
+## Cleanup
+
+Remove local generated demo outputs when you want to rerun the walkthrough from
+clean output directories:
+
+```powershell
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue -LiteralPath reports\demo-csv, reports\demo-xlsx
+```
+
+This removes ignored local artifacts only. Keep `reports\.gitkeep` in place.
+
 ## Current CLI Behavior
 
 The `reconcile` command supports help, version output, and a local report

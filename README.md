@@ -13,6 +13,27 @@ This project demonstrates a local automation that turns fake invoice and payment
 exports into deterministic reconciliation outputs suitable for a portfolio or
 client demo.
 
+## What This Demonstrates
+
+- Business automation for a common back-office reconciliation workflow.
+- Input validation and normalization before reconciliation logic runs.
+- Deterministic matching with explicit exception categories for human review.
+- Review-ready Markdown and CSV outputs that are easy to inspect or share.
+- Reproducible local demos using fake CSV/XLSX data and locked dependencies.
+- Test coverage and quality gates suitable for a small production-style Python
+  CLI project.
+
+## Evaluator Walkthrough
+
+1. Run the Quickstart commands to install from the lockfile and verify tests,
+   linting, formatting, and CLI help.
+2. Run the CSV demo command and inspect `reports\demo-csv`.
+3. Run the XLSX demo command and inspect `reports\demo-xlsx`.
+4. Confirm both demo directories contain only `reconciliation-report.md`,
+   `reconciliation-summary.csv`, and `reconciliation-details.csv`.
+5. Compare the generated outputs with the committed snapshot under
+   `docs/demo-output/mixed-demo/`.
+
 ## Current Features
 
 - CSV and XLSX invoice/payment input parsing.
@@ -136,6 +157,7 @@ No XLSX report output or large binary report artifact is included.
 | Phase 8 | Final local release-readiness review | Complete |
 | Phase 9 | Minimal GitHub Actions CI quality gate | Complete |
 | Phase 10 | Final portfolio polish and release-readiness review | Complete |
+| Phase 11 | Final portfolio release hardening and evaluator walkthrough | Complete |
 
 ## Safety And Data Policy
 

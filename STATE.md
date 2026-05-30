@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 20:33 +03:00 |
+| Last updated | 2026-05-30 20:49 +03:00 |
 | Repository path | `C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new` |
 | Current branch | `main` |
-| Current phase | Phase 10 - Final portfolio polish and release-readiness review |
+| Current phase | Phase 11 - Final portfolio release hardening and evaluator walkthrough |
 | Overall status | On track |
 | Quality gate status | Green |
 | Completion | 100% |
@@ -15,89 +15,93 @@
 
 ## Current Objective
 
-Complete a final portfolio polish and release-readiness review for the
-CLI-first local demo. Confirm the README, runbook, changelog, state, and
-sample/demo instructions accurately describe the current tool, local setup,
-CSV/XLSX demos, generated outputs, and quality gates.
+Complete final portfolio release hardening and evaluator walkthrough review for
+the CLI-first local demo. Confirm a fresh evaluator can install, validate, run
+CSV/XLSX demos, inspect generated outputs, clean local artifacts, and understand
+the business automation value without future-phase services or behavior changes.
 
-## Confirmed Phase 10 Scope
+## Confirmed Phase 11 Scope
 
-- Phase 10 is a documentation, demo-instruction, and validation pass over the
-  existing portfolio-ready CLI behavior.
-- In scope: README, RUNBOOK, CHANGELOG, STATE, sample/demo instructions, and
-  quality-gate documentation accuracy.
-- In scope: verifying the documented locked local gate, top-level CLI help,
-  report CLI help, and CSV/XLSX demo report commands.
-- In scope: recording Phase 10 in source-of-truth docs.
+- Phase 11 is a final documentation, demo-readiness, repository hygiene, and
+  validation pass over the existing portfolio-ready CLI behavior.
+- In scope: README evaluator walkthrough, concise portfolio value summary,
+  RUNBOOK setup/quality/demo/cleanup command accuracy, `.gitignore` review,
+  generated output verification, CHANGELOG, STATE, and validation results.
 - Out of scope: reconciliation behavior changes, matching changes, ingestion
-  changes, report-generation behavior changes, dependencies, paid APIs, AI
-  calls, real client data, secrets, deployment, cloud services, databases,
-  FastAPI, UI work, commits, pushes, staging, resets, and history rewrites.
+  changes, report-generation behavior changes, dependencies, screenshots, GIFs,
+  paid APIs, AI calls, real client data, secrets, deployment, cloud services,
+  databases, FastAPI, UI work, commits, pushes, staging, resets, and history
+  rewrites.
 
 ## Completed in This Phase
 
 - Read `AGENTS.md`, `STATE.md`, `README.md`, `RUNBOOK.md`, `CHANGELOG.md`,
   `REQ.md`, `DESIGN.md`, `TDD.md`, `SECURITY.md`, `sample-data/README.md`,
-  `pyproject.toml`, and `.github/workflows/ci.yml` before editing.
-- Confirmed `STATE.md` previously recorded Phase 9 as complete and treated the
-  user request as Phase 10.
-- Reviewed README and runbook content for portfolio readiness: business problem,
-  implemented behavior, local setup, CSV/XLSX demo commands, generated outputs,
-  quality gates, limitations, and fake-data-only policy.
-- Reviewed sample/demo instructions and confirmed the documented CSV and XLSX
-  demo commands match the actual `reconcile report` CLI.
-- Updated the local release-readiness gate documentation to use
-  `uv sync --locked --dev`.
-- Recorded Phase 10 in README, CHANGELOG, and STATE.
-- Ran the full Phase 10 local quality gate and documented CSV/XLSX demo smoke
-  commands.
+  `pyproject.toml`, `.gitignore`, and `.github/workflows/ci.yml` before editing.
+- Confirmed `STATE.md` previously recorded Phase 10 as complete and treated the
+  user request as Phase 11.
+- Reviewed README and runbook content as an external evaluator would: setup,
+  locked quality gate, CSV/XLSX demo commands, generated outputs, limitations,
+  fake-data-only policy, and local cleanup.
+- Added README sections for evaluator walkthrough and business automation value.
+- Added an explicit runbook cleanup command for ignored local demo outputs.
+- Reviewed `.gitignore` coverage for caches, virtual environments, local
+  secrets, build artifacts, coverage output, and generated `reports/` artifacts.
+- Removed ignored `reports\demo-csv` and `reports\demo-xlsx` outputs before
+  rerunning the documented demo commands from clean directories.
+- Ran the full Phase 11 local quality gate, CLI help checks, CSV/XLSX demo
+  commands, generated-output file-list checks, hash equivalence checks, and Git
+  ignore checks.
 
 ## Changed in This Phase
 
 | Path | Purpose | Status |
 |---|---|---|
-| `README.md` | Uses `uv sync --locked --dev` in the local release-readiness gate, clarifies CI mirrors the locked gate, and records Phase 10 in the roadmap. | Updated |
-| `RUNBOOK.md` | Uses `uv sync --locked --dev` for setup and the local quality gate. | Updated |
-| `TDD.md` | Uses `uv sync --locked --dev` in the required quality gate. | Updated |
-| `CHANGELOG.md` | Records Phase 10 and the locked local gate documentation update. | Updated |
-| `STATE.md` | Records Phase 10 scope, validation, changed files, and known issues. | Updated |
+| `README.md` | Adds evaluator walkthrough, portfolio value summary, and Phase 11 roadmap record. | Updated |
+| `RUNBOOK.md` | Adds cleanup commands for ignored local demo report outputs. | Updated |
+| `CHANGELOG.md` | Records Phase 11 documentation and runbook hardening. | Updated |
+| `STATE.md` | Records Phase 11 scope, changed files, validation status, and known issues. | Updated |
 
 ## Portfolio Readiness Review
 
 - README describes what the tool does, the manual reconciliation problem it
   solves, current CSV/XLSX input support, deterministic matching, exception
-  categories, local install/run commands, demo commands, generated outputs,
-  limitations, roadmap, and data policy.
+  categories, local install/run commands, evaluator walkthrough, demo commands,
+  generated outputs, limitations, roadmap, and data policy.
 - RUNBOOK describes PowerShell setup, the locked local quality gate, GitHub
-  Actions CI behavior, CSV/XLSX demos, output verification, sample data, data
-  handling, manual commit policy, and troubleshooting.
+  Actions CI behavior, CSV/XLSX demos, output verification, cleanup, sample
+  data, data handling, manual commit policy, and troubleshooting.
 - `sample-data/README.md` describes all synthetic sample files, the mixed demo
   scenario, the expected output files, and the fake-data-only boundary.
-- CHANGELOG and STATE now record Phase 10.
+- `.gitignore` ignores local caches, virtual environments, local secrets, build
+  artifacts, coverage outputs, and generated report artifacts under `reports/`
+  while keeping `reports\.gitkeep` tracked.
+- README, RUNBOOK, CHANGELOG, and STATE now record Phase 11.
 - No core reconciliation behavior change was needed.
 
 ## Validation and Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | `39 passed in 0.51s` on win32 with Python 3.14.4. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 2ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.68s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
 | `uv run reconcile --help` | Pass | Printed top-level help for `reconcile [-h] [--version] {report} ...`. |
 | `uv run reconcile report --help` | Pass | Printed report help with required `--invoices`, `--payments`, and `--out-dir` options. |
+| `Remove-Item -Recurse -Force -ErrorAction SilentlyContinue -LiteralPath reports\demo-csv, reports\demo-xlsx` | Pass | Removed ignored local demo outputs before rerunning demo commands. |
 | `uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv` | Pass | Wrote Markdown, summary CSV, and details CSV under `reports\demo-csv`. |
 | `uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx` | Pass | Wrote Markdown, summary CSV, and details CSV under `reports\demo-xlsx`. |
-| `Get-ChildItem -Name -LiteralPath reports\demo-csv` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `Get-FileHash -Algorithm SHA256 -LiteralPath reports\demo-csv\reconciliation-report.md, reports\demo-xlsx\reconciliation-report.md, reports\demo-csv\reconciliation-summary.csv, reports\demo-xlsx\reconciliation-summary.csv, reports\demo-csv\reconciliation-details.csv, reports\demo-xlsx\reconciliation-details.csv` | Pass | Corresponding CSV-input and XLSX-input report hashes matched. |
+| Demo output directory file-list verification | Pass | `reports\demo-csv` and `reports\demo-xlsx` each contained exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
+| Demo output hash verification | Pass | Committed snapshot, CSV demo, and XLSX demo hashes matched for all three generated report files. |
+| `git check-ignore -v ...` | Pass | Generated demo report files and local pytest/Ruff caches are ignored by `.gitignore`. |
 
 ## Known Issues and Deferred Work
 
-- No known Phase 10 validation issues remain.
+- No known Phase 11 validation issues remain.
 - Local validation used the current Windows `uv` environment with Python 3.14.4;
   project metadata targets Python 3.12+ and CI is configured for Python 3.12.
-- Running the documented demo commands generated local ignored report artifacts
+- Running the documented demo commands regenerated local ignored report artifacts
   under `reports\demo-csv` and `reports\demo-xlsx`.
 - The hosted GitHub Actions run cannot be validated locally; it will run after a
   workflow-triggering pull request or push.
@@ -113,6 +117,6 @@ CSV/XLSX demos, generated outputs, and quality gates.
 
 ## Next Step
 
-Manual review of the Phase 10 documentation updates and validation results. The
+Manual review of the Phase 11 documentation updates and validation results. The
 user manually validates, stages, commits, and pushes when ready. No commit or
 push has been performed.

@@ -6,6 +6,11 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 11 final portfolio release hardening and evaluator walkthrough record.
+- README evaluator walkthrough and concise business automation value summary for
+  portfolio reviewers.
+- Runbook cleanup command for removing ignored local demo report outputs before
+  rerunning the CSV/XLSX walkthrough.
 - Phase 10 final portfolio polish and release-readiness review record.
 - Phase 9 minimal GitHub Actions CI workflow for pull requests and pushes to
   `main`, using `uv sync --locked --dev` and the documented local quality gate.

@@ -62,6 +62,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- RUNBOOK setup instructions now describe entering the repository root without a
+  machine-specific absolute clone path.
 - Removed redundant tracked `.manual-validation` report snapshots; the committed
   `docs/demo-output/mixed-demo/` snapshot remains the canonical reviewer sample.
 - AGENTS quality-gate commands now match the current locked setup step,

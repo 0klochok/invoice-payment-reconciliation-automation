@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 21:23 +03:00 |
+| Last updated | 2026-05-30 21:44 +03:00 |
 | Repository path | `C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new` |
 | Current branch | `main` |
 | Current phase | Phase 12 - Final release-readiness audit |
@@ -15,12 +15,11 @@
 
 ## Current Objective
 
-Complete a final release-readiness audit for the public portfolio version of the
-CLI-first local reconciliation demo. Verify the documented setup, quality gate,
-CSV/XLSX demo commands, generated report snapshots, repository hygiene, and
-source-of-truth docs without changing runtime behavior. Remove redundant tracked
-manual-validation report snapshots so the public portfolio repo has one
-canonical committed demo-output snapshot.
+Complete a final post-release-readiness verification pass after the manual
+commit for the public portfolio version of the CLI-first local reconciliation
+demo. Verify the documented setup, quality gate, CSV/XLSX demo commands,
+generated report snapshots, ignored report behavior, repository hygiene, and
+source-of-truth docs without changing runtime behavior.
 
 ## Confirmed Phase 12 Scope
 
@@ -55,6 +54,18 @@ canonical committed demo-output snapshot.
 - Fixed a documentation mismatch in `AGENTS.md`: the release-readiness commands
   now use the current `reconcile report` command shape and current mixed sample
   file names.
+- Fixed a post-release documentation defect in `RUNBOOK.md`: setup instructions
+  now tell fresh-clone reviewers to open PowerShell in the repository root
+  instead of using this machine's absolute clone path.
+- Recorded the runbook setup cleanup in `CHANGELOG.md` and `STATE.md`.
+- Re-ran the full post-release quality gate and documented CSV/XLSX demo
+  commands after the runbook cleanup; all commands passed.
+- Verified the generated CSV and XLSX demo outputs still contain exactly the
+  three expected report files and match the committed `docs/demo-output` snapshot
+  by SHA-256 hash.
+- Verified the tracked working tree was clean after the manual commit before the
+  runbook cleanup; only ignored caches, the local virtual environment, and
+  generated report directories were present.
 - Removed redundant tracked `.manual-validation\phase6-csv` and
   `.manual-validation\phase6-xlsx` report snapshots; their content duplicated
   the canonical `docs/demo-output/mixed-demo` snapshot.
@@ -68,8 +79,9 @@ canonical committed demo-output snapshot.
 | `AGENTS.md` | Aligns quality-gate and CLI demo commands with current runtime behavior. | Updated |
 | `.gitignore` | Ignores local `.manual-validation/` scratch outputs. | Updated |
 | `README.md` | Records Phase 12 in the roadmap. | Updated |
-| `CHANGELOG.md` | Records the Phase 12 audit and AGENTS command cleanup. | Updated |
-| `STATE.md` | Records Phase 12 scope, validation, changed files, and known issues. | Updated |
+| `RUNBOOK.md` | Removes a machine-specific absolute clone path from fresh-clone setup instructions. | Updated |
+| `CHANGELOG.md` | Records the Phase 12 audit, AGENTS command cleanup, and runbook setup cleanup. | Updated |
+| `STATE.md` | Records Phase 12 scope, post-release verification, validation, changed files, and known issues. | Updated |
 | `.manual-validation\phase6-csv\*` | Removes redundant tracked report snapshots. | Deleted |
 | `.manual-validation\phase6-xlsx\*` | Removes redundant tracked report snapshots. | Deleted |
 
@@ -77,6 +89,8 @@ canonical committed demo-output snapshot.
 
 - README and RUNBOOK provide sufficient fresh-clone setup instructions for a
   Windows/PowerShell evaluator using `uv sync --locked --dev`.
+- RUNBOOK setup is fresh-clone friendly and no longer depends on this machine's
+  absolute repository path.
 - README, RUNBOOK, sample-data notes, CHANGELOG, STATE, package metadata, sample
   data, and `docs/demo-output/mixed-demo` are consistent with the current CLI
   behavior.
@@ -85,9 +99,9 @@ canonical committed demo-output snapshot.
   report outputs.
 - No misleading UI, FastAPI, database, deployment, paid API, AI-call, external
   service, real-client-data, screenshot, or GIF claims were found.
-- Generated report files under `reports/` are ignored by Git; final `git status
-  --short` showed only expected documentation, `.gitignore`, and
-  `.manual-validation` deletion changes.
+- Generated report files under `reports/` are ignored by Git; post-release
+  `git status --short --ignored` showed only expected documentation changes
+  plus ignored local caches, the virtual environment, and generated reports.
 - The only committed generated report example is now the canonical
   `docs/demo-output/mixed-demo` snapshot.
 
@@ -95,7 +109,7 @@ canonical committed demo-output snapshot.
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 5ms`; `Checked 10 packages in 5ms`. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
 | `uv run pytest` | Pass | `39 passed in 0.59s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
@@ -107,13 +121,14 @@ canonical committed demo-output snapshot.
 | Demo output directory file-list verification | Pass | `reports\demo-csv` and `reports\demo-xlsx` each contained exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | Demo output hash verification | Pass | Committed snapshot, CSV demo, and XLSX demo hashes matched for all three generated report files. |
 | `git check-ignore -v ...` | Pass | Generated demo report files and `.manual-validation/` scratch output are ignored by `.gitignore`. |
-| `Test-Path -LiteralPath .manual-validation` | Pass | Returned `False`; the local redundant snapshot directory was removed. |
-| `git status --short` | Pass | Showed only expected documentation, `.gitignore`, and `.manual-validation` deletion changes; generated report artifacts remained ignored. |
+| `git ls-files .manual-validation` | Pass | No output; no manual-validation artifacts are tracked. |
+| `git status --short --ignored` | Pass | Showed only expected `CHANGELOG.md`, `RUNBOOK.md`, and `STATE.md` documentation changes plus ignored caches, the local virtual environment, and generated report artifacts. |
 
 ## Known Issues and Deferred Work
 
 - No runtime validation issues remain.
-- Documentation was updated only to fix a command mismatch and record this audit.
+- Documentation was updated only to fix command/setup mismatches and record this
+  audit.
 - Runtime behavior, dependencies, matching rules, ingestion behavior,
   report-generation behavior, deployment, FastAPI, database, web UI, AI/ML,
   paid API, secret, real client data, artifact upload, commit, push, reset,
@@ -131,6 +146,7 @@ canonical committed demo-output snapshot.
 
 ## Next Step
 
-Manual review of the Phase 12 documentation updates and validation results. The
-user manually validates, stages, commits, and pushes when ready. No commit,
-push, staging, reset, or history rewrite has been performed.
+Manual review of the post-release verification documentation updates and
+validation results. The user manually validates, stages, commits, and pushes
+when ready. No commit, push, staging, reset, or history rewrite has been
+performed.

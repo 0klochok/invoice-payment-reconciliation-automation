@@ -11,10 +11,10 @@
 
 ## Setup
 
-Open PowerShell and enter the repository root:
+Open PowerShell in the repository root, the directory that contains
+`pyproject.toml`, and sync the locked development environment:
 
 ```powershell
-Set-Location -LiteralPath "C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new"
 uv sync --locked --dev
 ```
 

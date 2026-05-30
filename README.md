@@ -24,8 +24,8 @@ invoice and payment files into deterministic reconciliation outputs.
 
 ## Current Status
 
-Phase 3 adds deterministic local reporting on top of the ingestion and matching
-foundation:
+Phase 4 improves sample data coverage and client-demo readiness on top of the
+ingestion, matching, and reporting foundation:
 
 - Immutable invoice, payment, money amount, and import diagnostic models.
 - Dependency-free CSV loading with Python's standard library `csv` module.
@@ -38,7 +38,7 @@ foundation:
 - CSV summary and detail report generation for spreadsheet review.
 - CLI report command that loads CSV samples, runs matching, and writes local
   reports to an output directory.
-- Synthetic CSV files under `sample-data/`.
+- Synthetic CSV files under `sample-data/`, including a mixed-status demo.
 
 Excel report writing, fuzzy matching, and XLSX loading are intentionally not
 implemented yet.
@@ -53,14 +53,27 @@ uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 uv run reconcile --help
-uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
 ```
 
 The report command writes these local files:
 
-- `reports/reconciliation-report.md`
-- `reports/reconciliation-summary.csv`
-- `reports/reconciliation-details.csv`
+- `reports\demo\reconciliation-report.md`
+- `reports\demo\reconciliation-summary.csv`
+- `reports\demo\reconciliation-details.csv`
+
+## Demo Walkthrough
+
+Use the mixed demo sample when presenting the project locally:
+
+```powershell
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
+Get-Content -Raw reports\demo\reconciliation-report.md
+```
+
+The mixed demo is deterministic and uses fake data only. It produces summary
+counts for matched records, unmatched invoices, unmatched payments, amount
+mismatches, currency mismatches, and ambiguous duplicate references.
 
 ## Sample Data
 
@@ -68,6 +81,8 @@ Synthetic CSV files are available for local demos and tests:
 
 - `sample-data/valid-invoices.csv`
 - `sample-data/valid-payments.csv`
+- `sample-data/demo-mixed-invoices.csv`
+- `sample-data/demo-mixed-payments.csv`
 - `sample-data/invalid-invoices.csv`
 - `sample-data/invalid-payments.csv`
 
@@ -79,7 +94,8 @@ Synthetic CSV files are available for local demos and tests:
 | Phase 1 | Input schemas, sample data, CSV loading, normalization, validation | Complete |
 | Phase 2 | Matching engine and exception classification | Complete |
 | Phase 3 | Markdown and CSV report generation with CLI orchestration | Complete |
-| Phase 4 | XLSX input and Excel workbook report support | Planned |
+| Phase 4 | Demo sample coverage and client-demo readiness | Complete |
+| Phase 5 | XLSX input and Excel workbook report support | Planned |
 
 ## Safety and Data Policy
 

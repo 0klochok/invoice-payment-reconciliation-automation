@@ -19,8 +19,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="reconcile",
         description=(
             "Invoice and payment reconciliation automation. "
-            "Phase 3 generates local Markdown and CSV reconciliation reports "
-            "from validated CSV inputs."
+            "Generates local Markdown and CSV reconciliation reports from "
+            "validated CSV inputs."
         ),
     )
     parser.add_argument(

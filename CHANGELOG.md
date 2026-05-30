@@ -6,6 +6,11 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 4 mixed synthetic demo CSV files covering matched records, unmatched
+  invoices, unmatched payments, amount mismatches, currency mismatches, and
+  ambiguous duplicate references.
+- Phase 4 sample-data and CLI smoke tests for parseability, expected mixed-demo
+  status counts, and output containment under the requested report directory.
 - Phase 3 deterministic Markdown reconciliation report generation.
 - Phase 3 summary and detail CSV report generation for spreadsheet review.
 - `reconcile report` CLI command for loading CSV inputs, running deterministic
@@ -36,6 +41,9 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, runbook, and sample-data notes now include a concise Phase 4 mixed
+  demo walkthrough.
+- CLI help text no longer names a completed phase in the top-level description.
 - README, requirements, design, test strategy, and runbook now describe Phase 3
   Markdown/CSV reporting and the local report CLI command.
 - README, requirements, design, test strategy, runbook, and security notes now

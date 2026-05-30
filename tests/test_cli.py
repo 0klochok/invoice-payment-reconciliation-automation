@@ -19,8 +19,8 @@ def test_cli_help_smoke(capsys) -> None:
     captured = capsys.readouterr()
     normalized_output = " ".join(captured.out.split())
     assert "Invoice and payment reconciliation automation" in captured.out
-    assert "Phase 3 generates local Markdown and CSV reconciliation reports" in (
-        normalized_output
+    assert (
+        "Generates local Markdown and CSV reconciliation reports" in normalized_output
     )
     assert "--version" in captured.out
     assert "report" in captured.out

@@ -21,19 +21,29 @@ uv sync
 
 ## Validate
 
-Run the default Phase 3 quality gate:
+Run the default Phase 4 quality gate:
 
 ```powershell
+uv sync
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 ```
 
-Optional CLI smoke check:
+CLI smoke checks:
 
 ```powershell
 uv run reconcile --help
-uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
+uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports\clean
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
+```
+
+Temporary-output smoke check:
+
+```powershell
+$DemoOut = Join-Path $env:TEMP "invoice-reconciliation-phase4-demo"
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir $DemoOut
+Get-ChildItem -LiteralPath $DemoOut
 ```
 
 ## Current CLI Behavior
@@ -45,14 +55,14 @@ deterministic matching, and writes local Markdown and CSV reports.
 ```powershell
 uv run reconcile --help
 uv run reconcile --version
-uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo
 ```
 
 The report command writes:
 
-- `reports/reconciliation-report.md`
-- `reports/reconciliation-summary.csv`
-- `reports/reconciliation-details.csv`
+- `reports\demo\reconciliation-report.md`
+- `reports\demo\reconciliation-summary.csv`
+- `reports\demo\reconciliation-details.csv`
 
 ## Sample Data
 
@@ -64,7 +74,10 @@ Get-ChildItem -LiteralPath sample-data
 
 Phase 1 includes valid and invalid invoice/payment CSV samples. Phase 2 matching
 tests and the Phase 3 report command reuse the valid normalized CSV samples.
-XLSX sample inputs are deferred until XLSX support is implemented.
+Phase 4 adds mixed demo samples that produce matched records, unmatched
+invoices, unmatched payments, amount mismatches, currency mismatches, and
+ambiguous duplicate references. XLSX sample inputs are deferred until XLSX
+support is implemented.
 
 ## Data Handling
 

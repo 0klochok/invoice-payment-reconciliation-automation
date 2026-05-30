@@ -1,0 +1,9 @@
+invoice_id,customer_name,invoice_date,due_date,invoice_amount,currency
+INV-2001,Apex Office Supplies,2026-03-01,2026-03-31,100.00,USD
+INV-2002,Beacon Field Services,2026-03-02,2026-04-01,250.00,EUR
+INV-2003,Cascade Design Co,2026-03-03,2026-04-02,325.50,USD
+INV-2004,Delta Logistics,2026-03-04,2026-04-03,480.00,USD
+INV-2005,Evergreen Consulting,2026-03-05,2026-04-04,600.00,USD
+INV-DUP-PAY,Harbor Print Shop,2026-03-06,2026-04-05,150.00,USD
+INV-DUP-INV,Juniper Analytics,2026-03-07,2026-04-06,200.00,USD
+INV-DUP-INV,Juniper Analytics,2026-03-08,2026-04-07,200.00,USD

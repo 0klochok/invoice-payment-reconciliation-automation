@@ -1,0 +1,9 @@
+payment_id,customer_name,payment_date,payment_amount,currency,payment_reference
+PAY-7001,Apex Office Supplies,2026-03-12,100.00,USD,INV-2001
+PAY-7002,Beacon Field Services,2026-03-14,250.00,EUR,INV-2002
+PAY-7004,Delta Logistics,2026-03-15,475.00,USD,INV-2004
+PAY-7005,Evergreen Consulting,2026-03-16,600.00,EUR,INV-2005
+PAY-DUP-PAY-1,Harbor Print Shop,2026-03-17,150.00,USD,INV-DUP-PAY
+PAY-DUP-PAY-2,Harbor Print Shop,2026-03-18,150.00,USD,INV-DUP-PAY
+PAY-DUP-INV,Juniper Analytics,2026-03-19,200.00,USD,INV-DUP-INV
+PAY-ONLY,Lumen Event Rentals,2026-03-20,90.00,USD,INV-2999

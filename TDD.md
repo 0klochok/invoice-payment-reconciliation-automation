@@ -102,6 +102,14 @@ Phase 8 adds a final local release-readiness validation pass:
   hygiene, and no-secrets/no-paid-API assumptions manually reviewed.
 - No tests were added because Phase 8 does not change runtime behavior.
 
+Phase 9 adds minimal GitHub Actions CI coverage:
+
+- CI syncs locked dependencies with `uv sync --locked --dev`.
+- CI runs pytest, Ruff lint, Ruff format check, top-level CLI help, report CLI
+  help, and the CSV/XLSX demo smoke commands.
+- No tests were added because Phase 9 adds CI scaffolding only and does not
+  change runtime behavior.
+
 ## Future Test Layers
 
 | Layer | Purpose | Planned Location |
@@ -123,6 +131,9 @@ uv run ruff format --check .
 uv run reconcile --help
 uv run reconcile report --help
 ```
+
+The GitHub Actions CI workflow mirrors this gate with `uv sync --locked --dev`
+on pull requests and pushes to `main`.
 
 When CLI behavior is present, also run:
 

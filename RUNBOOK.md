@@ -31,6 +31,15 @@ uv run reconcile --help
 uv run reconcile report --help
 ```
 
+## GitHub Actions CI
+
+The minimal CI workflow in `.github/workflows/ci.yml` runs on pull requests and
+pushes to `main`. It installs `uv`, syncs from `uv.lock`, and runs the same core
+quality gate plus CSV and XLSX demo smoke commands.
+
+CI writes demo outputs only inside the runner under `reports/ci-csv` and
+`reports/ci-xlsx`. It does not upload artifacts, deploy, or use secrets.
+
 ## Demo Commands
 
 Run the CSV-input portfolio demo:

@@ -120,13 +120,21 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | P8-003 | Verify repository hygiene for a public portfolio demo. | Ignored report artifacts remain ignored, `docs/demo-output/` contains only intentional Markdown/CSV examples, and no accidental secrets, paid API assumptions, large binaries, generated cache files, or unrelated tracked artifacts are found. | Implemented |
 | P8-004 | Preserve current runtime behavior. | No reconciliation, ingestion, report-generation, dependency, deployment, web, database, AI, paid API, secret, commit, push, staging, or history changes are made. | Implemented |
 
+## Phase 9 Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| P9-001 | Add minimal GitHub Actions CI for the stable local quality gate. | Workflow runs on pull requests and pushes to `main`. | Implemented |
+| P9-002 | Use `uv` and the lockfile in CI. | Workflow installs `uv`, runs `uv sync --locked --dev`, then runs pytest, Ruff checks, CLI help smoke checks, and CSV/XLSX demo commands. | Implemented |
+| P9-003 | Keep CI non-deploying and local-demo-focused. | Workflow does not upload artifacts, configure secrets, deploy, or add external services beyond GitHub Actions CI. | Implemented |
+
 ## Out of Scope
 
 - Fuzzy matching and probabilistic matching.
 - Excel workbook report generation unless a later phase explicitly approves it.
 - FastAPI or any web service.
 - Database or persistence layer.
-- GitHub Actions, deployment, or hosted automation.
+- Deployment or hosted runtime automation beyond minimal CI.
 - Paid APIs, AI calls, or real client data.
 
 ## Acceptance Criteria
@@ -148,6 +156,7 @@ not require deployment, paid services, AI calls, databases, or real client data.
 | AC-013 | P6-001 | Mixed sample inputs exist | Reconciliation report generation is run | Markdown and CSV outputs use clear labels, review notes, and deterministic status/reference ordering without XLSX report output | Automated/smoke |
 | AC-014 | P7-002 | Source-of-truth docs and mixed sample inputs exist | Required validation and demo commands are run | Docs match current behavior, demo directories contain only the three expected report files, and CSV/XLSX-input outputs are equivalent | Manual/smoke |
 | AC-015 | P8-001 | Portfolio-ready docs and mixed sample inputs exist | Full release-readiness validation is run locally | Quality gates pass, documented demo outputs regenerate cleanly, ignored artifacts stay ignored, and no repository hygiene issues are found | Manual/smoke |
+| AC-016 | P9-001 | Minimal CI workflow exists | A pull request or push to `main` runs in GitHub Actions | CI syncs locked dependencies and runs the documented quality gate without deployment, secrets, or artifact upload | CI |
 
 ## Data Policy
 

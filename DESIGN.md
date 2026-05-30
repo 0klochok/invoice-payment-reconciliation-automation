@@ -16,12 +16,13 @@ easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
 Phase 7 was a final portfolio/demo documentation readiness pass over the current
-local CLI behavior. Phase 8 is a final local release-readiness review of that
-portfolio version. The workflow remains CLI-first and local-demo-first: CSV and
-XLSX inputs are parsed locally, deterministic matching is unchanged, and report
-outputs remain Markdown and CSV. It does not implement Excel workbook report
-output, fuzzy matching, databases, web APIs, deployment, AI features, or external
-services.
+local CLI behavior. Phase 8 was a final local release-readiness review of that
+portfolio version. Phase 9 adds a minimal GitHub Actions CI quality gate for the
+stable local checks. The workflow remains CLI-first and local-demo-first: CSV
+and XLSX inputs are parsed locally, deterministic matching is unchanged, and
+report outputs remain Markdown and CSV. It does not implement Excel workbook
+report output, fuzzy matching, databases, web APIs, deployment, AI features, or
+runtime external services.
 
 ## Architecture Summary
 
@@ -39,6 +40,8 @@ part of the MVP.
 
 ```text
 .
+|-- .github/workflows/
+|   `-- ci.yml
 |-- src/invoice_reconciliation/
 |   |-- __init__.py
 |   |-- cli.py
@@ -124,6 +127,7 @@ report presentation in step 6:
 | ADR-013 | Sort report detail rows by status category and reference in the reporting layer. | Improves client-demo readability without changing matching semantics or input parsing behavior. |
 | ADR-014 | Omit empty Markdown detail sections. | Keeps clean and mixed demo reports concise without placeholder filler. |
 | ADR-015 | Commit a small Markdown/CSV demo-output snapshot under `docs/demo-output/`. | Gives reviewers concrete expected output without storing generated XLSX workbooks or large binary report artifacts. |
+| ADR-016 | Add minimal GitHub Actions CI only after the local release-readiness gate is stable. | Mirrors the local quality gate for portfolio review without adding deployment, secrets, artifacts, or runtime services. |
 
 ## Known Limitations
 
@@ -133,3 +137,5 @@ report presentation in step 6:
 - Email normalization is not part of the current sample schema.
 - No web app, FastAPI service, database, deployment, AI feature, paid API, or
   real client data is part of the current design.
+- GitHub Actions is limited to the minimal CI quality gate; it is not a
+  deployment or hosted runtime path.

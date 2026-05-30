@@ -6,6 +6,8 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 9 minimal GitHub Actions CI workflow for pull requests and pushes to
+  `main`, using `uv sync --locked --dev` and the documented local quality gate.
 - Phase 7 generated Markdown/CSV demo-output snapshot under
   `docs/demo-output/mixed-demo/`, generated from existing mixed sample data for
   reviewer clarity.

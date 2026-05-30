@@ -42,6 +42,11 @@ uv run reconcile --help
 uv run reconcile report --help
 ```
 
+## CI Quality Gate
+
+GitHub Actions runs the locked `uv` sync, pytest, Ruff checks, CLI help smoke
+checks, and CSV/XLSX demo commands on pull requests and pushes to `main`.
+
 ## Demo Commands
 
 Run the mixed CSV demo:
@@ -108,8 +113,9 @@ No XLSX report output or large binary report artifact is included.
 - No fuzzy matching or probabilistic matching.
 - No partial-payment allocation or many-to-one matching.
 - No Excel workbook report output.
-- No web app, FastAPI service, database, deployment, or GitHub Actions.
-- No paid APIs, AI calls, external services, or real client data.
+- No web app, FastAPI service, database, deployment, or hosted runtime
+  automation.
+- No paid APIs, AI calls, runtime external services, or real client data.
 - Current normalization covers whitespace and currency casing; email
   normalization is not part of the current sample schema.
 
@@ -126,6 +132,7 @@ No XLSX report output or large binary report artifact is included.
 | Phase 6 | Client-presentable exception reporting and CLI demo polish | Complete |
 | Phase 7 | Final portfolio/demo readiness documentation pass | Complete |
 | Phase 8 | Final local release-readiness review | Complete |
+| Phase 9 | Minimal GitHub Actions CI quality gate | Complete |
 
 ## Safety And Data Policy
 

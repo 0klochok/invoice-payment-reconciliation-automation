@@ -15,9 +15,10 @@
 - No secrets, credentials, tokens, private keys, cookies, or production exports.
 - No paid APIs.
 - No AI calls unless explicitly approved.
-- No deployment or external automation in the current local-demo scope.
-- No database, FastAPI service, or GitHub Actions in the current local-demo
-  scope.
+- No deployment or external runtime automation in the current local-demo scope.
+- GitHub Actions is allowed only for the minimal CI quality gate and must not
+  use secrets, upload artifacts, or deploy.
+- No database or FastAPI service in the current local-demo scope.
 - No adult, casino/gambling, crypto-token, shady scraping, spam, bypass, or
   grey/black-hat functionality.
 
@@ -66,3 +67,10 @@ databases, web services, or real client data are added.
 Phase 8 reviewed the portfolio repository for accidental secrets, paid API or AI
 assumptions, large tracked binaries, generated cache files, unrelated artifacts,
 and unintended demo-output contents. No runtime security behavior changed.
+
+## Phase 9 CI Security Review
+
+Phase 9 adds a minimal GitHub Actions CI workflow for pull requests and pushes
+to `main`. The workflow uses public dependencies from the lockfile, runs local
+quality and demo commands, writes only runner-local report outputs, and does not
+configure secrets, upload artifacts, deploy, or call paid APIs.

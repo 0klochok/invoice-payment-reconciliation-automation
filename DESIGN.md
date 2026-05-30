@@ -15,19 +15,19 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 6 builds on the ingestion, matching, and reporting layers with
-client-presentable report polish. The workflow remains CLI-first and
-local-demo-first: CSV and XLSX inputs are parsed locally, deterministic matching
-is unchanged, and report outputs remain Markdown and CSV. It does not implement
-Excel workbook report output, fuzzy matching, databases, web APIs, or external
+Phase 7 is a final portfolio/demo readiness pass over the current local CLI
+behavior. The workflow remains CLI-first and local-demo-first: CSV and XLSX
+inputs are parsed locally, deterministic matching is unchanged, and report
+outputs remain Markdown and CSV. It does not implement Excel workbook report
+output, fuzzy matching, databases, web APIs, deployment, AI features, or external
 services.
 
 ## Architecture Summary
 
-The intended architecture is a small Python package under `src/` with a CLI entry
-point named `reconcile`. Future phases will add file readers, schemas,
-validators, normalizers, matching logic, and report writers as separate modules
-so each layer can be tested independently.
+The architecture is a small Python package under `src/` with a CLI entry point
+named `reconcile`. File readers, schemas, validators, normalizers, matching
+logic, and report writers are separate modules so each layer can be tested
+independently.
 
 The runtime model is local batch execution: the user runs one CLI command with
 invoice and payment input files and receives generated report files. No web
@@ -50,7 +50,8 @@ part of the MVP.
 |   |-- test_cli.py
 |   |-- test_ingestion.py
 |   |-- test_matching.py
-|   `-- test_reporting.py
+|   |-- test_reporting.py
+|   `-- test_sample_data.py
 |-- sample-data/
 |   |-- README.md
 |   |-- invalid-invoices.csv
@@ -65,6 +66,10 @@ part of the MVP.
 |   `-- .gitkeep
 |-- docs/screenshots/
 |   `-- .gitkeep
+|-- docs/demo-output/mixed-demo/
+|   |-- reconciliation-details.csv
+|   |-- reconciliation-report.md
+|   `-- reconciliation-summary.csv
 |-- pyproject.toml
 |-- uv.lock
 `-- source-of-truth docs
@@ -117,7 +122,13 @@ report presentation in step 6:
 | ADR-012 | Use `openpyxl` for XLSX input parsing. | XLSX files are zipped XML workbooks; `openpyxl` is a minimal standard Python dependency for local spreadsheet reading and avoids fragile custom parsing. |
 | ADR-013 | Sort report detail rows by status category and reference in the reporting layer. | Improves client-demo readability without changing matching semantics or input parsing behavior. |
 | ADR-014 | Omit empty Markdown detail sections. | Keeps clean and mixed demo reports concise without placeholder filler. |
+| ADR-015 | Commit a small Markdown/CSV demo-output snapshot under `docs/demo-output/`. | Gives reviewers concrete expected output without storing generated XLSX workbooks or large binary report artifacts. |
 
 ## Known Limitations
 
 - Fuzzy matching is not implemented.
+- Partial-payment allocation and many-to-one matching are not implemented.
+- Excel workbook report output is not implemented.
+- Email normalization is not part of the current sample schema.
+- No web app, FastAPI service, database, deployment, AI feature, paid API, or
+  real client data is part of the current design.

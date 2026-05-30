@@ -6,6 +6,9 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Phase 7 generated Markdown/CSV demo-output snapshot under
+  `docs/demo-output/mixed-demo/`, generated from existing mixed sample data for
+  reviewer clarity.
 - Phase 6 report polish tests for Markdown structure, omitted empty sections,
   deterministic status/reference ordering, underpaid/overpaid amount variance
   notes, and CLI success output.
@@ -50,6 +53,9 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, runbook, sample-data notes, requirements, design, and test strategy now
+  present the current local CLI demo behavior with exact demo commands, expected
+  output files, limitations, and non-goals.
 - Markdown reports now include reconciliation totals, clearer status labels,
   sorted detail sections, and exception review notes.
 - Summary and details CSV reports now use clearer exception labels and detail

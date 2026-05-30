@@ -83,6 +83,16 @@ Phase 6 adds client-presentable reporting and CLI polish tests:
 - CLI success output wording for the generated Markdown, summary CSV, and
   details CSV files.
 
+Phase 7 adds a documentation and demo-readiness validation pass:
+
+- README, runbook, sample-data notes, requirements, design, test strategy,
+  changelog, and state reviewed against current implemented behavior.
+- Generated Markdown/CSV example output snapshot under `docs/demo-output/`
+  created from existing mixed sample data.
+- Manual smoke validation of CSV-input and XLSX-input demo commands.
+- Manual equivalence check for generated CSV-input and XLSX-input report files.
+- No tests were added because Phase 7 does not change runtime behavior.
+
 ## Future Test Layers
 
 | Layer | Purpose | Planned Location |
@@ -100,14 +110,17 @@ Run from the repository root:
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
+uv run reconcile --help
+uv run reconcile report --help
 ```
 
 When CLI behavior is present, also run:
 
 ```powershell
-uv run reconcile --help
-uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports
-uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\xlsx-demo
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv
+uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx
+Get-ChildItem -Name -LiteralPath reports\demo-csv
+Get-ChildItem -Name -LiteralPath reports\demo-xlsx
 ```
 
 ## Acceptance for Future Phases

@@ -4,94 +4,98 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 17:57 +03:00 |
+| Last updated | 2026-05-30 18:22 +03:00 |
 | Repository path | `C:\Users\Санька\Documents\Coding Projects\Portfolio Projects\invoice-payment-reconciliation-automation-new` |
 | Current branch | `main` |
-| Current phase | Phase 6 - Client-presentable exception reporting and CLI demo polish |
+| Current phase | Phase 7 - Final portfolio/demo readiness pass |
 | Overall status | On track |
-| Quality gate status | Green after fixing interim test and format issues |
+| Quality gate status | Green |
 | Completion | 100% |
 | Main blocker | None |
 
 ## Current Objective
 
-Improve Markdown, summary CSV, details CSV, and CLI demo output so the local
-portfolio demo is clearer for reviewers and clients, without changing core
-reconciliation semantics, ingestion behavior, dependencies, or report file
-types.
+Make the local CLI-first invoice/payment reconciliation project portfolio-ready
+for reviewers by aligning source-of-truth docs with current implemented
+behavior, documenting exact demo commands and expected outputs, and adding a
+small Markdown/CSV example output snapshot without changing reconciliation,
+ingestion, or report-generation behavior.
 
-## Confirmed Phase 6 Scope
+## Confirmed Phase 7 Scope
 
-- Markdown, summary CSV, and details CSV report presentation is in scope.
-- CLI success output wording for the local report command is in scope.
-- Tests that lock report structure, exception labels, review notes, and
-  deterministic ordering are in scope.
-- README, RUNBOOK, sample-data notes, requirements, design, test strategy,
-  changelog, and this state file may be updated to reflect current behavior.
-- Existing CSV and XLSX input behavior must remain intact.
-- Markdown, summary CSV, and details CSV must remain the only report outputs.
-- XLSX workbook report output, web apps, FastAPI, databases, deployment, AI
-  features, paid APIs, new dependencies, and matching behavior changes are out
-  of scope.
+- Documentation consistency review is in scope for README, runbook,
+  sample-data notes, requirements, design, test strategy, changelog, and this
+  state file.
+- Exact local setup, validation, CSV-input demo, XLSX-input demo, and expected
+  output file documentation is in scope.
+- A small generated `docs/demo-output/` Markdown/CSV snapshot is in scope
+  because it improves reviewer clarity and is generated from existing sample
+  data.
+- Existing reconciliation, ingestion, and report-generation behavior must remain
+  unchanged.
+- Generated report files under `reports/` must remain ignored by Git unless a
+  file is intentionally placed under `docs/demo-output/`.
+- XLSX report output, web apps, FastAPI, databases, deployment, AI features, new
+  dependencies, new sample scenarios, matching changes, commits, pushes, resets,
+  history rewrites, and Git staging/unstaging are out of scope.
 
 ## Completed in This Phase
 
-- Updated Markdown report title, totals, status summary, and section titles for
-  clearer client-demo presentation.
-- Added concise reconciliation totals for invoice records reviewed, payment
-  records reviewed, matched pairs, and exception groups needing review.
-- Replaced generic exception labels with clearer categories:
-  invoice missing payment, payment missing invoice, payment amount differs,
-  payment currency differs, and duplicate reference needs review.
-- Added review notes for unmatched invoices, unmatched payments, amount
-  variances, currency conflicts, and duplicate references.
-- Rendered underpaid and overpaid amount variance notes without changing the
-  underlying `amount_mismatch` status.
-- Sorted report detail rows by status category and reference in the reporting
-  layer.
-- Omitted empty Markdown detail sections instead of writing placeholder rows.
-- Updated `reconcile report` success output to group generated file paths under
-  `Report files written:`.
-- Preserved CSV/XLSX input behavior, matching semantics, and Markdown/CSV-only
-  report output.
+- Reworked README into a portfolio-ready overview with project purpose,
+  current feature list, quickstart, exact CSV/XLSX demo commands, expected
+  output files, sample-data explanation, demo-output snapshot notes, and clear
+  limitations/non-goals.
+- Reworked RUNBOOK with exact setup, validation, demo, output inspection, and
+  CSV/XLSX equivalence commands.
+- Clarified `sample-data/README.md` with exact mixed-demo status counts and
+  report output expectations.
+- Added Phase 4 and Phase 7 consistency entries to requirements, plus a Phase 7
+  acceptance criterion.
+- Updated design notes to reflect current implemented modular architecture and
+  the intentional `docs/demo-output/` snapshot decision.
+- Updated test strategy with Phase 7 manual validation scope and required CLI
+  help/demo checks.
+- Updated changelog with the Phase 7 docs and demo-output snapshot result.
+- Generated a small `docs/demo-output/mixed-demo/` snapshot from existing mixed
+  CSV sample data.
 
 ## Changed in This Phase
 
 | Path | Purpose | Status |
 |---|---|---|
-| `src/invoice_reconciliation/reporting.py` | Adds report totals, clearer labels, exception review notes, status/reference sorting, underpaid/overpaid notes, and omitted empty sections. | Updated |
-| `src/invoice_reconciliation/cli.py` | Polishes report command success output. | Updated |
-| `tests/test_reporting.py` | Locks Markdown structure, omitted empty sections, details CSV ordering, and exception review notes. | Updated |
-| `tests/test_cli.py` | Updates CLI smoke expectations for polished success output and report labels. | Updated |
-| `tests/test_sample_data.py` | Updates sample CLI smoke expectations for polished success output. | Updated |
-| `README.md` | Describes current CSV/XLSX input support and polished Markdown/CSV report outputs. | Updated |
-| `RUNBOOK.md` | Documents current report output structure and demo interpretation. | Updated |
-| `sample-data/README.md` | Describes the mixed demo scenario with polished exception categories. | Updated |
-| `REQ.md` | Adds Phase 6 requirements and acceptance criteria. | Updated |
-| `DESIGN.md` | Records Phase 6 report presentation decisions. | Updated |
-| `TDD.md` | Records Phase 6 test coverage. | Updated |
-| `CHANGELOG.md` | Records Phase 6 added tests and changed reporting/CLI behavior. | Updated |
-| `STATE.md` | Records this phase scope, validation, and known issues. | Updated |
+| `README.md` | Portfolio-ready overview, exact demo commands, output files, sample/report explanation, limitations, and non-goals. | Updated |
+| `RUNBOOK.md` | Exact setup, validation, demo commands, output checks, hash equivalence checks, and data-handling notes. | Updated |
+| `sample-data/README.md` | Mixed-demo scenario counts, CSV/XLSX equivalence notes, and generated report expectations. | Updated |
+| `REQ.md` | Adds Phase 4 and Phase 7 requirements, clarifies current email-normalization scope, and adds Phase 7 acceptance criteria. | Updated |
+| `DESIGN.md` | Records Phase 7 readiness scope, current architecture wording, demo-output snapshot structure, and non-goals. | Updated |
+| `TDD.md` | Records Phase 7 documentation/demo validation coverage and current required smoke commands. | Updated |
+| `CHANGELOG.md` | Records Phase 7 docs updates and generated Markdown/CSV demo-output snapshot. | Updated |
+| `docs/demo-output/mixed-demo/reconciliation-report.md` | Generated Markdown report example from existing mixed CSV sample data. | Added |
+| `docs/demo-output/mixed-demo/reconciliation-summary.csv` | Generated summary CSV example from existing mixed CSV sample data. | Added |
+| `docs/demo-output/mixed-demo/reconciliation-details.csv` | Generated details CSV example from existing mixed CSV sample data. | Added |
+| `STATE.md` | Records Phase 7 scope, validation, changed files, and known issues. | Updated |
 
 ## Validation and Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv run pytest tests\test_reporting.py tests\test_cli.py tests\test_sample_data.py` | Failed, then passed | Initial run failed on one stale `Matched` label assertion; after updating the assertion, rerun passed with `22 passed in 0.50s`. |
-| `uv sync` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | Final run passed with `39 passed in 0.52s`. |
-| `uv run ruff check .` | Failed, then passed | Initial run failed on one long line in `tests\test_reporting.py`; after fixing and formatting, rerun passed with `All checks passed!`. |
-| `uv run ruff format --check .` | Failed, then passed | Initial run reported `tests\test_reporting.py` would be reformatted; after `uv run ruff format tests\test_reporting.py`, rerun passed with `12 files already formatted`. |
-| `uv run reconcile --help` | Pass | Printed usage for `reconcile [-h] [--version] {report} ...` with Markdown/CSV report wording and CSV/XLSX input wording. |
-| `uv run reconcile report --invoices sample-data\demo-mixed-invoices.csv --payments sample-data\demo-mixed-payments.csv --out-dir reports\codex-phase6-csv-demo` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
-| `uv run reconcile report --invoices sample-data\demo-mixed-invoices.xlsx --payments sample-data\demo-mixed-payments.xlsx --out-dir reports\codex-phase6-xlsx-demo` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
-| `Get-ChildItem -Name -LiteralPath reports\codex-phase6-csv-demo` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `Get-ChildItem -Name -LiteralPath reports\codex-phase6-xlsx-demo` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `Get-FileHash -Algorithm SHA256 -LiteralPath ...` | Pass | CSV and XLSX mixed demo outputs had matching hashes for Markdown, summary CSV, and details CSV. |
+| `uv sync` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 2ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.57s`. |
+| `uv run ruff check .` | Pass | `All checks passed!`. |
+| `uv run ruff format --check .` | Pass | `12 files already formatted`. |
+| `uv run reconcile --help` | Pass | Printed top-level help for `reconcile [-h] [--version] {report} ...` with Markdown/CSV report wording and CSV/XLSX input wording. |
+| `uv run reconcile report --help` | Pass | Printed report help with required `--invoices`, `--payments`, and `--out-dir` options. |
+| `uv run reconcile report --invoices sample-data/demo-mixed-invoices.csv --payments sample-data/demo-mixed-payments.csv --out-dir reports\demo-csv` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
+| `uv run reconcile report --invoices sample-data/demo-mixed-invoices.xlsx --payments sample-data/demo-mixed-payments.xlsx --out-dir reports\demo-xlsx` | Pass | Wrote Markdown, summary CSV, and details CSV only. |
+| `Get-ChildItem -Name -LiteralPath reports\demo-csv` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
+| `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Output directory contained only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
+| `Get-FileHash -Algorithm SHA256 -LiteralPath ...` | Pass | CSV-input and XLSX-input demo outputs had matching hashes for Markdown, summary CSV, and details CSV. |
+| `git status --short --ignored reports docs\demo-output` | Pass | `reports/` demo outputs were ignored; `docs/demo-output/` is intentionally visible for review. |
 
 ## Smoke Output Equivalence
 
-The CSV and XLSX mixed demo commands produced identical report content:
+The CSV-input and XLSX-input mixed demo commands produced identical report
+content:
 
 | Output | SHA-256 |
 |---|---|
@@ -99,36 +103,28 @@ The CSV and XLSX mixed demo commands produced identical report content:
 | `reconciliation-summary.csv` | `0CB876B88BB932ED1D63D2F97FB8E81E0FDB4C3D48CD0DF04D8D9C5909AE9F88` |
 | `reconciliation-details.csv` | `F597EFAC2BDBC9EFF1C27060D793227D743C38036D7034285BDE10DA0297D14C` |
 
-The mixed demo status counts remain unchanged:
-
-| Status | Count |
-|---|---:|
-| matched | 2 |
-| unmatched_invoice | 1 |
-| unmatched_payment | 1 |
-| amount_mismatch | 1 |
-| currency_mismatch | 1 |
-| ambiguous_reference | 2 |
+The committed `docs/demo-output/mixed-demo/` snapshot matches the CSV-input demo
+output hashes above.
 
 ## Known Issues and Deferred Work
 
-- No known Phase 6 issues remain.
-- Generated smoke-test files were written under
-  `reports\codex-report-polish-current`, `reports\codex-report-polish-updated`,
-  `reports\codex-phase6-csv-demo`, and `reports\codex-phase6-xlsx-demo`;
-  generated reports are local artifacts and ignored by Git.
-- The repository had pre-existing staged Phase 5 changes before this phase
-  started; Codex did not stage, unstage, commit, push, reset, or rewrite Git
-  history.
+- No known Phase 7 issues remain.
+- No runtime behavior, dependencies, matching rules, ingestion behavior, or
+  report-generation behavior changed in this phase.
+- Generated validation files were written under `reports\demo-csv` and
+  `reports\demo-xlsx`; these report artifacts are ignored by Git.
+- Pre-existing ignored report artifacts remain under earlier `reports/` demo
+  directories and were not changed or cleaned up.
 - Excel workbook report output remains deferred until a later phase explicitly
   approves it.
 - Fuzzy matching, partial payment allocation, overpayment/underpayment policy
   beyond report notes for one-to-one amount mismatches, and many-to-one matching
   remain deferred.
 - No FastAPI, database, web UI, AI/ML, paid API, external service, deployment,
-  real client data, commit, push, or Git staging was added.
+  real client data, commit, push, reset, history rewrite, or Git
+  staging/unstaging was added or performed.
 
 ## Next Step
 
-Manual validation of the Phase 6 report polish. No commit or push has been
-performed.
+Manual review of the Phase 7 portfolio/demo readiness docs and generated
+Markdown/CSV snapshot. No commit or push has been performed.

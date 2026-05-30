@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 22:26 +03:00 |
+| Last updated | 2026-05-30 22:49 +03:00 |
 | Repository root | `.` |
 | Current branch | `main` |
-| Current phase | Final public-repository readiness audit |
+| Current phase | Final post-commit public GitHub verification |
 | Overall status | Complete |
 | Quality gate status | Green |
 | Completion | 100% |
@@ -15,8 +15,8 @@
 
 ## Current Objective
 
-Perform a final public-repository readiness audit for the portfolio version.
-Verify the public docs, sample data, tracked files, ignored local artifacts,
+Perform a final post-commit public GitHub verification pass for the portfolio
+version. Verify public docs, sample data, tracked files, ignored local artifacts,
 CLI commands, and validation gates without changing reconciliation behavior.
 
 ## Confirmed Scope
@@ -38,8 +38,8 @@ CLI commands, and validation gates without changing reconciliation behavior.
   `.github/workflows/ci.yml`, `pyproject.toml`, CLI code, selected CLI and
   sample-data tests, synthetic sample CSV files, and committed demo-output
   files.
-- Confirmed the current requested phase is a final public-repository readiness
-  audit for the portfolio/demo version.
+- Confirmed the current requested phase is a final post-commit public GitHub
+  verification pass for the portfolio/demo version.
 - Confirmed documented README and RUNBOOK CLI commands match the actual
   `reconcile report --invoices ... --payments ... --out-dir ...` interface.
 - Scanned tracked repository text for absolute local paths, placeholder filler,
@@ -53,9 +53,10 @@ CLI commands, and validation gates without changing reconciliation behavior.
   `openpyxl` as creator and no `lastModifiedBy` value.
 - Confirmed no tracked generated/local artifacts were found beyond the intended
   demo-output snapshot and `.gitkeep` placeholders.
-- Replaced the long internal README phase roadmap with a concise public-facing
-  implementation status section.
-- Recorded this audit in `CHANGELOG.md`.
+- Confirmed the committed `docs/demo-output/mixed-demo/` snapshot hashes match
+  freshly generated CSV demo output.
+- Updated only this state file to replace stale pre-commit audit wording with
+  the current post-commit verification results.
 - Ran the required validation gate, CLI help checks, documented CSV/XLSX demo
   commands, output file list checks, and CSV/XLSX output hash equivalence check.
 
@@ -63,16 +64,14 @@ CLI commands, and validation gates without changing reconciliation behavior.
 
 | Path | Purpose | Status |
 |---|---|---|
-| `README.md` | Replaces the long internal phase roadmap with a concise implementation status section for public reviewers. | Updated |
-| `CHANGELOG.md` | Records the final public-repository readiness audit and README status-section cleanup. | Updated |
-| `STATE.md` | Records this audit, hygiene findings, validation results, and known remaining local artifacts. | Updated |
+| `STATE.md` | Records the final post-commit verification results and removes stale pre-commit audit wording. | Updated |
 
 ## Validation And Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | `39 passed in 1.12s` on win32 with Python 3.14.4. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 1ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.56s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
 | `uv run reconcile --help` | Pass | Printed top-level usage for `reconcile [-h] [--version] {report} ...`. |
@@ -82,8 +81,8 @@ CLI commands, and validation gates without changing reconciliation behavior.
 | `Get-ChildItem -Name -LiteralPath reports\demo-csv` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Listed exactly `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | `Get-FileHash -Algorithm SHA256 ...` | Pass | Matching CSV and XLSX output hashes were identical for Markdown, summary CSV, and details CSV. |
-| `git diff --check` | Pass | No whitespace errors found. |
-| `git status --short --ignored` | Pass | Shows documentation changes plus ignored caches, virtual environment, generated report artifacts, and `__pycache__` files. |
+| `git diff --check` | Pass | No whitespace errors found; Git reported the expected Windows LF/CRLF working-copy warning for `STATE.md`. |
+| `git status --short --ignored` | Pass | Shows this `STATE.md` update plus ignored caches, virtual environment, generated report artifacts, and `__pycache__` files. |
 
 ## Repository Hygiene Findings
 

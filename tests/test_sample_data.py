@@ -17,6 +17,19 @@ MIXED_INVOICES = MIXED_DEMO / "invoices.csv"
 MIXED_PAYMENTS = MIXED_DEMO / "payments.csv"
 MIXED_INVOICES_XLSX = MIXED_DEMO / "invoices.xlsx"
 MIXED_PAYMENTS_XLSX = MIXED_DEMO / "payments.xlsx"
+MIXED_DEMO_SNAPSHOT = (
+    Path(__file__).resolve().parents[1] / "docs" / "demo-output" / "mixed-demo"
+)
+EXPECTED_MIXED_REPORT_FILES = {
+    "reconciliation-report.md",
+    "reconciliation-summary.csv",
+    "reconciliation-details.csv",
+}
+EXPECTED_MIXED_REPORT_FILE_ORDER = (
+    "reconciliation-report.md",
+    "reconciliation-summary.csv",
+    "reconciliation-details.csv",
+)
 EXPECTED_MIXED_COUNTS = {
     MatchStatus.MATCHED: 2,
     MatchStatus.UNMATCHED_INVOICE: 1,
@@ -122,6 +135,38 @@ def test_cli_report_smoke_with_mixed_demo_sample(tmp_path: Path, capsys) -> None
     counts_by_status = {row["status"]: row["count"] for row in summary_rows}
 
     assert counts_by_status == EXPECTED_MIXED_CSV_COUNTS
+
+
+def test_mixed_demo_csv_output_matches_committed_snapshot(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    out_dir = tmp_path / "mixed-demo-output"
+
+    exit_code = main(
+        [
+            "report",
+            "--invoices",
+            str(MIXED_INVOICES),
+            "--payments",
+            str(MIXED_PAYMENTS),
+            "--out-dir",
+            str(out_dir),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert captured.err == ""
+
+    generated_paths = tuple(out_dir.iterdir())
+    assert {path.name for path in generated_paths} == EXPECTED_MIXED_REPORT_FILES
+    assert all(path.is_file() for path in generated_paths)
+
+    for file_name in EXPECTED_MIXED_REPORT_FILE_ORDER:
+        assert (out_dir / file_name).read_text(encoding="utf-8") == (
+            MIXED_DEMO_SNAPSHOT / file_name
+        ).read_text(encoding="utf-8")
 
 
 def test_cli_report_smoke_with_xlsx_mixed_demo_sample(

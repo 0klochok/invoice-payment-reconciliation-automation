@@ -110,6 +110,15 @@ Phase 9 adds minimal GitHub Actions CI coverage:
 - No tests were added because Phase 9 adds CI scaffolding only and does not
   change runtime behavior.
 
+The Demo Output Snapshot Guard adds automated regression coverage for the
+committed reviewer snapshot:
+
+- Regenerates the mixed CSV demo report into a pytest `tmp_path`.
+- Asserts the generated file set is exactly the expected Markdown, summary CSV,
+  and details CSV artifacts.
+- Compares the generated Markdown and CSV contents with
+  `docs/demo-output/mixed-demo/` without mutating the committed snapshot.
+
 ## Test Layers
 
 | Layer | Purpose | Location |

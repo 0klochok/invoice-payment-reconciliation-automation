@@ -5,6 +5,10 @@ reconciliation demo. The files under `mixed-demo/` were generated from the
 synthetic CSV inputs in `sample-data/mixed-demo/` and are included so reviewers
 can inspect expected output without running the CLI first.
 
+The mixed-demo snapshot is covered by an automated pytest regression guard that
+regenerates the CSV demo output in a temporary directory and compares the
+generated Markdown and CSV contents with these committed files.
+
 ## Contents
 
 - `mixed-demo/reconciliation-report.md`: human-readable reconciliation summary

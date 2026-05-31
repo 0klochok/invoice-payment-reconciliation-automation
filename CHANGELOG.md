@@ -6,6 +6,9 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Automated pytest regression guard that regenerates the mixed CSV demo output
+  in a temporary directory and compares it with the committed
+  `docs/demo-output/mixed-demo/` snapshot.
 - `docs/demo-output/README.md` explaining the committed mixed-demo report
   snapshot for reviewers.
 - `docs/screenshots/README.md` placeholder for future manually captured

@@ -15,68 +15,71 @@
 
 ## Current Objective
 
-Perform a final public-release readiness audit for the portfolio/demo
-repository. Keep the project CLI-first, local-demo-first, synthetic-data-only,
-and avoid source-code behavior changes, generated committed output
-regeneration, paid APIs, external services, secrets, telemetry, deployment,
-staging, commits, or pushes.
+Perform a final clean-repo verification after the public-release documentation
+audit. Confirm the tracked file set, ignored generated reports, committed demo
+output snapshot, documented README/RUNBOOK demo commands, CLI help, and local
+quality gates without changing source behavior or using staging, commits,
+pushes, resets, checkouts, branch deletion, or history rewrites.
 
 ## Confirmed Scope
 
-- In scope: `README.md`, `REQ.md`, `DESIGN.md`, `TDD.md`, `RUNBOOK.md`,
-  `CHANGELOG.md`, `SECURITY.md`, `STATE.md`, `AGENTS.md`,
-  `docs/demo-output/README.md`, `docs/screenshots/README.md`,
-  `pyproject.toml`, `.gitignore`, public wording, documented commands,
-  repository hygiene, tracked generated artifacts, and validation output.
+- In scope: `AGENTS.md`, `STATE.md`, source-of-truth documentation relevant to
+  final release verification, README/RUNBOOK demo command accuracy, tracked
+  file inspection, ignored `reports/` artifacts, committed
+  `docs/demo-output/mixed-demo/` snapshot comparison, CLI help smoke checks,
+  documented CSV/XLSX demo commands, and local quality gates.
 - Out of scope: source-code behavior changes, reconciliation behavior changes,
   test behavior changes, dependency changes, lockfile changes, sample-data
   changes, committed demo-output regeneration, screenshots, paid APIs, runtime
   external services, secrets, telemetry, databases, FastAPI, deployment,
-  staging, commits, pushes, resets, branch deletion, and history rewrites.
+  staging, commits, pushes, resets, checkouts, branch deletion, and history
+  rewrites.
 
 ## Completed In This Pass
 
-- Read `AGENTS.md` and `STATE.md` before changing files.
-- Read the public-release source-of-truth docs in scope:
-  `README.md`, `REQ.md`, `DESIGN.md`, `TDD.md`, `RUNBOOK.md`,
-  `CHANGELOG.md`, `SECURITY.md`, `docs/demo-output/README.md`,
-  `docs/screenshots/README.md`, `pyproject.toml`, and `.gitignore`.
-- Confirmed the requested phase is a final public-release readiness audit with
-  documentation-only, low-risk fixes permitted.
-- Audited public-facing docs for inaccurate commands, stale future-scope
-  wording, unsupported claims, misleading setup/demo instructions, and
-  references to real data, secrets, paid APIs, production systems, telemetry,
-  deployment, fabricated screenshots, or runtime external services.
-- Verified tracked files include only intentional sample data, source, tests,
-  docs, the minimal CI workflow, `reports/.gitkeep`, and the committed
-  Markdown/CSV demo-output snapshot.
-- Verified generated local report artifacts under `reports/` are ignored and
-  not tracked.
-- Verified `docs/screenshots/` contains no fabricated screenshots.
-- Verified the committed demo-output Markdown/CSV snapshot matches freshly
-  generated CSV demo output.
-- Verified freshly generated CSV and XLSX demo outputs are equivalent.
-- Found and fixed one stale `TDD.md` future-work wording issue that implied
-  mixed-currency coverage was still missing even though currency mismatch
-  behavior and tests already exist.
-- No source code, tests, dependencies, lockfiles, sample data, reconciliation
-  behavior, committed demo-output snapshots, screenshots, or Git history were
-  changed.
+- Read `AGENTS.md`, `STATE.md`, and the relevant source-of-truth docs before
+  changing files: `README.md`, `RUNBOOK.md`, `REQ.md`, `DESIGN.md`, `TDD.md`,
+  `CHANGELOG.md`, `SECURITY.md`, `docs/demo-output/README.md`, and
+  `.gitignore`.
+- Confirmed the requested phase is a final clean-repo verification after the
+  public-release documentation audit, with source behavior changes out of
+  scope.
+- Verified the initial working tree was clean with
+  `git status --short --untracked-files=all`.
+- Verified tracked files are intentional for the public portfolio/demo scope:
+  source, tests, docs, synthetic sample data, CI workflow, `reports/.gitkeep`,
+  and the committed Markdown/CSV demo-output snapshot.
+- Verified generated runtime outputs under `reports/` remain ignored while the
+  committed `docs/demo-output/mixed-demo/` snapshot remains tracked.
+- Verified README and RUNBOOK demo commands use the current
+  `reconcile report ... --out-dir ...` CLI shape and contain no stale
+  `--summary`, standalone `--out`, old sample-data root paths, or workbook
+  output demo commands.
+- Regenerated the documented CSV and XLSX demo outputs under ignored
+  `reports\demo-csv` and `reports\demo-xlsx`.
+- Verified both demo output directories contain exactly the expected Markdown,
+  summary CSV, and details CSV files.
+- Verified committed `docs/demo-output/mixed-demo/` files match regenerated CSV
+  demo output, and regenerated CSV/XLSX demo outputs match each other. Git
+  emitted LF-to-CRLF warnings only during `git diff --no-index` comparisons.
+- No source code, tests, dependencies, lockfiles, sample data, committed
+  demo-output snapshots, screenshots, or Git history were changed.
 
 ## Changed In This Pass
 
 | Path | Purpose | Status |
 |---|---|---|
-| `TDD.md` | Replaced stale future-test wording for mixed currency coverage with approved future behavior examples. | Updated |
-| `CHANGELOG.md` | Recorded the test-strategy wording fix. | Updated |
-| `STATE.md` | Recorded this final public-release readiness audit and validation results. | Updated |
+| `STATE.md` | Recorded the final clean-repo verification and validation results. | Updated |
 
 ## Validation And Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 3ms`. |
-| `uv run pytest` | Pass | `39 passed in 0.54s` on win32 with Python 3.14.4. |
+| `git status --short --untracked-files=all` | Pass | Initial output was empty; working tree started clean. |
+| `git ls-files` | Pass | Tracked files are intentional docs, source, tests, synthetic sample data, CI workflow, `reports/.gitkeep`, and committed Markdown/CSV demo-output files. |
+| `git status --ignored --short --untracked-files=all reports docs\demo-output` | Pass | Generated runtime outputs under `reports/` are ignored; committed demo-output files remain tracked. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 1ms`. |
+| `uv run pytest` | Pass | `39 passed in 0.53s` on win32 with Python 3.14.4. |
 | `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
 | `uv run reconcile --help` | Pass | Printed top-level usage for `reconcile [-h] [--version] {report} ...`. |
@@ -87,15 +90,12 @@ staging, commits, or pushes.
 | `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Listed only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
 | Per-file `git diff --no-index --quiet` comparisons between `docs/demo-output/mixed-demo/` and `reports/demo-csv/` | Pass | Committed snapshot content matches regenerated CSV demo output; Git emitted LF-to-CRLF warnings only. |
 | Per-file `git diff --no-index --quiet` comparisons between `reports/demo-csv/` and `reports/demo-xlsx/` | Pass | CSV-input and XLSX-input demo outputs match; Git emitted LF-to-CRLF warnings only. |
-| Secret-pattern search with `rg` | Pass | No secret-like tokens, keys, or credential assignments found. |
-| `git diff --check` | Pass | No whitespace errors found; Git emitted LF-to-CRLF warnings only. |
-| `git status --short` | Pass | Shows only documentation changes: `CHANGELOG.md`, `STATE.md`, and `TDD.md`. |
+| `rg -n "reconcile\|--out\|--summary\|sample-data/" README.md RUNBOOK.md` | Pass | README/RUNBOOK commands align with the current CLI help and documented sample paths. |
+| Focused stale-command searches in `README.md` and `RUNBOOK.md` | Pass | No stale `--summary`, standalone `--out`, old sample-data root paths, or workbook-output demo commands found. |
 
 ## Issues Found
 
-- Stale public test-strategy wording in `TDD.md` listed mixed currency handling
-  as future test work even though currency mismatch behavior and tests are
-  already implemented.
+- None.
 
 ## Known Issues And Deferred Work
 

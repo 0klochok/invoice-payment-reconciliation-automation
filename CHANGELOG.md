@@ -129,6 +129,8 @@ All notable project changes are recorded here.
 
 ### Fixed
 
+- Removed stale test-strategy wording that implied mixed currency coverage was
+  still future work.
 - Added the initial `sample-data/` note clarifying that sample files were not
   part of the Phase 0 scaffold.
 

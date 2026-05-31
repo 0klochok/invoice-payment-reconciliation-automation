@@ -144,9 +144,10 @@ Get-ChildItem -Name -LiteralPath reports\demo-csv
 Get-ChildItem -Name -LiteralPath reports\demo-xlsx
 ```
 
-## Acceptance for Future Phases
+## Acceptance for Future Behavior Changes
 
-Future phases should add tests for:
+Future approved behavior changes should add focused tests for new rules, such
+as:
 
-- Mixed currency handling.
+- Partial-payment allocation or many-to-one matching if approved.
 - Excel workbook report workflows if a later phase explicitly approves them.

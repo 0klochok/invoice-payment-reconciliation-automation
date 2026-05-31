@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 |
+| Last updated | 2026-05-31 |
 | Status | Active |
 | Project | invoice-payment-reconciliation-automation-new |
 | Environment | Windows 11, PowerShell, uv, Python 3.12+ |
@@ -15,7 +15,7 @@
 - `uv` installed and available on `PATH`.
 - Python 3.12 or newer available locally, or installable by `uv`.
 - No secrets, service accounts, paid API keys, or external services are
-  required for the demo.
+  required for the local demo.
 
 Install `uv` from the
 [official uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
@@ -52,6 +52,17 @@ gate plus CSV and XLSX demo smoke commands.
 
 CI writes demo outputs only inside the runner under `reports/ci-csv` and
 `reports/ci-xlsx`. It does not upload artifacts, deploy, or use secrets.
+
+## Portfolio Demo Workflow
+
+Use this workflow when reviewing the public portfolio repository:
+
+1. Run the quality gate.
+2. Generate the CSV demo reports under `reports\demo-csv`.
+3. Generate the XLSX-input demo reports under `reports\demo-xlsx`.
+4. Confirm both output directories contain the same three report files.
+5. Compare the generated reports with `docs/demo-output/mixed-demo/` when a
+   quick expected-output reference is needed.
 
 ## Demo Commands
 
@@ -95,7 +106,9 @@ Get-FileHash -Algorithm SHA256 -LiteralPath reports\demo-csv\reconciliation-summ
 Get-FileHash -Algorithm SHA256 -LiteralPath reports\demo-csv\reconciliation-details.csv, reports\demo-xlsx\reconciliation-details.csv
 ```
 
-The matching hashes should be identical for each corresponding file.
+The matching hashes should be identical for each corresponding Markdown/CSV
+file because the mixed CSV and XLSX sample inputs describe the same synthetic
+scenario.
 
 ## Cleanup
 
@@ -106,14 +119,16 @@ clean output directories:
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue -LiteralPath reports\demo-csv, reports\demo-xlsx
 ```
 
-This removes ignored local artifacts only. Keep `reports\.gitkeep` in place.
+This removes ignored local demo artifacts only. Keep `reports\.gitkeep` in
+place.
 
 ## Current CLI Behavior
 
 The `reconcile` command supports help, version output, and a local report
 workflow. The report command loads invoice and payment CSV or XLSX files, runs
 deterministic exact-reference matching, and writes local Markdown and CSV
-reports.
+reports. This runbook does not cover deployment, hosted services, databases, or
+production data handling because those are outside the current portfolio scope.
 
 ```powershell
 uv run reconcile --version

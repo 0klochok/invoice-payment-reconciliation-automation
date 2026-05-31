@@ -15,11 +15,27 @@
 - No secrets, credentials, tokens, private keys, cookies, or production exports.
 - No paid APIs.
 - No deployment or external runtime automation in the current local-demo scope.
+- The application itself does not call external APIs or hosted services.
 - GitHub Actions is allowed only for the minimal CI quality gate and must not
   use secrets, upload artifacts, or deploy.
 - No database or FastAPI service in the current local-demo scope.
 - No adult, casino/gambling, crypto-token, shady scraping, spam, bypass, or
   grey/black-hat functionality.
+
+## Local-Only Posture
+
+The CLI reads caller-provided local CSV/XLSX files and writes local Markdown/CSV
+reports. Network access is not part of the application workflow. Development
+and CI setup may download public dependencies from the lockfile, but the
+reconciliation command does not require credentials, service accounts, paid
+APIs, runtime external services, or hosted infrastructure.
+
+## Public Repository Posture
+
+This repository is intended to be safe for a public portfolio demo while it uses
+only synthetic sample data. Generated local reports should stay under ignored
+`reports/` paths. The only committed report examples should be intentional fake
+Markdown/CSV snapshots under `docs/demo-output/`.
 
 ## Data Classification
 
@@ -75,3 +91,10 @@ without deployment branch filtering. The workflow uses public dependencies from
 the lockfile, runs local quality and demo commands, writes only runner-local
 report outputs, and does not configure secrets, upload artifacts, deploy, or
 call paid APIs.
+
+## Public Portfolio Readiness Security Review
+
+This pass reviewed public-facing documentation for local-only behavior,
+fake-data-only sample usage, no-secrets posture, CI-only GitHub Actions wording,
+and non-goals around deployment, databases, paid APIs, runtime external
+services, and real client data. No runtime security behavior changed.

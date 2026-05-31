@@ -75,6 +75,9 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README, RUNBOOK, and SECURITY now present the public portfolio demo flow more
+  directly, with clearer local-only posture and no-production-readiness
+  overclaiming.
 - GitHub Actions CI now runs on pull requests and all pushes, while preserving
   the existing locked `uv` quality gate and no-deployment/no-secrets scope.
 - README now has a stronger top-level value proposition and an explicit `uv`

@@ -1,100 +1,77 @@
 # Invoice Payment Reconciliation Automation
 
-CLI-first Python portfolio project for turning invoice and payment exports into
-review-ready reconciliation reports. The tool imports synthetic CSV or XLSX
-files, validates rows, matches payments to invoices with deterministic local
-rules, categorizes exceptions, and writes Markdown/CSV outputs that a reviewer
-can inspect without external services or real client data.
+CLI-first Python portfolio project for reconciling invoice and payment exports
+with deterministic local rules. It imports synthetic CSV or XLSX files,
+validates rows, matches payments to invoices, categorizes exceptions, and writes
+Markdown/CSV reports that can be reviewed without a database, deployment,
+external API, paid service, or real client data.
 
-## Project Purpose
+## Business Problem
 
 Small finance and operations teams often reconcile invoices and payments in
-spreadsheets by hand. That workflow is slow, inconsistent, and hard to review.
-This project demonstrates a local automation that turns synthetic invoice and
-payment exports into deterministic exception reports suitable for a portfolio or
-client demo.
+spreadsheets by hand. Manual reconciliation is slow, inconsistent, and difficult
+to audit when exceptions need follow-up. This project demonstrates how a focused
+local automation can turn structured exports into repeatable review artifacts
+for a portfolio or client-style demo.
 
-## What This Demonstrates
+## Project Summary
 
-- End-to-end business automation for a common back-office reconciliation
-  workflow.
-- Input validation and normalization before reconciliation logic runs.
-- Deterministic matching with explicit exception categories and review notes.
-- Review-ready Markdown and CSV outputs that are easy to inspect or share.
-- Reproducible local demos using fake CSV/XLSX data and locked dependencies.
-- Test coverage and quality gates suitable for a portfolio-ready Python CLI
-  demo project.
+The current version is a local CLI demo, not a production accounting platform.
+It is designed to show practical automation engineering: file ingestion,
+validation, deterministic matching, exception classification, report generation,
+tests, and a minimal CI quality gate.
 
-## Evaluator Walkthrough
-
-1. Run the Quickstart commands to install from the lockfile and verify tests,
-   linting, formatting, and CLI help.
-2. Run the CSV demo command and inspect `reports\demo-csv`.
-3. Run the XLSX demo command and inspect `reports\demo-xlsx`.
-4. Confirm both demo directories contain only `reconciliation-report.md`,
-   `reconciliation-summary.csv`, and `reconciliation-details.csv`.
-5. Compare the generated outputs with the committed snapshot under
-   `docs/demo-output/mixed-demo/`.
-
-## Current Features
+## Features
 
 - CSV and XLSX invoice/payment input parsing.
 - Required-field validation for invoice and payment rows.
 - ISO date parsing and decimal money amount parsing.
 - Whitespace trimming for text fields and uppercasing for currency values.
-- Deterministic exact-reference matching between invoice IDs and payment
-  references.
+- Exact-reference matching between invoice IDs and payment references.
 - Exception categories for invoices missing payments, payments missing
-  invoices, amount differences, currency differences, and duplicate references.
+  invoices, amount variances, currency conflicts, and duplicate references.
 - Markdown reconciliation report with totals, status summary, sorted detail
   sections, and review notes.
 - Summary CSV and details CSV outputs for spreadsheet review.
-- `reconcile report` CLI command for the full local demo workflow.
-- Synthetic sample data only.
+- Synthetic sample data and committed Markdown/CSV demo-output snapshot.
 
-## Supported Inputs And Outputs
+## Demo Workflow
 
-The CLI accepts invoice and payment files in these formats:
+Use PowerShell from the repository root:
 
-- CSV files with the sample invoice/payment columns.
-- XLSX workbooks with equivalent single-sheet invoice/payment data.
+1. Install dependencies from the lockfile and run the quality gate.
+2. Run the mixed CSV demo and inspect `reports\demo-csv`.
+3. Run the equivalent XLSX demo and inspect `reports\demo-xlsx`.
+4. Confirm each demo directory contains `reconciliation-report.md`,
+   `reconciliation-summary.csv`, and `reconciliation-details.csv`.
+5. Compare generated output with the committed reviewer snapshot under
+   `docs/demo-output/mixed-demo/`.
 
-The report workflow writes three local review artifacts to the requested output
-directory:
+## Installation
 
-- `reconciliation-report.md` for a human-readable summary and exception review.
-- `reconciliation-summary.csv` for status counts by reconciliation category.
-- `reconciliation-details.csv` for row-level matched and exception details.
-
-Generated report artifacts belong under ignored `reports/` paths during local
-demos. The committed `docs/demo-output/mixed-demo/` snapshot is the only
-intentional generated report example.
-
-## Quickstart
-
-Use PowerShell from the repository root. Prerequisite: install `uv` from the
+Prerequisite: install `uv` from the
 [official uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
 if it is not already available on `PATH`.
 
-From a fresh clone, sync dependencies from the lockfile and run the local
-quality gate:
+From a fresh clone:
 
 ```powershell
 uv sync --locked --dev
-uv run pytest
-uv run ruff check .
-uv run ruff format --check .
-uv run reconcile --help
-uv run reconcile report --help
 ```
 
-## CI Quality Gate
+## CLI Usage
 
-GitHub Actions runs the same locked `uv` sync (`uv sync --locked --dev`),
-pytest, Ruff checks, CLI help smoke checks, and CSV/XLSX demo commands on pull
-requests and pushes.
+Show top-level help:
 
-## Demo Commands
+```powershell
+uv run reconcile --help
+```
+
+Show report command help:
+
+```powershell
+uv run reconcile report --help
+```
 
 Run the mixed CSV demo:
 
@@ -108,22 +85,16 @@ Run the equivalent XLSX-input demo:
 uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
-Both commands write exactly these report files inside the selected output
+Both demo commands write exactly three files inside the selected output
 directory:
 
 - `reconciliation-report.md`
 - `reconciliation-summary.csv`
 - `reconciliation-details.csv`
 
-For example, the CSV command writes:
+## Sample Inputs And Outputs
 
-- `reports\demo-csv\reconciliation-report.md`
-- `reports\demo-csv\reconciliation-summary.csv`
-- `reports\demo-csv\reconciliation-details.csv`
-
-## Sample Data And Reports
-
-Synthetic inputs live under `sample-data/`.
+Synthetic inputs live under `sample-data/`:
 
 - `valid-invoices.csv` and `valid-payments.csv` demonstrate a clean fully
   matched scenario.
@@ -139,21 +110,32 @@ pairs and 6 exception groups: one invoice missing payment, one payment missing
 invoice, one amount variance, one currency conflict, and two duplicate-reference
 groups.
 
-The generated reports are local artifacts. Files under `reports/` are ignored by
-Git.
-
-## Demo Output Snapshot
-
-A small generated snapshot is included under `docs/demo-output/mixed-demo/` for
-reviewers who want to inspect the expected Markdown and CSV output without
-running the CLI first. It was generated from the mixed CSV sample data and
-contains only:
+Generated local reports belong under ignored `reports/` paths. The committed
+`docs/demo-output/mixed-demo/` snapshot is a small reviewer-facing example
+generated from the mixed CSV sample data:
 
 - `docs/demo-output/mixed-demo/reconciliation-report.md`
 - `docs/demo-output/mixed-demo/reconciliation-summary.csv`
 - `docs/demo-output/mixed-demo/reconciliation-details.csv`
 
 No XLSX report output or large binary report artifact is included.
+
+## Quality Checks
+
+Run the local quality gate before reviewing or changing the project:
+
+```powershell
+uv sync --locked --dev
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run reconcile --help
+uv run reconcile report --help
+```
+
+GitHub Actions mirrors this locked `uv` sync, pytest, Ruff checks, CLI help
+smoke checks, and CSV/XLSX demo smoke commands on pull requests and pushes. The
+workflow is CI-only; it does not deploy, upload artifacts, or use secrets.
 
 ## Limitations And Non-Goals
 
@@ -162,32 +144,14 @@ No XLSX report output or large binary report artifact is included.
 - No Excel workbook report output.
 - No web app, FastAPI service, database, deployment, or hosted runtime
   automation.
-- GitHub Actions is CI-only; it does not deploy, upload artifacts, or use
-  secrets.
 - No paid APIs, runtime external services, or real client data.
 - Current normalization covers whitespace and currency casing; email
   normalization is not part of the current sample schema.
 
-## Implementation Status
-
-The portfolio version is complete for the local CLI demo scope:
-
-- Local CSV/XLSX invoice and payment imports.
-- Deterministic validation, normalization, matching, and exception
-  classification.
-- Markdown and CSV reconciliation reports.
-- Synthetic sample data and committed Markdown/CSV demo-output snapshot.
-- Local quality gate and minimal GitHub Actions CI smoke coverage.
-
-Future enhancements such as fuzzy matching, partial-payment allocation, Excel
-workbook report output, web APIs, databases, deployment, paid APIs, and runtime
-external services are intentionally outside the current portfolio scope.
-
-## Safety And Data Policy
+## Data And Security Posture
 
 - Use fake sample data only.
 - Do not use real client data.
-- Do not commit secrets or local credentials.
-- Do not store production exports in this repository.
+- Do not commit secrets, credentials, or production exports.
 - Keep generated local report artifacts under ignored `reports/` paths unless
   they are intentional Markdown/CSV examples under `docs/demo-output/`.

@@ -92,7 +92,7 @@ uv run reconcile report --help
 
 GitHub Actions runs the same locked `uv` sync (`uv sync --locked --dev`),
 pytest, Ruff checks, CLI help smoke checks, and CSV/XLSX demo commands on pull
-requests and pushes to `main`.
+requests and pushes.
 
 ## Demo Commands
 

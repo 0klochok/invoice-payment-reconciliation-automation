@@ -7,29 +7,31 @@
 | Last updated | 2026-05-31 |
 | Repository root | `.` |
 | Current branch | `main` |
-| Current phase | Demo Output Snapshot Guard |
+| Current phase | GitHub Actions CI Quality Gate |
 | Overall status | Complete |
-| Quality gate status | Green after rerun |
+| Quality gate status | Green |
 | Completion | 100% |
 | Main blocker | None |
 
 ## Current Objective
 
-Add a focused automated regression test that regenerates the mixed CSV demo
-report into a pytest temporary directory and compares the generated Markdown and
-CSV outputs against the committed reviewer snapshot under
-`docs/demo-output/mixed-demo/`.
+Add and verify a simple GitHub Actions CI quality gate for the portfolio
+repository. The CI remains local-demo-first and repo-quality focused: it syncs
+locked dependencies with `uv`, runs tests and Ruff checks, smoke-checks CLI help,
+and keeps the existing CSV/XLSX demo commands without deployment, secrets,
+artifact upload, paid APIs, databases, or hosted runtime services.
 
 ## Confirmed Scope
 
-- In scope: `tests/test_sample_data.py`, `STATE.md`, `TDD.md`,
-  `CHANGELOG.md`, and `docs/demo-output/README.md`.
-- In scope: pytest coverage that uses `tmp_path`, invokes the existing
-  in-process CLI report flow, asserts the exact generated report file set, and
-  compares generated content to the committed mixed-demo snapshot.
-- Out of scope: source behavior changes, CLI shape changes, report format
-  changes, dependency changes, sample input changes, committed demo-output
-  snapshot regeneration, deployment, databases, FastAPI, paid APIs, secrets,
+- In scope: `.github/workflows/ci.yml`, `STATE.md`, `CHANGELOG.md`, and
+  source-of-truth docs that describe CI behavior.
+- In scope: running CI on `pull_request` and `push`.
+- In scope: Python 3.12, `uv sync --locked --dev`, pytest, Ruff lint, Ruff
+  format check, top-level CLI help, and report CLI help.
+- In scope: preserving the existing CSV/XLSX demo smoke commands already present
+  in the CI workflow.
+- Out of scope: deployment, secrets, paid APIs, external runtime services,
+  databases, FastAPI, GitHub Actions artifact upload, demo snapshot changes,
   staging, commits, pushes, resets, checkouts, branch deletion, and history
   rewrites.
 
@@ -37,72 +39,66 @@ CSV outputs against the committed reviewer snapshot under
 
 - Read `AGENTS.md`, `STATE.md`, and relevant source-of-truth docs before
   changing files: `README.md`, `RUNBOOK.md`, `REQ.md`, `DESIGN.md`, `TDD.md`,
-  `CHANGELOG.md`, `SECURITY.md` from prior context where applicable, and
-  `docs/demo-output/README.md`.
-- Inspected `pyproject.toml`, `src/`, `tests/`, `sample-data/mixed-demo/`, and
-  `docs/demo-output/mixed-demo/`.
-- Confirmed the requested phase is Demo Output Snapshot Guard, with test-only
-  regression coverage and documentation/state updates in scope.
-- Added a focused pytest guard that runs `reconcile report` in process against
-  `sample-data/mixed-demo/invoices.csv` and
-  `sample-data/mixed-demo/payments.csv`, writing to `tmp_path`.
-- The guard asserts the generated file set is exactly
-  `reconciliation-report.md`, `reconciliation-summary.csv`, and
-  `reconciliation-details.csv`.
-- The guard compares generated Markdown and CSV contents against the committed
-  `docs/demo-output/mixed-demo/` snapshot without mutating snapshot files.
-- Updated test strategy, changelog, and demo-output snapshot docs to describe
-  the new regression guard.
-- No source behavior, CLI shape, report format, dependencies, sample inputs, or
-  committed demo-output snapshot files were changed.
+  `SECURITY.md`, and `CHANGELOG.md`.
+- Inspected `pyproject.toml` and confirmed the project targets Python 3.12 or
+  newer with pytest and Ruff as configured development tools.
+- Confirmed `mypy` is not configured for this repository: there is no mypy dev
+  dependency, no `[tool.mypy]` configuration, and no local type-check command
+  reference.
+- Reviewed the existing `.github/workflows/ci.yml` and confirmed it already
+  installs `uv`, uses Python 3.12, syncs locked dependencies, runs pytest, Ruff,
+  CLI help checks, and CSV/XLSX demo smoke commands.
+- Updated the CI trigger so the workflow runs on pull requests and all pushes,
+  matching the requested phase scope.
+- Updated README, runbook, requirements, test strategy, security notes, and
+  changelog wording so CI trigger documentation matches the workflow.
+- Did not modify committed demo snapshots under `docs/demo-output/`.
 
 ## Changed In This Pass
 
 | Path | Purpose | Status |
 |---|---|---|
-| `tests/test_sample_data.py` | Added the mixed CSV demo snapshot regression guard. | Updated |
-| `TDD.md` | Documented the new snapshot guard in the test strategy. | Updated |
-| `CHANGELOG.md` | Recorded the new automated regression guard. | Updated |
-| `docs/demo-output/README.md` | Noted that the committed snapshot is regression-tested. | Updated |
-| `STATE.md` | Recorded phase scope, changes, validation, and known issues. | Updated |
+| `.github/workflows/ci.yml` | Runs CI on `pull_request` and all `push` events. | Updated |
+| `README.md` | Documents CI as running on pull requests and pushes. | Updated |
+| `RUNBOOK.md` | Documents CI trigger behavior and preserved quality gate scope. | Updated |
+| `REQ.md` | Updates Phase 9 acceptance wording for pull requests and pushes. | Updated |
+| `TDD.md` | Updates test strategy CI trigger wording. | Updated |
+| `SECURITY.md` | Updates CI security review wording for the broader push trigger. | Updated |
+| `CHANGELOG.md` | Records the CI trigger update. | Updated |
+| `STATE.md` | Records this phase scope, validation, and known issues. | Updated |
 
 ## Validation And Quality Gates
 
 | Command | Status | Result |
 |---|---|---|
 | `git status --short --untracked-files=all` | Pass | Initial output was empty; working tree started clean. |
-| `uv run pytest tests\test_sample_data.py -q` | Pass | `12 passed in 0.57s`; the new snapshot guard passed, so the committed snapshot is current. |
-| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 2ms`; `Checked 10 packages in 1ms`. |
-| `uv run pytest` | Pass | `40 passed in 0.54s` on win32 with Python 3.14.4. |
-| `uv run ruff check .` | Fail, fixed | First run failed with `E501 Line too long` in `tests/test_sample_data.py`; the constant was wrapped and the command was rerun. |
-| `uv run ruff check .` | Pass | Rerun output: `All checks passed!`. |
+| `uv sync --locked --dev` | Pass | `Resolved 10 packages in 1ms`; `Checked 10 packages in 2ms`. |
+| `uv run pytest` | Pass | `40 passed in 0.59s` on win32 with Python 3.14.4. |
+| `uv run ruff check .` | Pass | `All checks passed!`. |
 | `uv run ruff format --check .` | Pass | `12 files already formatted`. |
+| `uv run mypy src` | Skipped | Mypy is not configured for this repo and is not in the development dependency group. |
 | `uv run reconcile --help` | Pass | Printed top-level usage for `reconcile [-h] [--version] {report} ...`. |
 | `uv run reconcile report --help` | Pass | Printed report usage with required `--invoices`, `--payments`, and `--out-dir` options. |
-| `uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports\demo-csv` | Pass | Wrote Markdown, summary CSV, and details CSV under ignored `reports\demo-csv`. |
-| `uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx` | Pass | Wrote Markdown, summary CSV, and details CSV under ignored `reports\demo-xlsx`. |
-| `Get-ChildItem -Name -LiteralPath reports\demo-csv` | Pass | Listed only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `Get-ChildItem -Name -LiteralPath reports\demo-xlsx` | Pass | Listed only `reconciliation-details.csv`, `reconciliation-report.md`, and `reconciliation-summary.csv`. |
-| `git status --short --untracked-files=all` | Pass | Shows only modified `CHANGELOG.md`, `TDD.md`, `docs/demo-output/README.md`, `tests/test_sample_data.py`, and `STATE.md`. |
+| `uv run reconcile report --invoices sample-data/mixed-demo/invoices.csv --payments sample-data/mixed-demo/payments.csv --out-dir reports\ci-csv` | Pass | Wrote Markdown, summary CSV, and details CSV under ignored `reports\ci-csv`. |
+| `uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\ci-xlsx` | Pass | Wrote Markdown, summary CSV, and details CSV under ignored `reports\ci-xlsx`. |
+| `git status --short --untracked-files=all` | Pass | Shows modified `.github/workflows/ci.yml`, `CHANGELOG.md`, `README.md`, `REQ.md`, `RUNBOOK.md`, `SECURITY.md`, `STATE.md`, and `TDD.md`. |
+| `git diff --check` | Pass | No whitespace errors; Git emitted line-ending normalization warnings for touched text files. |
 
 ## Issues Found
 
-- A transient Ruff `E501` failure was introduced by the initial snapshot path
-  constant. It was fixed by wrapping the constant, and Ruff passed on rerun.
+- No validation failures were found.
 
 ## Known Issues And Deferred Work
 
 - No known blocker remains for this phase.
-- Ignored local report artifacts were regenerated under `reports\demo-csv` and
-  `reports\demo-xlsx` by the required validation commands; they remain outside
-  the committed demo-output snapshot.
-- Screenshots remain intentionally absent. Add real manual screenshots later
-  only from synthetic demo data and generated report views.
-- Excel workbook report output remains deferred until a later phase explicitly
-  approves it.
-- Fuzzy matching, partial-payment allocation, overpayment/underpayment policy
-  beyond report notes for one-to-one amount mismatches, and many-to-one
-  matching remain deferred.
+- The CI workflow does not run `mypy` because mypy is not configured for this
+  repository.
+- Ignored local report artifacts were generated under `reports\ci-csv` and
+  `reports\ci-xlsx` by the local workflow smoke validation.
+- GitHub Actions is CI-only and intentionally does not deploy, upload artifacts,
+  use secrets, or call paid/runtime external services.
+- Fuzzy matching, partial-payment allocation, many-to-one matching, Excel
+  workbook report output, databases, FastAPI, and deployment remain deferred.
 
 ## Git Policy
 

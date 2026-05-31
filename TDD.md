@@ -142,7 +142,7 @@ uv run reconcile report --help
 ```
 
 The GitHub Actions CI workflow mirrors this gate with `uv sync --locked --dev`
-on pull requests and pushes to `main`.
+on pull requests and pushes.
 
 When CLI behavior is present, also run:
 

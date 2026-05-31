@@ -75,6 +75,8 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- GitHub Actions CI now runs on pull requests and all pushes, while preserving
+  the existing locked `uv` quality gate and no-deployment/no-secrets scope.
 - README now has a stronger top-level value proposition and an explicit `uv`
   installation pointer for first-time reviewers.
 - Public-facing docs now use active-status wording where draft-status metadata

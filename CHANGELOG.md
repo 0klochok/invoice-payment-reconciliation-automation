@@ -27,7 +27,8 @@ All notable project changes are recorded here.
   rerunning the CSV/XLSX walkthrough.
 - Phase 10 final portfolio polish and release-readiness review record.
 - Phase 9 minimal GitHub Actions CI workflow for pull requests and pushes to
-  `main`, using `uv sync --locked --dev` and the documented local quality gate.
+  all branches, using `uv sync --locked --dev` and the documented local quality
+  gate.
 - Phase 7 generated Markdown/CSV demo-output snapshot under
   `docs/demo-output/mixed-demo/`, generated from existing mixed sample data for
   reviewer clarity.

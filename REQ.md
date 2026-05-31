@@ -142,7 +142,7 @@ real client data.
 
 | ID | Requirement | Given | When | Then | Validation |
 |---|---|---|---|---|---|
-| AC-001 | P0-002 | A fresh local checkout | `uv sync` is run | Dependencies install from uv config | Manual/local |
+| AC-001 | P0-002 | A fresh local checkout | `uv sync --locked --dev` is run | Dependencies install from uv config | Manual/local |
 | AC-002 | P0-003 | Phase 0 CLI exists | `uv run reconcile --help` is run | Help text is printed and exits successfully | Smoke |
 | AC-003 | P0-004 | Phase 0 tests exist | `uv run pytest` is run | Tests pass | Automated |
 | AC-004 | P0-004 | Phase 0 tooling exists | Ruff check and format check are run | Both pass | Automated |

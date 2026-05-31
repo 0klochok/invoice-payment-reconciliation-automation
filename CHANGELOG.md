@@ -6,6 +6,10 @@ All notable project changes are recorded here.
 
 ### Added
 
+- `docs/demo-output/README.md` explaining the committed mixed-demo report
+  snapshot for reviewers.
+- `docs/screenshots/README.md` placeholder for future manually captured
+  screenshots without adding fabricated images.
 - Final public portfolio presentation-readiness verification for README,
   RUNBOOK, committed demo-output snapshots, ignored local reports, and quality
   gates.
@@ -68,6 +72,12 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README now has a stronger top-level value proposition and an explicit `uv`
+  installation pointer for first-time reviewers.
+- Public-facing docs now use active-status wording where draft-status metadata
+  made stable docs look unfinished.
+- SECURITY now describes the current row validation behavior instead of stale
+  future-phase validation wording.
 - RUNBOOK manual commit policy now uses tool-neutral public wording while
   preserving the manual Git workflow.
 - Public-facing project docs now use service-neutral wording for unapproved

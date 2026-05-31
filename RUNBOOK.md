@@ -17,6 +17,10 @@
 - No secrets, service accounts, paid API keys, or external services are
   required for the demo.
 
+Install `uv` from the
+[official uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+if it is not already available.
+
 ## Setup
 
 After cloning the repository, open PowerShell in the repository root, the

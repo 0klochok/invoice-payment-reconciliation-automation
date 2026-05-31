@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 |
-| Status | Active draft |
+| Last updated | 2026-05-31 |
+| Status | Active |
 | Scope | CLI-first local invoice and payment reconciliation automation |
 
 ## Design Objective
@@ -15,14 +15,13 @@ users reconcile invoice exports against payment exports. The system should be
 easy to run on Windows with PowerShell and `uv`, require no external services,
 and produce reviewable outputs from synthetic demo data.
 
-Phase 7 was a final portfolio/demo documentation readiness pass over the current
-local CLI behavior. Phase 8 was a final local release-readiness review of that
-portfolio version. Phase 9 adds a minimal GitHub Actions CI quality gate for the
-stable local checks. The workflow remains CLI-first and local-demo-first: CSV
-and XLSX inputs are parsed locally, deterministic matching is unchanged, and
-report outputs remain Markdown and CSV. It does not implement Excel workbook
-report output, fuzzy matching, databases, web APIs, deployment, or runtime
-external services.
+The current portfolio version includes documentation readiness, local
+release-readiness review, and a minimal GitHub Actions CI quality gate for the
+stable checks. The workflow remains CLI-first and local-demo-first: CSV and XLSX
+inputs are parsed locally, deterministic matching is unchanged, and report
+outputs remain Markdown and CSV. It does not implement Excel workbook report
+output, fuzzy matching, databases, web APIs, deployment, or runtime external
+services.
 
 ## Architecture Summary
 
@@ -70,17 +69,20 @@ runtime external service is part of the MVP.
 |-- reports/
 |   `-- .gitkeep
 |-- docs/screenshots/
-|   `-- .gitkeep
-|-- docs/demo-output/mixed-demo/
-|   |-- reconciliation-details.csv
-|   |-- reconciliation-report.md
-|   `-- reconciliation-summary.csv
+|   |-- .gitkeep
+|   `-- README.md
+|-- docs/demo-output/
+|   |-- README.md
+|   `-- mixed-demo/
+|       |-- reconciliation-details.csv
+|       |-- reconciliation-report.md
+|       `-- reconciliation-summary.csv
 |-- pyproject.toml
 |-- uv.lock
 `-- source-of-truth docs
 ```
 
-## Planned Components
+## Current Components
 
 | Component | Responsibility | Status |
 |---|---|---|
@@ -88,7 +90,7 @@ runtime external service is part of the MVP.
 | Readers | Load invoice and payment files from CSV/XLSX. | CSV and XLSX implemented |
 | Schemas/models | Represent validated invoice and payment records. | Implemented for Phase 1 inputs |
 | Validators | Capture structured row-level validation errors. | Basic row validation implemented |
-| Normalizers | Normalize names, emails, and comparable fields. | Whitespace/currency implemented; email planned |
+| Normalizers | Normalize comparable text and currency fields. | Whitespace/currency implemented; email is not part of the current sample schema |
 | Matching engine | Match payments to invoices and classify exceptions. | Implemented for deterministic one-to-one Phase 2 rules |
 | Report writers | Write local Markdown and CSV outputs from matching results. | Markdown/CSV implemented with polished exception labels and sorted detail rows |
 

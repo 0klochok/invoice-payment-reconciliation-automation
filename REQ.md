@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 |
-| Status | Active draft |
+| Last updated | 2026-05-31 |
+| Status | Active |
 | Project | invoice-payment-reconciliation-automation-new |
 | Project type | Portfolio/demo automation |
 | Primary users | Accounting and operations teams |

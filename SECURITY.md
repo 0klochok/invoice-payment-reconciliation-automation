@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 |
-| Status | Active draft |
+| Last updated | 2026-05-31 |
+| Status | Active |
 | Repository visibility | Public portfolio/demo by default |
 | Risk level | Low while using synthetic local data only |
 
@@ -26,7 +26,7 @@
 | Data Type | Allowed? | Notes |
 |---|---:|---|
 | Synthetic sample data | Yes | May be committed when clearly fake. |
-| Generated local reports | Local only | Ignored by Git except `reports/.gitkeep`. |
+| Generated local reports | Local only | Ignored by Git under `reports/`; intentional fake Markdown/CSV snapshots may be committed under `docs/demo-output/`. |
 | Real client data | No | Must never be committed or used for demo tests. |
 | Secrets and credentials | No | Must never be committed or logged. |
 
@@ -39,9 +39,10 @@
 
 ## Input Safety
 
-Future phases will validate user-provided file paths and imported row data.
-Invalid rows should be captured as structured validation errors instead of
-crashing the reconciliation run where practical.
+The CLI validates imported invoice and payment rows before reconciliation.
+Invalid rows are captured as structured diagnostics with source, row, field,
+error code, and message details where practical. File processing remains local
+to caller-provided paths and synthetic demo inputs.
 
 ## Phase 1 Security Review
 

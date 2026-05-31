@@ -1,9 +1,10 @@
 # Invoice Payment Reconciliation Automation
 
-CLI-first Python portfolio project for reconciling invoice files against payment
-files. The tool imports synthetic CSV or XLSX invoice/payment exports, validates
-rows, matches payments to invoices with deterministic local rules, categorizes
-exceptions, and writes review-ready Markdown and CSV reports.
+CLI-first Python portfolio project for turning invoice and payment exports into
+review-ready reconciliation reports. The tool imports synthetic CSV or XLSX
+files, validates rows, matches payments to invoices with deterministic local
+rules, categorizes exceptions, and writes Markdown/CSV outputs that a reviewer
+can inspect without external services or real client data.
 
 ## Project Purpose
 
@@ -15,9 +16,10 @@ client demo.
 
 ## What This Demonstrates
 
-- Business automation for a common back-office reconciliation workflow.
+- End-to-end business automation for a common back-office reconciliation
+  workflow.
 - Input validation and normalization before reconciliation logic runs.
-- Deterministic matching with explicit exception categories for human review.
+- Deterministic matching with explicit exception categories and review notes.
 - Review-ready Markdown and CSV outputs that are easy to inspect or share.
 - Reproducible local demos using fake CSV/XLSX data and locked dependencies.
 - Test coverage and quality gates suitable for a portfolio-ready Python CLI
@@ -70,8 +72,12 @@ intentional generated report example.
 
 ## Quickstart
 
-Use PowerShell from the repository root. Install dependencies from the lockfile
-and run the local quality gate:
+Use PowerShell from the repository root. Prerequisite: install `uv` from the
+[official uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+if it is not already available on `PATH`.
+
+From a fresh clone, sync dependencies from the lockfile and run the local
+quality gate:
 
 ```powershell
 uv sync --locked --dev

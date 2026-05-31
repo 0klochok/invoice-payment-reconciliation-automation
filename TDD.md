@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-05-30 |
-| Status | Active draft |
+| Last updated | 2026-05-31 |
+| Status | Active |
 | Applies to | invoice-payment-reconciliation-automation-new |
 
 ## Testing Policy
@@ -110,9 +110,9 @@ Phase 9 adds minimal GitHub Actions CI coverage:
 - No tests were added because Phase 9 adds CI scaffolding only and does not
   change runtime behavior.
 
-## Future Test Layers
+## Test Layers
 
-| Layer | Purpose | Planned Location |
+| Layer | Purpose | Location |
 |---|---|---|
 | Unit | Validate pure parsing, normalization, validation, and matching rules. | `tests/` |
 | Integration | Load CSV/XLSX fixtures and verify structured results. | `tests/` |

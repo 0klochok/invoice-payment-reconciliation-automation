@@ -19,9 +19,8 @@ The current portfolio version includes documentation readiness, local
 release-readiness review, and a minimal GitHub Actions CI quality gate for the
 stable checks. The workflow remains CLI-first and local-demo-first: CSV and XLSX
 inputs are parsed locally, deterministic matching is unchanged, and report
-outputs remain Markdown and CSV. It does not implement Excel workbook report
-output, fuzzy matching, databases, web APIs, deployment, or runtime external
-services.
+outputs include Markdown, CSV, and XLSX workbook files. It does not implement
+fuzzy matching, databases, web APIs, deployment, or runtime external services.
 
 ## Architecture Summary
 
@@ -70,13 +69,17 @@ runtime external service is part of the MVP.
 |   `-- .gitkeep
 |-- docs/screenshots/
 |   |-- .gitkeep
-|   `-- README.md
+|   |-- README.md
+|   |-- workbook-exceptions.png
+|   |-- workbook-matched.png
+|   `-- workbook-summary.png
 |-- docs/demo-output/
 |   |-- README.md
 |   `-- mixed-demo/
 |       |-- reconciliation-details.csv
 |       |-- reconciliation-report.md
-|       `-- reconciliation-summary.csv
+|       |-- reconciliation-summary.csv
+|       `-- reconciliation-workbook.xlsx
 |-- pyproject.toml
 |-- uv.lock
 `-- source-of-truth docs
@@ -92,14 +95,14 @@ runtime external service is part of the MVP.
 | Validators | Capture structured row-level validation errors. | Basic row validation implemented |
 | Normalizers | Normalize comparable text and currency fields. | Whitespace/currency implemented; email is not part of the current sample schema |
 | Matching engine | Match payments to invoices and classify exceptions. | Implemented for deterministic one-to-one Phase 2 rules |
-| Report writers | Write local Markdown and CSV outputs from matching results. | Markdown/CSV implemented with polished exception labels and sorted detail rows |
+| Report writers | Write local Markdown, CSV, and XLSX workbook outputs from matching results. | Markdown/CSV/XLSX implemented with polished exception labels and sorted detail rows |
 
 ## Data Flow
 
 End-to-end flow, with Phase 1 covering steps 2-4 for CSV, Phase 2 covering step
 5 for normalized in-memory records, Phase 3 covering Markdown and CSV outputs in
-step 6, Phase 5 extending step 2 to XLSX inputs, and Phase 6 polishing the
-report presentation in step 6:
+step 6, Phase 5 extending step 2 to XLSX inputs, Phase 6 polishing report
+presentation, and this phase adding XLSX workbook output in step 6:
 
 1. User runs `reconcile` with invoice and payment file paths.
 2. Readers load CSV or XLSX rows.
@@ -107,9 +110,9 @@ report presentation in step 6:
 4. Normalizers trim whitespace, uppercase currencies, parse dates, and parse
    decimal amounts.
 5. Matching engine categorizes exact matches and deterministic exceptions.
-6. Report writers generate deterministic Markdown and CSV files in a local
-   output directory with concise totals, status summaries, sorted detail rows,
-   and review notes for exception categories.
+6. Report writers generate deterministic Markdown, CSV, and XLSX workbook files
+   in a local output directory with concise totals, status summaries, sorted
+   detail rows, and review notes for exception categories.
 
 ## Phase 0 Decisions
 
@@ -124,19 +127,19 @@ report presentation in step 6:
 | ADR-007 | Use a pure in-memory Phase 2 matcher over validated records. | Keeps matching deterministic, testable, and separate from import validation. |
 | ADR-008 | Treat duplicate invoice or payment references as ambiguous. | Avoids guessing at many-to-one or many-to-many matches before business rules exist. |
 | ADR-009 | Prioritize currency mismatch before amount mismatch. | Prevents comparing amounts as equivalent when currencies differ. |
-| ADR-010 | Generate Markdown and CSV reports before Excel workbooks. | Provides useful local review artifacts without adding runtime dependencies in Phase 3. |
+| ADR-010 | Generate Markdown and CSV reports before Excel workbooks. | Provides useful local review artifacts before adding workbook output. |
 | ADR-011 | Keep report content timestamp-free. | Preserves deterministic report snapshots and stable tests. |
 | ADR-012 | Use `openpyxl` for XLSX input parsing. | XLSX files are zipped XML workbooks; `openpyxl` is a minimal standard Python dependency for local spreadsheet reading and avoids fragile custom parsing. |
 | ADR-013 | Sort report detail rows by status category and reference in the reporting layer. | Improves client-demo readability without changing matching semantics or input parsing behavior. |
 | ADR-014 | Omit empty Markdown detail sections. | Keeps clean and mixed demo reports concise without placeholder filler. |
-| ADR-015 | Commit a small Markdown/CSV demo-output snapshot under `docs/demo-output/`. | Gives reviewers concrete expected output without storing generated XLSX workbooks or large binary report artifacts. |
+| ADR-015 | Commit a small synthetic demo-output snapshot under `docs/demo-output/`. | Gives reviewers concrete expected Markdown, CSV, and workbook output. |
 | ADR-016 | Add minimal GitHub Actions CI only after the local release-readiness gate is stable. | Mirrors the local quality gate for portfolio review without adding deployment, secrets, artifacts, or runtime services. |
+| ADR-017 | Use `openpyxl` for deterministic XLSX workbook report output. | Reuses the existing locked XLSX dependency and keeps report generation local and testable. |
 
 ## Known Limitations
 
 - Fuzzy matching is not implemented.
 - Partial-payment allocation and many-to-one matching are not implemented.
-- Excel workbook report output is not implemented.
 - Email normalization is not part of the current sample schema.
 - No web app, FastAPI service, database, deployment, paid API, runtime external
   service, or real client data is part of the current design.

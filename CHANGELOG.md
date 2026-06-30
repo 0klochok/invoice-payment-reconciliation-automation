@@ -6,6 +6,14 @@ All notable project changes are recorded here.
 
 ### Added
 
+- XLSX workbook report output generated alongside the existing Markdown and CSV
+  reports by `reconcile report`.
+- Workbook report tests covering expected sheet names, summary values, and
+  mixed-demo exception values.
+- Committed synthetic mixed-demo workbook artifact under
+  `docs/demo-output/mixed-demo/`.
+- Workbook sheet preview PNGs under `docs/screenshots/` for reviewer-friendly
+  README screenshots.
 - Automated pytest regression guard that regenerates the mixed CSV demo output
   in a temporary directory and compares it with the committed
   `docs/demo-output/mixed-demo/` snapshot.
@@ -76,6 +84,11 @@ All notable project changes are recorded here.
 
 ### Changed
 
+- README now opens with a client-facing 60-second read, manual-vs-automated
+  process comparison, matching rules table, real-client adaptation notes, and
+  current limitations.
+- CLI help and success output now describe Markdown, CSV, and XLSX workbook
+  report outputs.
 - README, RUNBOOK, and SECURITY now present the public portfolio demo flow more
   directly, with clearer local-only posture and no-production-readiness
   overclaiming.
@@ -120,10 +133,10 @@ All notable project changes are recorded here.
 - Summary and details CSV reports now use clearer exception labels and detail
   reasons for unmatched, amount variance, currency conflict, and duplicate
   reference rows.
-- `reconcile report` success output now groups the generated Markdown and CSV
-  file paths under a concise `Report files written:` heading.
+- `reconcile report` success output now groups the generated Markdown, CSV, and
+  workbook file paths under a concise `Report files written:` heading.
 - CLI report input help now accepts CSV or XLSX invoice and payment files while
-  preserving Markdown/CSV report output behavior.
+  preserving local report output behavior.
 - README, runbook, and sample-data notes now include concise Phase 5 XLSX demo
   commands.
 - README, runbook, and sample-data notes now include a concise Phase 4 mixed

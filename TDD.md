@@ -83,12 +83,20 @@ Phase 6 adds client-presentable reporting and CLI polish tests:
 - CLI success output wording for the generated Markdown, summary CSV, and
   details CSV files.
 
+Workbook report coverage adds:
+
+- Report writer coverage for creating `reconciliation-workbook.xlsx`.
+- Sheet-name checks for `Summary`, `Matched`, `Exceptions`,
+  `Invoice Exceptions`, `Payment Exceptions`, and `Details`.
+- Key-value checks for summary counts and mixed-demo exception detail values.
+- CLI and output-containment checks updated for four generated report files.
+
 Phase 7 adds a documentation and demo-readiness validation pass:
 
 - README, runbook, sample-data notes, requirements, design, test strategy,
   changelog, and state reviewed against current implemented behavior.
-- Generated Markdown/CSV example output snapshot under `docs/demo-output/`
-  created from existing mixed sample data.
+- Generated Markdown, CSV, and workbook example output snapshot under
+  `docs/demo-output/` created from existing mixed sample data.
 - Manual smoke validation of CSV-input and XLSX-input demo commands.
 - Manual equivalence check for generated CSV-input and XLSX-input report files.
 - No tests were added because Phase 7 does not change runtime behavior.
@@ -115,9 +123,10 @@ committed reviewer snapshot:
 
 - Regenerates the mixed CSV demo report into a pytest `tmp_path`.
 - Asserts the generated file set is exactly the expected Markdown, summary CSV,
-  and details CSV artifacts.
+  details CSV, and workbook artifacts.
 - Compares the generated Markdown and CSV contents with
-  `docs/demo-output/mixed-demo/` without mutating the committed snapshot.
+  `docs/demo-output/mixed-demo/` without mutating the committed snapshot, and
+  checks workbook sheet names plus selected summary and exception values.
 
 ## Test Layers
 
@@ -159,4 +168,3 @@ Future approved behavior changes should add focused tests for new rules, such
 as:
 
 - Partial-payment allocation or many-to-one matching if approved.
-- Excel workbook report workflows if a later phase explicitly approves them.

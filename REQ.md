@@ -31,7 +31,7 @@ real client data.
 | FR-005 | Capture invalid rows with row number, source, field, error code, and message. | P0 | Implemented in Phase 1 |
 | FR-006 | Match payments to invoices using deterministic local rules. | P0 | Implemented in Phase 2 |
 | FR-007 | Categorize reconciliation exceptions for review. | P0 | Implemented in Phase 2; labels polished in Phase 6 |
-| FR-008 | Generate Markdown and CSV reconciliation reports. | P0 | Implemented in Phase 3; presentation polished in Phase 6 |
+| FR-008 | Generate Markdown, CSV, and XLSX workbook reconciliation reports. | P0 | Markdown/CSV implemented in Phase 3; workbook output implemented in this phase |
 | FR-009 | Include realistic fake sample data for local demos. | P0 | CSV samples added in Phase 1; mixed CSV/XLSX demo samples added in Phases 4 and 5 |
 
 ## Phase 0 Requirements
@@ -80,7 +80,7 @@ real client data.
 | ID | Requirement | Acceptance Signal | Status |
 |---|---|---|---|
 | P4-001 | Add a deterministic mixed CSV demo scenario for portfolio review. | Mixed sample inputs include matched records and each implemented exception category. | Implemented |
-| P4-002 | Keep the mixed demo synthetic and local-demo-first. | Sample rows are fake and report output remains local Markdown/CSV. | Implemented |
+| P4-002 | Keep the mixed demo synthetic and local-demo-first. | Sample rows are fake and report output remains local. | Implemented |
 | P4-003 | Add smoke coverage for mixed-demo parseability and output containment. | Tests verify mixed sample counts and report files stay inside the requested output directory. | Implemented |
 
 ## Phase 5 Requirements
@@ -91,7 +91,7 @@ real client data.
 | P5-002 | Load payment XLSX files through the same normalization and validation rules as CSV files. | `load_payment_xlsx` returns validated records and structured diagnostics. | Implemented |
 | P5-003 | Preserve existing CSV input behavior and report outputs. | Existing CSV tests and CSV CLI smoke commands continue to pass. | Implemented |
 | P5-004 | Add mixed synthetic XLSX sample files equivalent to the deterministic mixed CSV demo. | Mixed CSV and XLSX sample inputs produce equivalent status counts. | Implemented |
-| P5-005 | Keep Excel workbook report output, fuzzy matching, databases, web APIs, and external services out of scope. | CLI stays deterministic and local-demo-first with Markdown/CSV report outputs. | Implemented |
+| P5-005 | Keep fuzzy matching, databases, web APIs, and external services out of scope. | CLI stays deterministic and local-demo-first. | Implemented |
 
 ## Phase 6 Requirements
 
@@ -99,17 +99,17 @@ real client data.
 |---|---|---|---|
 | P6-001 | Improve Markdown report clarity for portfolio/client demos without changing matching semantics. | Markdown includes concise totals, clearer status summary labels, sorted detail sections, and no empty placeholder sections. | Implemented |
 | P6-002 | Improve exception detail readability for unmatched, underpaid/overpaid, currency conflict, and duplicate-reference cases. | Markdown and details CSV include client-readable review notes while preserving stable status values. | Implemented |
-| P6-003 | Preserve Markdown, summary CSV, and details CSV as the only report outputs. | CLI writes only `reconciliation-report.md`, `reconciliation-summary.csv`, and `reconciliation-details.csv`. | Implemented |
+| P6-003 | Preserve deterministic Markdown, summary CSV, and details CSV report outputs. | CLI writes `reconciliation-report.md`, `reconciliation-summary.csv`, and `reconciliation-details.csv`. | Implemented |
 | P6-004 | Keep CSV and XLSX input behavior unchanged. | Existing CSV/XLSX ingestion and equivalence tests continue to pass. | Implemented |
-| P6-005 | Keep Excel workbook output, web apps, databases, deployment, runtime external services, and matching changes out of scope. | No future-phase components or dependencies are added. | Implemented |
+| P6-005 | Keep web apps, databases, deployment, runtime external services, and matching changes out of scope. | No future-phase components or dependencies are added. | Implemented |
 
 ## Phase 7 Requirements
 
 | ID | Requirement | Acceptance Signal | Status |
 |---|---|---|---|
 | P7-001 | Make source-of-truth docs portfolio-ready for the current implemented CLI behavior. | README, runbook, sample-data notes, requirements, design, test strategy, changelog, and state describe current behavior consistently. | Implemented |
-| P7-002 | Document exact local demo commands and expected output files. | Docs show CSV and XLSX-input commands and list the three generated Markdown/CSV files. | Implemented |
-| P7-003 | Include a small generated demo-output snapshot only if it helps reviewer clarity. | `docs/demo-output/mixed-demo/` contains only Markdown/CSV report examples generated from existing sample data. | Implemented |
+| P7-002 | Document exact local demo commands and expected output files. | Docs show CSV and XLSX-input commands and list generated report files. | Implemented |
+| P7-003 | Include a small generated demo-output snapshot only if it helps reviewer clarity. | `docs/demo-output/mixed-demo/` contains report examples generated from existing sample data. | Implemented |
 | P7-004 | Preserve current reconciliation, ingestion, and report-generation behavior. | No core logic changes, new dependencies, web app, database, deployment, runtime external service, or XLSX report output are added. | Implemented |
 
 ## Phase 8 Requirements
@@ -117,8 +117,8 @@ real client data.
 | ID | Requirement | Acceptance Signal | Status |
 |---|---|---|---|
 | P8-001 | Complete a final local release-readiness review for the portfolio version. | Source-of-truth docs, setup steps, demo commands, generated outputs, limitations, sample-data notes, and quality-gate instructions are reviewed against current behavior. | Implemented |
-| P8-002 | Verify documented CSV and XLSX demo commands from clean local output directories. | `reports\demo-csv` and `reports\demo-xlsx` are regenerated with exactly the expected Markdown and CSV outputs. | Implemented |
-| P8-003 | Verify repository hygiene for a public portfolio demo. | Ignored report artifacts remain ignored, `docs/demo-output/` contains only intentional Markdown/CSV examples, and no accidental secrets, paid API assumptions, large binaries, generated cache files, or unrelated tracked artifacts are found. | Implemented |
+| P8-002 | Verify documented CSV and XLSX demo commands from clean local output directories. | `reports\demo-csv` and `reports\demo-xlsx` are regenerated with expected local outputs. | Implemented |
+| P8-003 | Verify repository hygiene for a public portfolio demo. | Ignored report artifacts remain ignored, `docs/demo-output/` contains only intentional synthetic examples, and no accidental secrets, paid API assumptions, large binaries, generated cache files, or unrelated tracked artifacts are found. | Implemented |
 | P8-004 | Preserve current runtime behavior. | No reconciliation, ingestion, report-generation, dependency, deployment, web, database, runtime external service, paid API, secret, commit, push, staging, or history changes are made. | Implemented |
 
 ## Phase 9 Requirements
@@ -129,10 +129,18 @@ real client data.
 | P9-002 | Use `uv` and the lockfile in CI. | Workflow installs `uv`, runs `uv sync --locked --dev`, then runs pytest, Ruff checks, CLI help smoke checks, and CSV/XLSX demo commands. | Implemented |
 | P9-003 | Keep CI non-deploying and local-demo-focused. | Workflow does not upload artifacts, configure secrets, deploy, or add external services beyond GitHub Actions CI. | Implemented |
 
+## Workbook Report Requirements
+
+| ID | Requirement | Acceptance Signal | Status |
+|---|---|---|---|
+| WB-001 | Generate an XLSX workbook report alongside existing Markdown and CSV outputs. | `reconcile report` writes `reconciliation-workbook.xlsx` under the requested output directory. | Implemented |
+| WB-002 | Keep workbook output deterministic and local. | Workbook sheets and key values are covered by pytest using `openpyxl`. | Implemented |
+| WB-003 | Include reviewable workbook sheets for matched rows and exceptions. | Workbook contains `Summary`, `Matched`, `Exceptions`, `Invoice Exceptions`, `Payment Exceptions`, and `Details`. | Implemented |
+| WB-004 | Refresh the synthetic committed demo snapshot. | `docs/demo-output/mixed-demo/` includes Markdown, CSV, and workbook output generated from synthetic mixed demo data. | Implemented |
+
 ## Out of Scope
 
 - Fuzzy matching and probabilistic matching.
-- Excel workbook report generation unless a later phase explicitly approves it.
 - FastAPI or any web service.
 - Database or persistence layer.
 - Deployment or hosted runtime automation beyond minimal CI.
@@ -152,12 +160,13 @@ real client data.
 | AC-008 | P2-001 | Valid normalized invoices and payments exist | `match_invoices_to_payments` is called | Exact matching and exceptions are returned deterministically | Automated |
 | AC-009 | P3-001 | Phase 2 reconciliation results exist | Markdown reporting is called | Summary and detail sections are rendered deterministically | Automated |
 | AC-010 | P3-002 | Phase 2 reconciliation results exist | CSV reporting is called | Summary and detail CSV rows include all Phase 2 statuses in stable order | Automated |
-| AC-011 | P3-003 | Valid sample CSV inputs exist | `uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports` is run | Markdown and CSV report files are written locally | Smoke |
+| AC-011 | P3-003 | Valid sample CSV inputs exist | `uv run reconcile report --invoices sample-data/valid-invoices.csv --payments sample-data/valid-payments.csv --out-dir reports` is run | Markdown, CSV, and workbook report files are written locally | Smoke |
 | AC-012 | P5-004 | Mixed sample CSV and XLSX inputs exist | Reconciliation is run for both formats | Status counts and Markdown/CSV report outputs are equivalent, and report files stay under the requested output directory | Automated/smoke |
-| AC-013 | P6-001 | Mixed sample inputs exist | Reconciliation report generation is run | Markdown and CSV outputs use clear labels, review notes, and deterministic status/reference ordering without XLSX report output | Automated/smoke |
-| AC-014 | P7-002 | Source-of-truth docs and mixed sample inputs exist | Required validation and demo commands are run | Docs match current behavior, demo directories contain only the three expected report files, and CSV/XLSX-input outputs are equivalent | Manual/smoke |
+| AC-013 | P6-001 | Mixed sample inputs exist | Reconciliation report generation is run | Markdown, CSV, and workbook outputs use clear labels, review notes, and deterministic status/reference ordering | Automated/smoke |
+| AC-014 | P7-002 | Source-of-truth docs and mixed sample inputs exist | Required validation and demo commands are run | Docs match current behavior, demo directories contain the expected report files, and CSV/XLSX-input outputs are equivalent | Manual/smoke |
 | AC-015 | P8-001 | Portfolio-ready docs and mixed sample inputs exist | Full release-readiness validation is run locally | Quality gates pass, documented demo outputs regenerate cleanly, ignored artifacts stay ignored, and no repository hygiene issues are found | Manual/smoke |
 | AC-016 | P9-001 | Minimal CI workflow exists | A pull request or push runs in GitHub Actions | CI syncs locked dependencies and runs the documented quality gate without deployment, secrets, or artifact upload | CI |
+| AC-017 | WB-001 | Valid sample inputs exist | `reconcile report` is run | `reconciliation-workbook.xlsx` is generated with expected sheets and values | Automated/smoke |
 
 ## Data Policy
 

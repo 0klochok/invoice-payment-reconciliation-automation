@@ -1,8 +1,14 @@
 # Screenshots
 
-No screenshots are committed yet. When screenshots are added manually later,
-they should show real CLI output or generated report views from the synthetic
-demo data only.
+This directory contains reviewer-friendly workbook sheet previews generated
+from the synthetic mixed demo workbook.
 
-Do not add fabricated images, real client data, secrets, production exports, or
-private information.
+## Files
+
+- `workbook-summary.png`: preview of the workbook `Summary` sheet.
+- `workbook-exceptions.png`: preview of the workbook `Exceptions` sheet.
+- `workbook-matched.png`: preview of the workbook `Matched` sheet.
+
+These are generated PNG table previews, not native Excel screenshots. They use
+synthetic demo data only and must not contain real client data, secrets,
+production exports, or private information.

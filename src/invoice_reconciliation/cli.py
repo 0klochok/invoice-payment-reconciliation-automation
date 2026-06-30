@@ -19,8 +19,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="reconcile",
         description=(
             "Invoice and payment reconciliation automation. "
-            "Generates local Markdown and CSV reconciliation reports from "
-            "validated CSV or XLSX inputs."
+            "Generates local Markdown, CSV, and XLSX workbook reconciliation "
+            "reports from validated CSV or XLSX inputs."
         ),
     )
     parser.add_argument(
@@ -32,10 +32,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     report_parser = subparsers.add_parser(
         "report",
-        help="generate local Markdown and CSV reconciliation reports",
+        help="generate local Markdown, CSV, and XLSX workbook reports",
         description=(
             "Load invoice and payment CSV or XLSX files, run deterministic "
-            "matching, and write local Markdown and CSV reports."
+            "matching, and write local Markdown, CSV, and XLSX workbook reports."
         ),
     )
     report_parser.add_argument(
@@ -87,6 +87,7 @@ def _run_report_command(invoices_path: Path, payments_path: Path, out_dir: Path)
     print(f"- Markdown: {paths.markdown}")
     print(f"- Summary CSV: {paths.summary_csv}")
     print(f"- Details CSV: {paths.details_csv}")
+    print(f"- Workbook XLSX: {paths.workbook_xlsx}")
     return 0
 
 

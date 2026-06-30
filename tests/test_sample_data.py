@@ -1,6 +1,8 @@
 import csv
 from pathlib import Path
 
+from openpyxl import load_workbook
+
 from invoice_reconciliation.cli import main
 from invoice_reconciliation.ingestion import (
     load_invoice_csv,
@@ -24,6 +26,7 @@ EXPECTED_MIXED_REPORT_FILES = {
     "reconciliation-report.md",
     "reconciliation-summary.csv",
     "reconciliation-details.csv",
+    "reconciliation-workbook.xlsx",
 }
 EXPECTED_MIXED_REPORT_FILE_ORDER = (
     "reconciliation-report.md",
@@ -124,6 +127,7 @@ def test_cli_report_smoke_with_mixed_demo_sample(tmp_path: Path, capsys) -> None
     assert captured.err == ""
     assert "Report files written:" in captured.out
     assert "- Markdown:" in captured.out
+    assert "- Workbook XLSX:" in captured.out
 
     summary_rows = list(
         csv.DictReader(
@@ -135,6 +139,7 @@ def test_cli_report_smoke_with_mixed_demo_sample(tmp_path: Path, capsys) -> None
     counts_by_status = {row["status"]: row["count"] for row in summary_rows}
 
     assert counts_by_status == EXPECTED_MIXED_CSV_COUNTS
+    assert (out_dir / "reconciliation-workbook.xlsx").exists()
 
 
 def test_mixed_demo_csv_output_matches_committed_snapshot(
@@ -168,6 +173,26 @@ def test_mixed_demo_csv_output_matches_committed_snapshot(
             MIXED_DEMO_SNAPSHOT / file_name
         ).read_text(encoding="utf-8")
 
+    workbook = load_workbook(out_dir / "reconciliation-workbook.xlsx", data_only=True)
+    try:
+        assert workbook.sheetnames == [
+            "Summary",
+            "Matched",
+            "Exceptions",
+            "Invoice Exceptions",
+            "Payment Exceptions",
+            "Details",
+        ]
+        assert workbook["Summary"]["A4"].value == "Matched invoice/payment pairs"
+        assert workbook["Summary"]["B4"].value == 2
+        exception_values = {
+            cell.value for row in workbook["Exceptions"].iter_rows() for cell in row
+        }
+        assert "INV-2004" in exception_values
+        assert "Underpaid by 5.00 USD; possible partial payment" in exception_values
+    finally:
+        workbook.close()
+
 
 def test_cli_report_smoke_with_xlsx_mixed_demo_sample(
     tmp_path: Path,
@@ -192,6 +217,7 @@ def test_cli_report_smoke_with_xlsx_mixed_demo_sample(
     assert captured.err == ""
     assert "Report files written:" in captured.out
     assert "- Markdown:" in captured.out
+    assert "- Workbook XLSX:" in captured.out
 
     summary_rows = list(
         csv.DictReader(
@@ -203,6 +229,7 @@ def test_cli_report_smoke_with_xlsx_mixed_demo_sample(
     counts_by_status = {row["status"]: row["count"] for row in summary_rows}
 
     assert counts_by_status == EXPECTED_MIXED_CSV_COUNTS
+    assert (out_dir / "reconciliation-workbook.xlsx").exists()
 
 
 def test_cli_report_writes_only_inside_requested_output_directory(
@@ -232,6 +259,7 @@ def test_cli_report_writes_only_inside_requested_output_directory(
         "contained-output/reconciliation-details.csv",
         "contained-output/reconciliation-report.md",
         "contained-output/reconciliation-summary.csv",
+        "contained-output/reconciliation-workbook.xlsx",
     ]
 
 
@@ -262,6 +290,7 @@ def test_cli_report_with_xlsx_inputs_writes_only_inside_requested_output_directo
         "contained-xlsx-output/reconciliation-details.csv",
         "contained-xlsx-output/reconciliation-report.md",
         "contained-xlsx-output/reconciliation-summary.csv",
+        "contained-xlsx-output/reconciliation-workbook.xlsx",
     ]
 
 

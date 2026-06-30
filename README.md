@@ -1,18 +1,51 @@
 # Invoice Payment Reconciliation Automation
 
-CLI-first Python portfolio project for reconciling invoice and payment exports
-with deterministic local rules. It imports synthetic CSV or XLSX files,
-validates rows, matches payments to invoices, categorizes exceptions, and writes
-Markdown/CSV reports that can be reviewed without a database, deployment,
-external API, paid service, or real client data.
+## 60-second client read
 
-## Business Problem
+This is a Python portfolio demo for automating invoice and payment
+reconciliation from CSV/XLSX exports. It validates input rows, matches payments
+to invoices, classifies exceptions, and generates reviewable Markdown, CSV, and
+XLSX workbook reports for finance or operations teams.
 
-Small finance and operations teams often reconcile invoices and payments in
-spreadsheets by hand. Manual reconciliation is slow, inconsistent, and difficult
-to audit when exceptions need follow-up. This project demonstrates how a focused
-local automation can turn structured exports into repeatable review artifacts
-for a portfolio or client-style demo.
+**Best-fit client problem:** a small business, accounting firm, or operations
+team manually compares invoice exports with payment exports every week, then
+builds exception lists in spreadsheets.
+
+**Business value demonstrated:** faster reconciliation review, repeatable
+matching rules, explicit exception categories, cleaner audit output, and fewer
+manual spreadsheet checks.
+
+**Technical proof:** Python 3.12+, uv, standard-library CSV parsing,
+`openpyxl` for XLSX input and workbook output, dataclass-based records,
+validation, deterministic matching rules, exception classification, CLI
+commands, pytest, Ruff, synthetic sample data, committed demo report artifacts,
+and a generated XLSX workbook.
+
+**Demo safety:** all sample invoices and payments are synthetic. No real
+accounting, banking, Stripe, or client data is included.
+
+## What a real client version would adapt
+
+- Client-specific invoice and payment export schemas.
+- Matching tolerances for dates, partial payments, rounding, currency, customer
+  identifiers, and duplicate references.
+- Customer or account identifiers as matching inputs when the client export
+  provides reliable IDs.
+- Excel workbook output with separate review sheets for matched rows and
+  exceptions.
+- Scheduled runs or a lightweight upload interface if the client needs
+  non-technical usage.
+- Handoff documentation for accounting or operations staff.
+
+## Manual process vs automated process
+
+| Manual spreadsheet reconciliation | Automated demo workflow |
+|---|---|
+| Export invoice and payment files. | Run one `reconcile report` CLI command. |
+| Copy/paste rows into spreadsheets. | Load CSV or XLSX exports locally. |
+| Filter, sort, and compare references and amounts by hand. | Validate required fields, dates, amounts, and currencies. |
+| Manually build exception lists for follow-up. | Apply deterministic matching rules and classify exceptions. |
+| Repeat the same checks every week. | Generate Markdown, CSV, XLSX workbook, and workbook sheet previews for review. |
 
 ## Project Summary
 
@@ -33,7 +66,22 @@ tests, and a minimal CI quality gate.
 - Markdown reconciliation report with totals, status summary, sorted detail
   sections, and review notes.
 - Summary CSV and details CSV outputs for spreadsheet review.
-- Synthetic sample data and committed Markdown/CSV demo-output snapshot.
+- XLSX workbook output with `Summary`, `Matched`, `Exceptions`,
+  `Invoice Exceptions`, `Payment Exceptions`, and `Details` sheets.
+- Synthetic sample data and committed demo-output snapshot.
+
+## Matching rules
+
+| Rule area | Current demo behavior | Client-version adaptation |
+|---|---|---|
+| Invoice reference | Exact match from `invoice_id` to `payment_reference`. | Map client export reference fields and aliases. |
+| Amount | Exact decimal amount match when reference and currency match; differences become amount variance exceptions. | Add rounding rules, fee handling, or configured tolerance bands. |
+| Customer/customer identifier | `customer_name` is imported and reported, but it is not used as a matching key. | Add customer, account, email, or ERP IDs when exports provide reliable identifiers. |
+| Date range | Dates are parsed and validated, but date windows are not used for matching. | Add payment-window rules, due-date checks, and aging views. |
+| Currency | Currency is uppercased during import; reference matches with different currencies become currency conflict exceptions. | Add multi-currency policy, FX handling, and settlement-currency rules. |
+| Tolerance | No fuzzy matching, probabilistic scoring, amount tolerance, or date tolerance. | Configure explicit tolerances after accounting approval. |
+| Duplicate references | Duplicate invoice or payment references are classified as ambiguous and routed to review. | Add client-specific duplicate handling when source-system rules are known. |
+| Partial payments / many-to-one matching | Not allocated; underpayments are amount variance exceptions with a review note. | Add partial-payment allocation and many-to-one matching rules if needed. |
 
 ## Demo Workflow
 
@@ -43,7 +91,8 @@ Use PowerShell from the repository root:
 2. Run the mixed CSV demo and inspect `reports\demo-csv`.
 3. Run the equivalent XLSX demo and inspect `reports\demo-xlsx`.
 4. Confirm each demo directory contains `reconciliation-report.md`,
-   `reconciliation-summary.csv`, and `reconciliation-details.csv`.
+   `reconciliation-summary.csv`, `reconciliation-details.csv`, and
+   `reconciliation-workbook.xlsx`.
 5. Compare generated output with the committed reviewer snapshot under
    `docs/demo-output/mixed-demo/`.
 
@@ -85,12 +134,13 @@ Run the equivalent XLSX-input demo:
 uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
-Both demo commands write exactly three files inside the selected output
+Both demo commands write exactly four files inside the selected output
 directory:
 
 - `reconciliation-report.md`
 - `reconciliation-summary.csv`
 - `reconciliation-details.csv`
+- `reconciliation-workbook.xlsx`
 
 ## Sample Inputs And Outputs
 
@@ -117,8 +167,20 @@ generated from the mixed CSV sample data:
 - `docs/demo-output/mixed-demo/reconciliation-report.md`
 - `docs/demo-output/mixed-demo/reconciliation-summary.csv`
 - `docs/demo-output/mixed-demo/reconciliation-details.csv`
+- `docs/demo-output/mixed-demo/reconciliation-workbook.xlsx`
 
-No XLSX report output or large binary report artifact is included.
+Workbook sheet previews are committed under `docs/screenshots/`:
+
+- `docs/screenshots/workbook-summary.png`
+- `docs/screenshots/workbook-exceptions.png`
+- `docs/screenshots/workbook-matched.png`
+
+These PNGs are generated table previews from the workbook sheets, not native
+Excel screenshots.
+
+![Workbook summary sheet preview](docs/screenshots/workbook-summary.png)
+![Workbook exceptions sheet preview](docs/screenshots/workbook-exceptions.png)
+![Workbook matched sheet preview](docs/screenshots/workbook-matched.png)
 
 ## Quality Checks
 
@@ -137,16 +199,35 @@ GitHub Actions mirrors this locked `uv` sync, pytest, Ruff checks, CLI help
 smoke checks, and CSV/XLSX demo smoke commands on pull requests and pushes. The
 workflow is CI-only; it does not deploy, upload artifacts, or use secrets.
 
-## Limitations And Non-Goals
+## Known limitations
 
 - No fuzzy matching or probabilistic matching.
+- No real bank data, real accounting exports, Stripe data, or client data.
+- No production accounting integration.
+- No hosted web app, upload UI, scheduler, FastAPI service, database, or
+  production runtime automation.
 - No partial-payment allocation or many-to-one matching.
-- No Excel workbook report output.
-- No web app, FastAPI service, database, deployment, or hosted runtime
-  automation.
-- No paid APIs, runtime external services, or real client data.
-- Current normalization covers whitespace and currency casing; email
-  normalization is not part of the current sample schema.
+- No amount tolerance, date-window tolerance, FX conversion, or rounding policy.
+- Customer names are imported and reported but are not used as matching keys.
+- Email, account ID, and ERP customer ID fields are not part of the current
+  sample schema.
+- The workbook is generated locally from current report rows; it does not use
+  macros, pivots, formulas, or external connections.
+
+## About / Topics
+
+Client-facing description:
+
+> Python CLI portfolio demo for invoice/payment reconciliation from CSV/XLSX
+> exports with validation, exception classification, and review reports.
+
+Suggested repository topics:
+
+`python`, `cli`, `csv`, `xlsx`, `reconciliation`,
+`payment-reconciliation`, `invoice-automation`, `accounting-automation`,
+`reporting`, `pytest`, `ruff`, `uv`, `openpyxl`, `github-actions`
+
+Do not use a `pandas` topic unless `pandas` is actually added to the project.
 
 ## Data And Security Posture
 
@@ -154,4 +235,4 @@ workflow is CI-only; it does not deploy, upload artifacts, or use secrets.
 - Do not use real client data.
 - Do not commit secrets, credentials, or production exports.
 - Keep generated local report artifacts under ignored `reports/` paths unless
-  they are intentional Markdown/CSV examples under `docs/demo-output/`.
+  they are intentional synthetic examples under `docs/demo-output/`.

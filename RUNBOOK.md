@@ -60,7 +60,7 @@ Use this workflow when reviewing the public portfolio repository:
 1. Run the quality gate.
 2. Generate the CSV demo reports under `reports\demo-csv`.
 3. Generate the XLSX-input demo reports under `reports\demo-xlsx`.
-4. Confirm both output directories contain the same three report files.
+4. Confirm both output directories contain the same four report files.
 5. Compare the generated reports with `docs/demo-output/mixed-demo/` when a
    quick expected-output reference is needed.
 
@@ -78,12 +78,13 @@ Run the XLSX-input portfolio demo:
 uv run reconcile report --invoices sample-data/mixed-demo/invoices.xlsx --payments sample-data/mixed-demo/payments.xlsx --out-dir reports\demo-xlsx
 ```
 
-Each command prints a `Report files written:` message and writes exactly three
+Each command prints a `Report files written:` message and writes exactly four
 files in the selected output directory:
 
 - `reconciliation-report.md`
 - `reconciliation-summary.csv`
 - `reconciliation-details.csv`
+- `reconciliation-workbook.xlsx`
 
 Verify the output file list:
 
@@ -108,7 +109,8 @@ Get-FileHash -Algorithm SHA256 -LiteralPath reports\demo-csv\reconciliation-deta
 
 The matching hashes should be identical for each corresponding Markdown/CSV
 file because the mixed CSV and XLSX sample inputs describe the same synthetic
-scenario.
+scenario. Inspect workbook sheet names and key values through Excel-compatible
+tools or the automated tests rather than comparing XLSX binary hashes.
 
 ## Cleanup
 
@@ -126,9 +128,10 @@ place.
 
 The `reconcile` command supports help, version output, and a local report
 workflow. The report command loads invoice and payment CSV or XLSX files, runs
-deterministic exact-reference matching, and writes local Markdown and CSV
-reports. This runbook does not cover deployment, hosted services, databases, or
-production data handling because those are outside the current portfolio scope.
+deterministic exact-reference matching, and writes local Markdown, CSV, and XLSX
+workbook reports. This runbook does not cover deployment, hosted services,
+databases, or production data handling because those are outside the current
+portfolio scope.
 
 ```powershell
 uv run reconcile --version
@@ -148,17 +151,20 @@ The Markdown report includes:
 
 The summary CSV contains one row per status. The details CSV contains sorted
 detail rows with stable status values, readable status labels, source row
-numbers, and exception review notes.
+numbers, and exception review notes. The workbook contains separate `Summary`,
+`Matched`, `Exceptions`, `Invoice Exceptions`, `Payment Exceptions`, and
+`Details` sheets.
 
 ## Example Output Snapshot
 
 The repository includes a small generated example under
 `docs/demo-output/mixed-demo/`. It was generated from the mixed CSV sample data
-and contains only Markdown and CSV report examples:
+and contains Markdown, CSV, and XLSX workbook report examples:
 
 - `docs/demo-output/mixed-demo/reconciliation-report.md`
 - `docs/demo-output/mixed-demo/reconciliation-summary.csv`
 - `docs/demo-output/mixed-demo/reconciliation-details.csv`
+- `docs/demo-output/mixed-demo/reconciliation-workbook.xlsx`
 
 Use this snapshot for quick reviewer inspection. Use the `reports/` directory
 for local generated output during demos.
@@ -182,7 +188,7 @@ equivalent.
 - Use `sample-data/` for synthetic demo inputs only.
 - Use `reports/` for generated local outputs.
 - Generated report files under `reports/` are ignored by Git.
-- Only intentional Markdown/CSV examples belong under `docs/demo-output/`.
+- Only intentional synthetic examples belong under `docs/demo-output/`.
 - Real client data, production exports, secrets, credentials, and private
   information must not be stored in this repository.
 

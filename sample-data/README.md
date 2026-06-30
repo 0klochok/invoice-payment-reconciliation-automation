@@ -34,7 +34,7 @@ The files under `mixed-demo/` demonstrate the main portfolio scenario:
 
 The mixed CSV and XLSX inputs are intentionally equivalent. Running the CLI with
 the CSV or XLSX mixed inputs should produce equivalent Markdown, summary CSV,
-and details CSV report content.
+and details CSV report content, plus equivalent workbook sheet values.
 
 ## Generated Reports
 
@@ -50,10 +50,11 @@ Each output directory should contain only:
 - `reconciliation-report.md`
 - `reconciliation-summary.csv`
 - `reconciliation-details.csv`
+- `reconciliation-workbook.xlsx`
 
 A committed reviewer snapshot is available under `docs/demo-output/mixed-demo/`.
-It was generated from the mixed CSV sample data and intentionally contains only
-Markdown/CSV report examples. There is no XLSX report output.
+It was generated from the mixed CSV sample data and contains Markdown, CSV, and
+XLSX workbook report examples.
 
 Do not place real client data, production exports, secrets, credentials, or
 private information in this directory.

@@ -9,6 +9,10 @@ from decimal import Decimal
 from io import StringIO
 from pathlib import Path
 
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
+
 from .matching import (
     AmbiguousReference,
     AmbiguousReferenceReason,
@@ -66,6 +70,48 @@ DETAIL_COLUMNS = (
     "payment_source_row",
     "reason",
 )
+WORKBOOK_DETAIL_COLUMNS = (
+    "status",
+    "status_label",
+    "reference",
+    "invoice_id",
+    "payment_id",
+    "customer_name",
+    "invoice_amount",
+    "invoice_currency",
+    "payment_amount",
+    "payment_currency",
+    "invoice_source_row",
+    "payment_source_row",
+    "reason",
+)
+WORKBOOK_DETAIL_HEADERS = (
+    "Status",
+    "Status Label",
+    "Reference",
+    "Invoice ID",
+    "Payment ID",
+    "Customer",
+    "Invoice Amount",
+    "Invoice Currency",
+    "Payment Amount",
+    "Payment Currency",
+    "Invoice Source Row",
+    "Payment Source Row",
+    "Reason",
+)
+WORKBOOK_SHEET_NAMES = (
+    "Summary",
+    "Matched",
+    "Exceptions",
+    "Invoice Exceptions",
+    "Payment Exceptions",
+    "Details",
+)
+_HEADER_FILL = PatternFill(fill_type="solid", fgColor="D9EAF7")
+_HEADER_FONT = Font(bold=True)
+_TITLE_FONT = Font(bold=True, size=12)
+_WRAP_ALIGNMENT = Alignment(wrap_text=True, vertical="top")
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +121,7 @@ class ReportOutputPaths:
     markdown: Path
     summary_csv: Path
     details_csv: Path
+    workbook_xlsx: Path
 
 
 def build_summary_counts(result: ReconciliationResult) -> dict[MatchStatus, int]:
@@ -315,7 +362,7 @@ def write_reconciliation_reports(
     result: ReconciliationResult,
     output_dir: str | Path,
 ) -> ReportOutputPaths:
-    """Write Markdown and CSV reconciliation reports to a local directory."""
+    """Write Markdown, CSV, and XLSX reconciliation reports to a local directory."""
     directory = Path(output_dir)
     directory.mkdir(parents=True, exist_ok=True)
 
@@ -323,11 +370,56 @@ def write_reconciliation_reports(
         markdown=directory / "reconciliation-report.md",
         summary_csv=directory / "reconciliation-summary.csv",
         details_csv=directory / "reconciliation-details.csv",
+        workbook_xlsx=directory / "reconciliation-workbook.xlsx",
     )
     _write_text(paths.markdown, render_markdown_report(result))
     _write_text(paths.summary_csv, render_summary_csv(result))
     _write_text(paths.details_csv, render_details_csv(result))
+    write_reconciliation_workbook(result, paths.workbook_xlsx)
     return paths
+
+
+def write_reconciliation_workbook(
+    result: ReconciliationResult,
+    path: str | Path,
+) -> Path:
+    """Write a deterministic XLSX workbook for reviewer-friendly reconciliation."""
+    output_path = Path(path)
+    workbook = Workbook()
+
+    summary_sheet = workbook.active
+    summary_sheet.title = WORKBOOK_SHEET_NAMES[0]
+    _write_summary_sheet(summary_sheet, result)
+
+    workbook_rows = _workbook_rows(result)
+    _write_table_sheet(
+        workbook.create_sheet(WORKBOOK_SHEET_NAMES[1]),
+        WORKBOOK_DETAIL_HEADERS,
+        workbook_rows["matched"],
+    )
+    _write_table_sheet(
+        workbook.create_sheet(WORKBOOK_SHEET_NAMES[2]),
+        WORKBOOK_DETAIL_HEADERS,
+        workbook_rows["exceptions"],
+    )
+    _write_table_sheet(
+        workbook.create_sheet(WORKBOOK_SHEET_NAMES[3]),
+        WORKBOOK_DETAIL_HEADERS,
+        workbook_rows["invoice_exceptions"],
+    )
+    _write_table_sheet(
+        workbook.create_sheet(WORKBOOK_SHEET_NAMES[4]),
+        WORKBOOK_DETAIL_HEADERS,
+        workbook_rows["payment_exceptions"],
+    )
+    _write_table_sheet(
+        workbook.create_sheet(WORKBOOK_SHEET_NAMES[5]),
+        WORKBOOK_DETAIL_HEADERS,
+        workbook_rows["details"],
+    )
+
+    workbook.save(output_path)
+    return output_path
 
 
 def _detail_rows(result: ReconciliationResult) -> list[dict[str, str]]:
@@ -356,6 +448,68 @@ def _detail_rows(result: ReconciliationResult) -> list[dict[str, str]]:
         for item in _sorted_ambiguous_references(result.ambiguous_references)
     )
     return rows
+
+
+def _workbook_rows(result: ReconciliationResult) -> dict[str, list[tuple[str, ...]]]:
+    matched_rows = [
+        _workbook_matched_row(pair)
+        for pair in _sorted_matched_pairs(result.matched_pairs)
+    ]
+    unmatched_invoice_rows = [
+        _workbook_unmatched_invoice_row(item)
+        for item in _sorted_unmatched_invoices(result.unmatched_invoices)
+    ]
+    unmatched_payment_rows = [
+        _workbook_unmatched_payment_row(item)
+        for item in _sorted_unmatched_payments(result.unmatched_payments)
+    ]
+    amount_mismatch_rows = [
+        _workbook_amount_mismatch_row(item)
+        for item in _sorted_amount_mismatches(result.amount_mismatches)
+    ]
+    currency_mismatch_rows = [
+        _workbook_currency_mismatch_row(item)
+        for item in _sorted_currency_mismatches(result.currency_mismatches)
+    ]
+    ambiguous_references = _sorted_ambiguous_references(result.ambiguous_references)
+    ambiguous_rows = [
+        _workbook_ambiguous_reference_row(item) for item in ambiguous_references
+    ]
+    exception_rows = (
+        unmatched_invoice_rows
+        + unmatched_payment_rows
+        + amount_mismatch_rows
+        + currency_mismatch_rows
+        + ambiguous_rows
+    )
+    invoice_exception_rows = (
+        unmatched_invoice_rows
+        + amount_mismatch_rows
+        + currency_mismatch_rows
+        + [
+            _workbook_ambiguous_reference_row(item)
+            for item in ambiguous_references
+            if item.invoices
+        ]
+    )
+    payment_exception_rows = (
+        unmatched_payment_rows
+        + amount_mismatch_rows
+        + currency_mismatch_rows
+        + [
+            _workbook_ambiguous_reference_row(item)
+            for item in ambiguous_references
+            if item.payments
+        ]
+    )
+
+    return {
+        "matched": matched_rows,
+        "exceptions": exception_rows,
+        "invoice_exceptions": invoice_exception_rows,
+        "payment_exceptions": payment_exception_rows,
+        "details": matched_rows + exception_rows,
+    }
 
 
 def _matched_row(item: MatchedPair) -> dict[str, str]:
@@ -416,6 +570,43 @@ def _ambiguous_reference_row(item: AmbiguousReference) -> dict[str, str]:
     )
     row["reason"] = AMBIGUOUS_REASON_LABELS[item.reason]
     return row
+
+
+def _workbook_matched_row(item: MatchedPair) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_matched_row(item))
+
+
+def _workbook_unmatched_invoice_row(item: UnmatchedInvoice) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_unmatched_invoice_row(item))
+
+
+def _workbook_unmatched_payment_row(item: UnmatchedPayment) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_unmatched_payment_row(item))
+
+
+def _workbook_amount_mismatch_row(item: AmountMismatch) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_amount_mismatch_row(item))
+
+
+def _workbook_currency_mismatch_row(item: CurrencyMismatch) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_currency_mismatch_row(item))
+
+
+def _workbook_ambiguous_reference_row(item: AmbiguousReference) -> tuple[str, ...]:
+    return _workbook_detail_tuple(_ambiguous_reference_row(item))
+
+
+def _workbook_detail_tuple(row: dict[str, str]) -> tuple[str, ...]:
+    invoice_amount, invoice_currency = _split_money_text(row["invoice_amount"])
+    payment_amount, payment_currency = _split_money_text(row["payment_amount"])
+    enriched_row = {
+        **row,
+        "invoice_amount": invoice_amount,
+        "invoice_currency": invoice_currency,
+        "payment_amount": payment_amount,
+        "payment_currency": payment_currency,
+    }
+    return tuple(enriched_row[column] for column in WORKBOOK_DETAIL_COLUMNS)
 
 
 def _base_detail_row(status: MatchStatus, reference: str) -> dict[str, str]:
@@ -605,6 +796,64 @@ def _render_csv(columns: tuple[str, ...], rows: Iterable[dict[str, str]]) -> str
     return output.getvalue()
 
 
+def _write_summary_sheet(worksheet, result: ReconciliationResult) -> None:
+    worksheet.append(("Metric", "Value"))
+    _style_header_row(worksheet, 1)
+    for metric, value in _build_report_totals(result).items():
+        worksheet.append((metric, value))
+
+    worksheet.append(("", ""))
+    status_header_row = worksheet.max_row + 1
+    worksheet.append(("Status", "Status Label", "Count"))
+    _style_header_row(worksheet, status_header_row)
+    for status, count in build_summary_counts(result).items():
+        worksheet.append((status.value, STATUS_LABELS[status], count))
+
+    worksheet.freeze_panes = "A2"
+    _apply_column_widths(worksheet)
+
+
+def _write_table_sheet(
+    worksheet,
+    headers: tuple[str, ...],
+    rows: Iterable[tuple[str, ...]],
+) -> None:
+    worksheet.append(headers)
+    _style_header_row(worksheet, 1)
+    for row in rows:
+        worksheet.append(row)
+
+    worksheet.freeze_panes = "A2"
+    if worksheet.max_row > 1:
+        last_column = get_column_letter(worksheet.max_column)
+        worksheet.auto_filter.ref = f"A1:{last_column}{worksheet.max_row}"
+    _apply_column_widths(worksheet)
+
+
+def _style_header_row(worksheet, row_number: int) -> None:
+    for cell in worksheet[row_number]:
+        cell.font = _HEADER_FONT
+        cell.fill = _HEADER_FILL
+        cell.alignment = _WRAP_ALIGNMENT
+
+
+def _apply_column_widths(worksheet) -> None:
+    for column_cells in worksheet.columns:
+        column_letter = get_column_letter(column_cells[0].column)
+        max_length = 0
+        for cell in column_cells:
+            cell.alignment = _WRAP_ALIGNMENT
+            cell_value = "" if cell.value is None else str(cell.value)
+            max_length = max(
+                max_length,
+                max((len(part) for part in cell_value.splitlines()), default=0),
+            )
+        worksheet.column_dimensions[column_letter].width = min(
+            max(max_length + 2, 12),
+            38,
+        )
+
+
 def _write_text(path: Path, content: str) -> None:
     with path.open("w", encoding="utf-8", newline="\n") as file:
         file.write(content)
@@ -624,3 +873,21 @@ def _join_values(values: Iterable[str]) -> str:
         if value and value not in unique_values:
             unique_values.append(value)
     return "; ".join(unique_values)
+
+
+def _split_money_text(value: str) -> tuple[str, str]:
+    if not value:
+        return "", ""
+
+    amounts: list[str] = []
+    currencies: list[str] = []
+    for item in value.split("; "):
+        if " " not in item:
+            amounts.append(item)
+            continue
+        amount, currency = item.rsplit(" ", 1)
+        amounts.append(amount)
+        if currency not in currencies:
+            currencies.append(currency)
+
+    return "; ".join(amounts), "; ".join(currencies)

@@ -24,25 +24,25 @@
 
 ## Local-Only Posture
 
-The CLI reads caller-provided local CSV/XLSX files and writes local Markdown/CSV
-reports. Network access is not part of the application workflow. Development
-and CI setup may download public dependencies from the lockfile, but the
-reconciliation command does not require credentials, service accounts, paid
-APIs, runtime external services, or hosted infrastructure.
+The CLI reads caller-provided local CSV/XLSX files and writes local Markdown,
+CSV, and XLSX workbook reports. Network access is not part of the application
+workflow. Development and CI setup may download public dependencies from the
+lockfile, but the reconciliation command does not require credentials, service
+accounts, paid APIs, runtime external services, or hosted infrastructure.
 
 ## Public Repository Posture
 
 This repository is intended to be safe for a public portfolio demo while it uses
 only synthetic sample data. Generated local reports should stay under ignored
-`reports/` paths. The only committed report examples should be intentional fake
-Markdown/CSV snapshots under `docs/demo-output/`.
+`reports/` paths. The only committed report examples should be intentional
+synthetic snapshots under `docs/demo-output/`.
 
 ## Data Classification
 
 | Data Type | Allowed? | Notes |
 |---|---:|---|
 | Synthetic sample data | Yes | May be committed when clearly fake. |
-| Generated local reports | Local only | Ignored by Git under `reports/`; intentional fake Markdown/CSV snapshots may be committed under `docs/demo-output/`. |
+| Generated local reports | Local only | Ignored by Git under `reports/`; intentional synthetic snapshots may be committed under `docs/demo-output/`. |
 | Real client data | No | Must never be committed or used for demo tests. |
 | Secrets and credentials | No | Must never be committed or logged. |
 
@@ -77,6 +77,14 @@ Phase 3 adds local Markdown and CSV report file writes under a caller-provided
 output directory. Generated reports remain local demo artifacts and are ignored
 by Git under `reports/`; no external network calls, paid APIs, databases, web
 services, or real client data are added.
+
+## Workbook Report Security Review
+
+This pass adds local XLSX workbook report output using the existing locked
+`openpyxl` dependency. Workbook reports are generated from the same validated
+synthetic records as the Markdown and CSV reports, do not contain macros or
+external connections, and do not add network calls, paid APIs, databases, web
+services, or real client data.
 
 ## Phase 8 Release Readiness Security Review
 

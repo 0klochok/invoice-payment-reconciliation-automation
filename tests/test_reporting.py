@@ -3,10 +3,13 @@ from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
+from openpyxl import load_workbook
+
 from invoice_reconciliation.matching import MatchStatus, match_invoices_to_payments
 from invoice_reconciliation.models import InvoiceRecord, MoneyAmount, PaymentRecord
 from invoice_reconciliation.reporting import (
     STATUS_LABELS,
+    WORKBOOK_SHEET_NAMES,
     build_summary_counts,
     render_details_csv,
     render_markdown_report,
@@ -244,6 +247,9 @@ def test_write_reports_uses_output_directory_and_does_not_mutate_inputs(
     assert paths.details_csv == (
         tmp_path / "report-output" / "reconciliation-details.csv"
     )
+    assert paths.workbook_xlsx == (
+        tmp_path / "report-output" / "reconciliation-workbook.xlsx"
+    )
     assert paths.markdown.read_text(encoding="utf-8").startswith(
         "# Invoice Payment Reconciliation Report"
     )
@@ -253,8 +259,32 @@ def test_write_reports_uses_output_directory_and_does_not_mutate_inputs(
     assert paths.details_csv.read_text(encoding="utf-8").startswith(
         "status,status_label,reference"
     )
+    assert paths.workbook_xlsx.exists()
     assert tuple(invoices) == original_invoices
     assert tuple(payments) == original_payments
+
+
+def test_workbook_report_contains_expected_sheets_and_review_values(
+    tmp_path: Path,
+) -> None:
+    result = _mixed_reconciliation_result()
+
+    paths = write_reconciliation_reports(result, tmp_path / "report-output")
+
+    workbook = load_workbook(paths.workbook_xlsx, data_only=True)
+    try:
+        assert workbook.sheetnames == list(WORKBOOK_SHEET_NAMES)
+        summary = workbook["Summary"]
+        assert summary["A4"].value == "Matched invoice/payment pairs"
+        assert summary["B4"].value == 1
+
+        exception_values = {
+            cell.value for row in workbook["Exceptions"].iter_rows() for cell in row
+        }
+        assert "INV-AMOUNT" in exception_values
+        assert "Underpaid by 0.01 EUR; possible partial payment" in exception_values
+    finally:
+        workbook.close()
 
 
 def _mixed_reconciliation_result():

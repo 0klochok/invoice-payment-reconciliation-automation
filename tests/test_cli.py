@@ -20,7 +20,8 @@ def test_cli_help_smoke(capsys) -> None:
     normalized_output = " ".join(captured.out.split())
     assert "Invoice and payment reconciliation automation" in captured.out
     assert (
-        "Generates local Markdown and CSV reconciliation reports" in normalized_output
+        "Generates local Markdown, CSV, and XLSX workbook reconciliation reports"
+        in normalized_output
     )
     assert "--version" in captured.out
     assert "report" in captured.out
@@ -46,9 +47,11 @@ def test_cli_report_smoke_writes_reports(tmp_path: Path, capsys) -> None:
     assert captured.err == ""
     assert "Report files written:" in captured.out
     assert "- Markdown:" in captured.out
+    assert "- Workbook XLSX:" in captured.out
     assert (out_dir / "reconciliation-report.md").exists()
     assert (out_dir / "reconciliation-summary.csv").exists()
     assert (out_dir / "reconciliation-details.csv").exists()
+    assert (out_dir / "reconciliation-workbook.xlsx").exists()
     markdown = (out_dir / "reconciliation-report.md").read_text(encoding="utf-8")
     assert "| Matched invoice/payment pairs | 3 |" in markdown
     assert "| Matched invoice and payment | 3 |" in markdown

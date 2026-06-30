@@ -213,26 +213,3 @@ workflow is CI-only; it does not deploy, upload artifacts, or use secrets.
   sample schema.
 - The workbook is generated locally from current report rows; it does not use
   macros, pivots, formulas, or external connections.
-
-## About / Topics
-
-Client-facing description:
-
-> Python CLI portfolio demo for invoice/payment reconciliation from CSV/XLSX
-> exports with validation, exception classification, and review reports.
-
-Suggested repository topics:
-
-`python`, `cli`, `csv`, `xlsx`, `reconciliation`,
-`payment-reconciliation`, `invoice-automation`, `accounting-automation`,
-`reporting`, `pytest`, `ruff`, `uv`, `openpyxl`, `github-actions`
-
-Do not use a `pandas` topic unless `pandas` is actually added to the project.
-
-## Data And Security Posture
-
-- Use fake sample data only.
-- Do not use real client data.
-- Do not commit secrets, credentials, or production exports.
-- Keep generated local report artifacts under ignored `reports/` paths unless
-  they are intentional synthetic examples under `docs/demo-output/`.
